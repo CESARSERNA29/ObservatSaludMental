@@ -736,17 +736,6 @@ st.markdown("##")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -864,8 +853,8 @@ def graficar_piramide(df, dpto, año):
     plt.tight_layout()
     return fig
 
-# ===========================================
-# CARGA DE DATOS  DE LA PIRAMIDE POBLACIONAL
+# =====================================
+# CARGA DE DATOS
 
 try:
     # Lectura de la base desde la carpeta
@@ -901,9 +890,10 @@ try:
     # =====================================
     # GENERAR Y MOSTRAR GRÁFICO
     
-    with st.spinner("Generando pirámide poblacional..."):
-        fig = graficar_piramide(df, dpto_seleccionado, año_seleccionado)
-        st.pyplot(fig)
+    if st.button("Generar Pirámide") or True:  # Se actualiza automáticamente
+        with st.spinner("Generando pirámide poblacional..."):
+            fig = graficar_piramide(df, dpto_seleccionado, año_seleccionado)
+            st.pyplot(fig)
     
     # =====================================
     # INFORMACIÓN ADICIONAL
@@ -967,9 +957,6 @@ except FileNotFoundError:
 except Exception as e:
     st.error(f"❌ Error al cargar los datos: {str(e)}")
     st.info("Verifica que el archivo CSV tenga las columnas correctas: anio, region, departamento, rango_edad, sexo, pob")
-
-
-
 
 
 
