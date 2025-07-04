@@ -864,8 +864,8 @@ def graficar_piramide(df, dpto, año):
     plt.tight_layout()
     return fig
 
-# =====================================
-# CARGA DE DATOS
+# ===========================================
+# CARGA DE DATOS  DE LA PIRAMIDE POBLACIONAL
 
 try:
     # Lectura de la base desde la carpeta
@@ -901,7 +901,7 @@ try:
     # =====================================
     # GENERAR Y MOSTRAR GRÁFICO
     
-    if st.button("Generar Pirámide") or True:  # Se actualiza automáticamente
+    if st.button("Generar Pirámide"):  # Se actualiza automáticamente
         with st.spinner("Generando pirámide poblacional..."):
             fig = graficar_piramide(df, dpto_seleccionado, año_seleccionado)
             st.pyplot(fig)
