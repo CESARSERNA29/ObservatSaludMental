@@ -4,31 +4,51 @@
 
 
 # Cargando las Librerías:
-    
+# ======================
+
 import streamlit as st
 import pandas as pd
 # from pandas_profiling import ProfileReport
 import streamlit.components.v1 as components
-
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from streamlit_option_menu import option_menu
 # from numerize.numerize import numerize
 from numerize import numerize
-
 import time
 from streamlit_extras.metric_cards import style_metric_cards
 # st.set_option('deprecation.showPyplotGlobalUse', False)
 import plotly.graph_objs as go
+# ----------------------------------------------------------
+
 
 
 # Descomenta esta línea si usas MySQL:
 # from query import *
 
 st.set_page_config(page_title="Dashboard",page_icon="🌍",layout="wide")
-st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
+#st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
+
+st.markdown("""
+        <h3 style='text-align: center; color: #333333;'>MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias </h3>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+    """, unsafe_allow_html=True)
+
+st.markdown("""
+        <div style="text-align: justify; font-size: 18px; color: #444444;">
+        La morbilidad es la frecuencia o proporción de personas que presentan una enfermedad o condición específica dentro de una población determinada. Desde un enfoque estadístico, el análisis de la morbilidad permite identificar patrones, tendencias y distribuciones geográficas o demográficas de las enfermedades, lo cual es clave para la planificación en salud pública.  
+        Mediante indicadores como el número de casos absolutos, la tasa de morbilidad (por cada 10.000 habitantes) o la prevalencia y la incidencia, se pueden evaluar los grupos más afectados, detectar zonas de mayor vulnerabilidad y priorizar recursos. Estas métricas también permiten comparar el comportamiento de enfermedades a lo largo del tiempo o entre regiones, facilitando la toma de decisiones basadas en evidencia.  
+        El análisis estadístico de la morbilidad es, por tanto, una herramienta fundamental para monitorear el estado de salud de una población, y diseñar intervenciones efectivas.
+        </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("##")
+
+
+
+
+
 
 # Todos los gráficos se personalizan usando CSS , no Streamlit. 
 theme_plotly = None 
@@ -309,41 +329,10 @@ header {visibility:hidden;}
 
 
 
+st.markdown("##")
+st.markdown("##")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+st.markdown("##")
 
 
 
@@ -546,6 +535,177 @@ with st.expander("📋 Información de Columnas"):
         st.write(f"{i}. **{col}** - Tipo: {df[col].dtype}")
 
 ##3
+
+
+
+
+
+
+
+
+
+
+
+st.markdown("##")
+st.markdown("##")
+st.markdown("##")
+
+
+
+
+
+
+
+
+# Cargando las Librerías:
+import streamlit as st
+import pandas as pd
+import streamlit.components.v1 as components
+import plotly.express as px
+from streamlit_option_menu import option_menu
+from numerize import numerize
+import time
+from streamlit_extras.metric_cards import style_metric_cards
+import plotly.graph_objs as go
+import plotly.graph_objects as go
+
+# =====================================
+# TITULO Y ESTILO DEL ENCABEZADO:
+st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
+st.header("Resumen Gráfico Exploratorio Multidimensional")
+st.markdown("##")
+ 
+# Cargar CSS si existe el archivo
+try:
+    with open('style.css') as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+except FileNotFoundError:
+    st.warning("Archivo style.css no encontrado. Continuando sin estilos personalizados.")
+
+# LLAMANDO EL DATAFRAME:
+try:
+    # Importando la tabla agregada con los resúmenes de las variables:
+    df_subsectores = pd.read_excel('TablaMorbilidad_Subsectores.xlsx', sheet_name='Hoja1')
+    df_subsectores["conteos"] = round(df_subsectores["conteos"], 0)
+    df_subsectores["tasas"] = round(df_subsectores["tasas"], 1) 
+
+    
+    # Estructura jerárquica: País > Departamento > Enfermedad
+    labels = df_subsectores['labels'].tolist()
+    parents = df_subsectores['parents'].tolist()
+    conteos = df_subsectores['conteos'].tolist()
+    tasas = df_subsectores['tasas'].tolist()
+    
+    # Etiquetas personalizadas con conteo y tasa
+    custom_labels = [f"{l}<br>Casos: {v:,.0f}<br>Tasa: {t:.1f}/10k".replace(',', '.') if v != 0 else l 
+                 for l, v, t in zip(labels, conteos, tasas)]
+    
+    # Sunburst plot
+    #colors = ['#2A3180', '#39A8E0', '#F28F1C', '#E5352B', '#662681', '#009640', '#9D9D9C']
+    fig = go.Figure(go.Sunburst(
+        labels=custom_labels,
+        parents=parents,
+        values=conteos,
+        branchvalues="remainder" #,  # ahora los padres no necesitan tener suma directa
+        #marker=dict(colors=colors * (len(labels) // len(colors) + 1))  # Repetir colores si son necesarios
+    ))
+    
+    # Agregando el Titulo (Elegante)
+    fig.update_layout(
+        title={
+            "text": "Enfermedades más Frecuentes por Departamento",
+            "y": 0.95, 
+            "x": 0.5, 
+            "xanchor": "center", 
+            "yanchor": "top", 
+            "font": dict(size=34, family="Agency FB", color="black")
+        }, 
+        margin=dict(t=80, l=10, r=10, b=10)
+    )
+    
+    
+    
+    # ¡AQUÍ ESTÁ LA LÍNEA QUE FALTABA!
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+    
+except FileNotFoundError:
+    st.error("Archivo 'TablaMorbilidad_Subsectores.xlsx' no encontrado. Verifica que el archivo esté en el directorio correcto.")
+except Exception as e:
+    st.error(f"Error al cargar los datos: {str(e)}")
+    
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+st.markdown("##")
+st.markdown("##")
+st.markdown("##")
+
+
+
+
+
+
+
+# Diagrama TREE:
+# =============
+import streamlit as st
+import plotly.express as px
+import pandas as pd
+
+# Carga de datos
+# Importando la tabla agregada con los resúmenes de las variables:
+population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja1')
+
+# Filtrar años disponibles
+anios = sorted(population_df['anio'].unique())
+anio_seleccionado = st.selectbox("Selecciona el Año", anios)
+
+# Filtrar por año
+df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
+
+# Crear Treemap
+fig = px.treemap(
+    df_filtrado,
+    path=['Dptos', 'GrupEnfer'],
+    values='MorbTot',
+    color='MorbTot',
+    color_continuous_scale=["red", "orange", "green"],
+    title=f'Morbilidad Total por Departamento y Grupo de Enfermedad - {anio_seleccionado}'
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
