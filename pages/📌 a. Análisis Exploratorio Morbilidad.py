@@ -901,10 +901,9 @@ try:
     # =====================================
     # GENERAR Y MOSTRAR GRÁFICO
     
-    if st.button("Generar Pirámide"):  # Se actualiza automáticamente
-        with st.spinner("Generando pirámide poblacional..."):
-            fig = graficar_piramide(df, dpto_seleccionado, año_seleccionado)
-            st.pyplot(fig)
+    with st.spinner("Generando pirámide poblacional..."):
+        fig = graficar_piramide(df, dpto_seleccionado, año_seleccionado)
+        st.pyplot(fig)
     
     # =====================================
     # INFORMACIÓN ADICIONAL
