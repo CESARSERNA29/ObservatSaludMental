@@ -284,22 +284,22 @@ st.sidebar.image("Logo_UNILLANOS.png",caption="")            # LOGO
 
 
 
-st.subheader('Seleccione Atributos para Observar Tendencias de Distrib. Por Cuartiles',)
+#st.subheader('Seleccione Atributos para Observar Tendencias de Distrib. Por Cuartiles',)
 #feature_x = st.selectbox('Select feature for x Qualitative data', df_selection.select_dtypes("object").columns)
-feature_y = st.selectbox('Seleccionar función para (Y) Datos cuantitativos', df_selection.select_dtypes("number").columns)
-fig2 = go.Figure(
-    data=[go.Box(x=df['grupo'], y=df[feature_y])],
-    layout=go.Layout(
-        title=go.layout.Title(text="Distribución Numérica, por Grupo de Enfermedades"),
-        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
-        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
-        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color
-        font=dict(color='#cecdcd'),  # Set text color to black
-    )
-)
+#feature_y = st.selectbox('Seleccionar función para (Y) Datos cuantitativos', df_selection.select_dtypes("number").columns)
+#fig2 = go.Figure(
+#    data=[go.Box(x=df['grupo'], y=df[feature_y])],
+#    layout=go.Layout(
+#        title=go.layout.Title(text="Distribución Numérica, por Grupo de Enfermedades"),
+#        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
+#        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
+#        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
+#        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color
+#        font=dict(color='#cecdcd'),  # Set text color to black
+#    )
+#)
 # Display the Plotly figure using Streamlit
-st.plotly_chart(fig2,use_container_width=True)
+#st.plotly_chart(fig2,use_container_width=True)
 
 
 
