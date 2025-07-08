@@ -173,10 +173,16 @@ with Tab1:
     # Salud mental
     #---------------------------------------------------------------------------   
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
-    tabla_sm1 = pd.pivot_table(df_sm0, values='anio', index='grupo', aggfunc='count', fill_value=0).reset_index() 
+    #tabla_sm1 = pd.pivot_table(df_sm0, values='anio', index='grupo', aggfunc='count', fill_value=0).reset_index() 
     # tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True)
-    tabla_sm1.columns = ['anio', 'cant']
-
+    # tabla_sm1.columns = ['anio', 'cant']
+    tabla_sm1 = pd.pivot_table(
+    df_sm0,
+    values='anio',
+    index='grupo',
+    aggfunc='count',
+    fill_value=0).reset_index()  # <-- paréntesis sí o sí 
+    tabla_sm1.columns = ['grupo', 'cant']  # Ahora sí debe tener 2 columnas
     
     # Calcular el total de casos 
     # Calcular total general 
