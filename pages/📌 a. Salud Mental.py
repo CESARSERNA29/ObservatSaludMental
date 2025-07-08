@@ -188,11 +188,11 @@ with Tab1:
     #---------------------------------------------------------------------------
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
-    grupos_sm = df_sm['grupo'].unique().tolist()
+    grupos_sm = df_sm0['grupo'].unique().tolist()
     grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
     
         # 2. Filtrar el DataFrame según la selección del usuario
-    df_sm_filtrado = df_sm[df_sm['grupo'] == grupo_sm_sel]
+    df_sm_filtrado = df_sm0[df_sm0['grupo'] == grupo_sm_sel]
     
     # 3. Crear la tabla cruzada sumando la columna 'cant'
     tabla_sm2 = pd.pivot_table(
@@ -225,11 +225,11 @@ with Tab1:
     "Rojo": "#E5352B",
     "Morado":"#662681"}
     
-    a_min_sm=df_sm['anio'].min()-1
-    a_max_sm=df_sm['anio'].max()+1
+    a_min_sm=df_sm0['anio'].min()-1
+    a_max_sm=df_sm0['anio'].max()+1
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
-    deptos_sm = df_sm['departamento'].unique().tolist()
+    deptos_sm = df_sm0['departamento'].unique().tolist()
     depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key="sel_dpto_sm")
     
     df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==depto_sm_sel]
@@ -268,7 +268,7 @@ with Tab2:
     st.header("CONVIVENCIA CIUDADANA")
     st.write("Aquí va el contenido de la segunda pestaña.")
     
-    df_cc=df[df['componente']=='Conv. Ciudadana']
+    df_cc=df0[df0['componente']=='Conv. Ciudadana']
 
 
     tabla_cc1 = pd.pivot_table(
