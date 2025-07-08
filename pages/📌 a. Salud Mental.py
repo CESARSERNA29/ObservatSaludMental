@@ -178,8 +178,8 @@ with Tab1:
     tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True)
     
     # Calcular el total de casos
-    # Calcular total general 
-    total_casos = tabla_sm1['cant'].sum() 
+    # Calcular total general  
+    total_casos = tabla_sm1['cant'].len() 
     # Calcular porcentaje 
     tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2) 
     
