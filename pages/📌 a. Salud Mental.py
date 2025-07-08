@@ -178,12 +178,18 @@ with Tab1:
     tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True)
     
     # Calcular el total de casos
-    total_casos = tabla_sm1['cant'].sum()
+    # Calcular total general 
+    total_casos = tabla_sm1['cant'].sum() 
+    # Calcular porcentaje 
+    tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2) 
     
-    # Agregar columna de porcentaje
-    tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2)
+    # Agregar fila de totales 
+    fila_total = pd.DataFrame({'cant': [total_casos], '(%)': [100.0]}, index=['Total']) 
     
-    st.dataframe(tabla_sm1)
+    # Concatenar la fila total a la tabla 
+    tabla_sm1 = pd.concat([tabla_sm1, fila_total]) 
+    
+    # Mostrar título con estilost.markdown("<h4 style='color:#89b5e1; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
     
     #---------------------------------------------------------------------------
     
