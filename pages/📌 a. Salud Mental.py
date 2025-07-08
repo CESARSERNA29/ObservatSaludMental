@@ -175,11 +175,11 @@ with Tab1:
     #---------------------------------------------------------------------------   
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
     tabla_sm1 = pd.pivot_table(df_sm0, values='anio', index='grupo', aggfunc='count', fill_value=0)
-    tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True) 
+    #tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True) 
     
     # Calcular el total de casos 
     # Calcular total general 
-    total_casos = tabla_sm1['anio'].len() 
+    total_casos = tabla_sm1['anio'].sum() 
     # Calcular porcentaje 
     tabla_sm1['(%)'] = (tabla_sm1['anio'] / total_casos * 100).round(2) 
     
