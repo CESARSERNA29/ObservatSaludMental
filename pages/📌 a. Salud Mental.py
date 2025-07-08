@@ -168,7 +168,7 @@ with Tab1:
     # Tabla de frecuencia de muertes asocciadas a grupos de enfermedades de 
     # Salud mental
     #---------------------------------------------------------------------------   
-    st.markdown("<h4 style='color:#3399FF; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
     tabla_sm1 = pd.pivot_table(df_sm, values='cant', index='grupo', aggfunc='sum', fill_value=0)
     
     # Calcular el total de casos
