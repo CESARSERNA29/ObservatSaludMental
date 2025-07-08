@@ -146,6 +146,9 @@ st.sidebar.image("data/logo1.png")
 
 
 
+
+
+
 # ==========================================================
 # Creacion de pestañas para cada componente del obsevatorio
 # ==========================================================
@@ -156,11 +159,13 @@ with Tab1:
     st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
     st.write("La morbilidad es la frecuencia o proporción de personas que presentan una enfermedad o condición específica dentro de una población determinada. Desde un enfoque estadístico, el análisis de la morbilidad permite identificar patrones, tendencias y distribuciones geográficas o demográficas de las enfermedades, lo cual es clave para la planificación en salud pública. Mediante indicadores como el número de casos absolutos, la tasa de morbilidad (por cada 10.000 habitantes) o la prevalencia y la incidencia, se pueden evaluar los grupos más afectados, detectar zonas de mayor vulnerabilidad y priorizar recursos. Estas métricas también permiten comparar el comportamiento de enfermedades a lo largo del tiempo o entre regiones, facilitando la toma de decisiones basadas en evidencia.  El análisis estadístico de la morbilidad es, por tanto, una herramienta fundamental para monitorear el estado de salud de una población, y diseñar intervenciones efectivas.")
     
-    df_sm=df0[df0['componente']=='SM']
+    df_sm0=df0[df0['componente']=='SM']
     
     
     st.markdown("##")
-    st.markdown("##")
+    
+    
+    
     
     
     
@@ -169,7 +174,8 @@ with Tab1:
     # Salud mental
     #---------------------------------------------------------------------------   
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
-    tabla_sm1 = pd.pivot_table(df_sm, values='cant', index='grupo', aggfunc='sum', fill_value=0)
+    tabla_sm1 = pd.pivot_table(df_sm0, values='anio', index='grupo', aggfunc='count', fill_value=0) 
+    tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True)
     
     # Calcular el total de casos
     total_casos = tabla_sm1['cant'].sum()
