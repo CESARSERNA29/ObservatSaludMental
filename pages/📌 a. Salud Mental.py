@@ -171,16 +171,16 @@ with Tab1:
     # Crear tabla de frecuencia por grupo, departamento y grupo de edad
     
     
-    tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0).reset_index()  
+    tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0) 
     
     # Renombrar columna de conteo si fue con 'anio' 
-    if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True).reset_index()
+    #if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True).reset_index()
     
     # Calcular total general para el porcentaje 
-    total_casos = tabla_sm1['cant'].sum()  
+    total_casos = tabla_sm1['anio'].sum()  
     
     # Calcular porcentaje por fila 
-    tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2) 
+    tabla_sm1['(%)'] = (tabla_sm1['anio'] / total_casos * 100).round(2) 
     
     # Mostrar en Streamlit  
     st.markdown("### Distribución de casos por grupo, departamento y grupo etario") 
