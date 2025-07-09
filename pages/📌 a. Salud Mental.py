@@ -174,7 +174,7 @@ with Tab1:
     tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0).reset_index()  
     
     # Renombrar columna de conteo si fue con 'anio' 
-    if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True) 
+    if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True).reset_index()
     
     # Calcular total general para el porcentaje 
     total_casos = tabla_sm1['cant'].sum()  
