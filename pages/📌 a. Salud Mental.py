@@ -174,16 +174,16 @@ with Tab1:
     aggfunc='count', fill_value=0).reset_index()
     
     # Renombrar columnas 
-    tabla_sm1.columns = ['grupo', 'cant'] 
+    #tabla_sm1.columns = ['grupo', 'departamento'] 
      
     # Calcular el total general 
-    total_casos = tabla_sm1['cant'].sum() 
+    total_casos = tabla_sm1['departamento'].sum() 
      
     # Agregar columna de porcentaje 
-    tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2) 
+    tabla_sm1['(%)'] = (tabla_sm1['departamento'] / total_casos * 100).round(2) 
     
     # Agregar fila de totales 
-    fila_total = pd.DataFrame({'grupo': ['Total'], 'cant': [total_casos], '(%)': [100.0]}) 
+    fila_total = pd.DataFrame({'grupo': ['Total'], 'departamento': [total_casos], '(%)': [100.0]}) 
     tabla_sm1 = pd.concat([tabla_sm1, fila_total], ignore_index=True) 
      
     # Mostrar la tabla resumen 
@@ -199,7 +199,7 @@ with Tab1:
     df_sm_filtrado = df_sm0[df_sm0['grupo'] == grupo_sm_sel] 
     
     # 3. Crear tabla cruzada por edad y departamento (conteo de casos) 
-    tabla_sm2 = pd.pivot_table(df_sm_filtrado, values='cant', index='nombre_cat_edad', 
+    tabla_sm2 = pd.pivot_table(df_sm_filtrado, values='departamento', index='nombre_cat_edad', 
                                columns='departamento', aggfunc='sum', fill_value=0,  
                                observed=False)
     
