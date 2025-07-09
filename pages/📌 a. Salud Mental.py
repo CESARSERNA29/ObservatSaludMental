@@ -177,7 +177,7 @@ with Tab1:
     #if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True).reset_index()
     
     # Calcular total general para el porcentaje 
-    total_casos = tabla_sm1['anio'].sum()  
+    total_casos = tabla_sm1['cant'].sum()  # ← ✅ accede a la columna ya renombrada  
     
     # Calcular porcentaje por fila 
     tabla_sm1['(%)'] = (tabla_sm1['anio'] / total_casos * 100).round(2) 
