@@ -164,65 +164,49 @@ with Tab1:
     st.markdown("##")
     
     
+    #--------------------------------------------------------------------------- 
+    # Tabla de frecuencia de muertes asociadas a grupos de enfermedades de Salud Mental 
+    #---------------------------------------------------------------------------    
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True) 
     
+    # Crear tabla de frecuencia (conteo) por grupo 
+    tabla_sm1 = pd.pivot_table(df_sm0, index='grupo', values='anio',  # solo se usa como "placeholder" para contar filas
+    aggfunc='count', fill_value=0).reset_index()
     
-    
-    
-    #---------------------------------------------------------------------------
-    # Tabla de frecuencia de muertes asocciadas a grupos de enfermedades de 
-    # Salud mental
-    #---------------------------------------------------------------------------   
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
-    #tabla_sm1 = pd.pivot_table(df_sm0, values='anio', index='grupo', aggfunc='count', fill_value=0).reset_index() 
-    # tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True)
-    # tabla_sm1.columns = ['anio', 'cant']
-    tabla_sm1 = pd.pivot_table(
-    df_sm0,
-    values='anio',
-    index='grupo',
-    aggfunc='count',
-    fill_value=0).reset_index()  # <-- paréntesis sí o sí 
-    tabla_sm1.columns = ['grupo', 'cant']  # Ahora sí debe tener 2 columnas
-    
-    # Calcular el total de casos 
-    # Calcular total general 
+    # Renombrar columnas 
+    tabla_sm1.columns = ['grupo', 'cant'] 
+     
+    # Calcular el total general 
     total_casos = tabla_sm1['cant'].sum() 
-    # Calcular porcentaje 
+     
+    # Agregar columna de porcentaje 
     tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2) 
     
     # Agregar fila de totales 
-    fila_total = pd.DataFrame({'cant': [total_casos], '(%)': [100.0]}, index=['Total']) 
+    fila_total = pd.DataFrame({'grupo': ['Total'], 'cant': [total_casos], '(%)': [100.0]}) 
+    tabla_sm1 = pd.concat([tabla_sm1, fila_total], ignore_index=True) 
+     
+    # Mostrar la tabla resumen 
+    st.dataframe(tabla_sm1) 
     
-    # Concatenar la fila total a la tabla 
-    tabla_sm1 = pd.concat([tabla_sm1, fila_total]) 
     
-    # Mostrar título con estilost.markdown("<h4 style='color:#89b5e1; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
+    #--------------------------------------------------------------------------- 
+    # 1. Crear un selector para que el usuario elija un grupo específico 
+    grupos_sm = df_sm0['grupo'].dropna().unique().tolist() 
+    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", sorted(grupos_sm)) 
     
-    #---------------------------------------------------------------------------
+    # 2. Filtrar el DataFrame según la selección del usuario 
+    df_sm_filtrado = df_sm0[df_sm0['grupo'] == grupo_sm_sel] 
     
-    # 1. Crear un selector para que el usuario elija uno o varios grupos
-    grupos_sm = df_sm0['grupo'].unique().tolist()
-    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
+    # 3. Crear tabla cruzada por edad y departamento (conteo de casos) 
+    tabla_sm2 = pd.pivot_table(df_sm_filtrado, values='cant', index='nombre_cat_edad', 
+                               columns='departamento', aggfunc='sum', fill_value=0,  
+                               observed=False)
     
-        # 2. Filtrar el DataFrame según la selección del usuario
-    df_sm_filtrado = df_sm0[df_sm0['grupo'] == grupo_sm_sel]
-    
-    # 3. Crear la tabla cruzada sumando la columna 'cant'
-    tabla_sm2 = pd.pivot_table(
-    df_sm_filtrado,
-    values='cant',
-    index='nombre_cat_edad',
-    columns='departamento',
-    aggfunc='sum',
-    fill_value=0,
-    observed=False
-    )
-    
-    #tabla_cruzada2 = tabla_cruzada2.style.set_properties(**{'text-align': 'center'})
-    
-    # 4. Mostrar la tabla en Streamlit
-    st.write("Tabla cruzada de suma de 'cant' por rango_edad y sexo")
+    # 4. Mostrar la tabla cruzada 
+    st.markdown("### Distribución de casos por grupo de edad y departamento") 
     st.dataframe(tabla_sm2)
+
     
     
     
