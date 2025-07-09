@@ -104,9 +104,9 @@ def load_data():
     #df_agregada = df.groupby(['componente','departamento','municipio',
     #                       'grupo','Enfermedad_Evento', 'sexo',
     #                       'nombre_cat_edad','anio'])['cant'].sum().reset_index()
-    return df0
-
+    return df0  
 df0 = load_data()
+
 
 
 
@@ -168,13 +168,13 @@ with Tab1:
     # Tabla de frecuencia de muertes asociadas a grupos de enfermedades de Salud Mental 
     #---------------------------------------------------------------------------    
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
-    # Crear tabla de frecuencia por grupo, departamento y grupo de edad 
-    tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0).reset_index()  
+    # Crear tabla de frecuencia por grupo, departamento y grupo de edad
     
+    
+    tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0).reset_index()  
     
     # Renombrar columna de conteo si fue con 'anio' 
     if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True) 
-    
     
     # Calcular total general para el porcentaje 
     total_casos = tabla_sm1['cant'].sum()  
@@ -185,6 +185,15 @@ with Tab1:
     # Mostrar en Streamlit  
     st.markdown("### Distribución de casos por grupo, departamento y grupo etario") 
     st.dataframe(tabla_sm1) 
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
