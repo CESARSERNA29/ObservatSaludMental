@@ -79,7 +79,7 @@ st.markdown("##")
 #-------------------------------------------------------------------------------
 @st.cache_data  # Esta linea permite acceder al df desde la memoria cache
 def load_data():
-    df0 = pd.read_excel('data/Mortalidad2.xlsx')
+    df0 = pd.read_excel('data/Tasas_Morbilidad_25MB.xlsx')
     # Convertir año a categórica
     df0['anio'] = pd.to_numeric(df0['anio'], errors='coerce')
     
@@ -167,69 +167,46 @@ with Tab1:
     #--------------------------------------------------------------------------- 
     # Tabla de frecuencia de muertes asociadas a grupos de enfermedades de Salud Mental 
     #---------------------------------------------------------------------------    
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True) 
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
+    # Crear tabla de frecuencia por grupo, departamento y grupo de edad 
+    tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0).reset_index()  
     
-    # Crear tabla de frecuencia (conteo) por grupo 
-    tabla_sm1 = pd.pivot_table(df_sm0, index='grupo', values='anio',  # solo se usa como "placeholder" para contar filas
-    aggfunc='count', fill_value=0).reset_index()
     
-    # Renombrar columnas 
-    #tabla_sm1.columns = ['grupo', 'departamento'] 
-     
-    # Calcular el total general 
-    total_casos = tabla_sm1['departamento'].sum() 
-     
-    # Agregar columna de porcentaje 
-    tabla_sm1['(%)'] = (tabla_sm1['departamento'] / total_casos * 100).round(2) 
+    # Renombrar columna de conteo si fue con 'anio' 
+    if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True) 
     
-    # Agregar fila de totales 
-    fila_total = pd.DataFrame({'grupo': ['Total'], 'departamento': [total_casos], '(%)': [100.0]}) 
-    tabla_sm1 = pd.concat([tabla_sm1, fila_total], ignore_index=True) 
-     
-    # Mostrar la tabla resumen 
+    
+    # Calcular total general para el porcentaje 
+    total_casos = tabla_sm1['cant'].sum()  
+    
+    # Calcular porcentaje por fila 
+    tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2) 
+    
+    # Mostrar en Streamlit  
+    st.markdown("### Distribución de casos por grupo, departamento y grupo etario") 
     st.dataframe(tabla_sm1) 
-    
-    
-    #--------------------------------------------------------------------------- 
-    # 1. Crear un selector para que el usuario elija un grupo específico 
-    grupos_sm = df_sm0['grupo'].dropna().unique().tolist() 
-    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", sorted(grupos_sm)) 
-    
-    # 2. Filtrar el DataFrame según la selección del usuario 
-    df_sm_filtrado = df_sm0[df_sm0['grupo'] == grupo_sm_sel] 
-    
-    # 3. Crear tabla cruzada por edad y departamento (conteo de casos) 
-    tabla_sm2 = pd.pivot_table(df_sm_filtrado, values='departamento', index='nombre_cat_edad', 
-                               columns='departamento', aggfunc='sum', fill_value=0,  
-                               observed=False)
-    
-    # 4. Mostrar la tabla cruzada 
-    st.markdown("### Distribución de casos por grupo de edad y departamento") 
-    st.dataframe(tabla_sm2)
-
     
     
     
     
     #---------------------------------------------------------------------------
-    # Diagrama de lineas año y sexo
-    P_Colores = {
-    "Azul_cl": "#39A8E0",
-    "Gris": "#9D9D9C",
-    "Verde": "#009640",
-    "Naranja": "#F28F1C",
-    "Azul_os": "#2A3180",
-    "Rojo": "#E5352B",
-    "Morado":"#662681"}
-    
-    a_min_sm=df_sm0['anio'].min()-1
+    # Diagrama de lineas año y sexo 
+    P_Colores = { "Azul_cl": "#39A8E0", "Gris": "#9D9D9C", "Verde": "#009640",  
+                 "Naranja": "#F28F1C", "Azul_os": "#2A3180","Rojo": "#E5352B", 
+                 "Morado":"#662681"}  
+    a_min_sm=df_sm0['anio'].min()-1 
     a_max_sm=df_sm0['anio'].max()+1
     
-    # 1. Crear un selector para que el usuario elija uno o varios grupos
-    deptos_sm = df_sm0['departamento'].unique().tolist()
-    depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key="sel_dpto_sm")
     
-    df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==depto_sm_sel]
+    
+    
+    # 1. Crear un selector para que el usuario elija uno o varios grupos  
+    deptos_sm = df_sm0['departamento'].unique().tolist()
+    depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key="sel_dpto_sm")   
+    
+    
+    df_sm_filtrado2 = df_sm0[df_sm0['departamento'] == depto_sm_sel]
+    df_sm_filtrado2 = df_sm0[df_sm0['departamento'] == depto_sm_sel]
     
     df_sm3 = df_sm_filtrado2.groupby(['sexo','anio'])['cant'].sum().reset_index()
     
