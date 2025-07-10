@@ -287,7 +287,7 @@ with Tab1:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos: 
     deptos_sm = df0_sm['departamento'].unique().tolist() 
-    depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm") 
+    depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad") 
     
     
     df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
@@ -405,7 +405,7 @@ with Tab2:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
     deptos_sm = df_sm['departamento'].unique().tolist()
-    depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key="sel_dpto_sm")
+    depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key = "sel_dpto_sm_mortalidad")
     
     df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==depto_sm_sel]
     
