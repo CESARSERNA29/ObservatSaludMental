@@ -327,7 +327,8 @@ with Tab1:
 
 
 
-
+# SECCIÓN DE MORTALIDAD:
+# ----------------------
 
 # Contenido de la primera pestaña
 with Tab2:
@@ -359,6 +360,12 @@ with Tab2:
     tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2)
     
     st.dataframe(tabla_sm1)
+    
+    
+    
+    st.markdown("##")   # SALTO
+    
+    
     
     #---------------------------------------------------------------------------
     
@@ -402,6 +409,11 @@ with Tab2:
     
     a_min_sm=df_sm['anio'].min()-1
     a_max_sm=df_sm['anio'].max()+1
+    
+    
+    
+    st.markdown("##")   #SALTO
+    
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
     deptos_sm = df_sm['departamento'].unique().tolist()
