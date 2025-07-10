@@ -234,7 +234,7 @@ with Tab1:
     
     grupos_sm = df0_sm['grupo'].unique().tolist() 
     #grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
-    st.markdown("### **Selecciona un grupo de enfermedad**", unsafe_allow_html=True) 
+    st.markdown("#### **Selecciona un grupo de enfermedad**", unsafe_allow_html=True) 
     grupo_sm_sel = st.selectbox("", grupos_sm)
     
     # 2. Filtrar el DataFrame según la selección del usuario 
@@ -288,9 +288,8 @@ with Tab1:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos: 
     deptos_sm = df0_sm['departamento'].unique().tolist() 
-    depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
-    st.markdown("### **Selecciona un Departamento**", unsafe_allow_html=True) 
-    depto_sm_sel = st.selectbox("", depto_sm_sel)
+    st.markdown("#### **Selecciona un Departamento**", unsafe_allow_html=True) 
+    depto_sm_sel = st.selectbox("", deptos_sm)
     
     
     df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
@@ -375,7 +374,8 @@ with Tab2:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
     grupos_sm = df_sm['grupo'].unique().tolist()
-    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
+    grupo_sm_sel = st.selectbox("#### **Selecciona un grupo de enfermedad**", unsafe_allow_html=True)
+    grupo_sm_sel = st.selectbox("", grupos_sm)
     
         # 2. Filtrar el DataFrame según la selección del usuario
     df_sm_filtrado = df_sm[df_sm['grupo'] == grupo_sm_sel]
@@ -421,7 +421,11 @@ with Tab2:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
     deptos_sm = df_sm['departamento'].unique().tolist()
-    depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key = "sel_dpto_sm_mortalidad")
+    #depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key = "sel_dpto_sm_mortalidad")
+    st.markdown("#### **Selecciona un Departamento**", unsafe_allow_html=True) 
+    depto_sm_sel = st.selectbox("", deptos_sm)
+    
+    
     
     df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==depto_sm_sel]
     
