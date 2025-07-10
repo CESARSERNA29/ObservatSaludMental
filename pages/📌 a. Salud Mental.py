@@ -183,8 +183,8 @@ with Tab1:
     # Crear tabla de frecuencia por grupo, departamento y grupo de edad
     
     
-    df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
-    df0 = df 
+    #df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
+    #df0 = df 
     
     # Convertir año a categórica 
     df0['anio'] = pd.to_numeric(df0['anio'], errors='coerce') 
