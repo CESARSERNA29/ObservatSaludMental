@@ -77,6 +77,10 @@ st.markdown("##")
 
 # Cargar y preparación de las fuentes de datos
 #-------------------------------------------------------------------------------
+# -----------------------
+# Tablas para Morbilidad:
+# -----------------------
+
 @st.cache_data  # Esta linea permite acceder al df desde la memoria cache
 def load_data():
     df0 = pd.read_excel('data/Tasas_Morbilidad_25MB.xlsx')
@@ -110,6 +114,14 @@ df0 = load_data()
 
 
 
+
+
+
+
+# -----------------------
+# Tablas para Mortalidad:
+# -----------------------
+    
 def load_data():
     df1 = pd.read_excel('data/Mortalidad2.xlsx')
     # Convertir año a categórica
@@ -165,26 +177,143 @@ with Tab1:
     
     
     #--------------------------------------------------------------------------- 
-    # Tabla de frecuencia de muertes asociadas a grupos de enfermedades de Salud Mental 
+    # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
     #---------------------------------------------------------------------------    
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
     # Crear tabla de frecuencia por grupo, departamento y grupo de edad
     
     
-    tabla_sm1 = pd.pivot_table(df_sm0, index=['grupo', 'departamento', 'nombre_cat_edad'], values='anio', aggfunc='count', fill_value=0) 
+    df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
+    df0 = df 
     
-    # Renombrar columna de conteo si fue con 'anio' 
-    #if 'cant' not in df_sm0.columns: tabla_sm1.rename(columns={'anio': 'cant'}, inplace=True).reset_index()
+    # Convertir año a categórica 
+    df0['anio'] = pd.to_numeric(df0['anio'], errors='coerce') 
     
-    # Calcular total general para el porcentaje 
-    total_casos = tabla_sm1['grupo'].sum()  # ← ✅ accede a la columna ya renombrada  
+    # Filtro para la region de la orinoquia 
+    df0=df0[df0['region']=='Orinoquía'] 
     
-    # Calcular porcentaje por fila 
-    tabla_sm1['(%)'] = (tabla_sm1['anio'] / total_casos * 100).round(2) 
     
-    # Mostrar en Streamlit  
-    st.markdown("### Distribución de casos por grupo, departamento y grupo etario") 
-    st.dataframe(tabla_sm1) 
+    # Reemplazar valores en la columna 'sexo' 
+    df0['sexo'] = df0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
+    
+    
+    # Orden ctegorias de edad 
+    orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 'Adultez Temprana', 'Adultez Media', 'Adultez Mayor'] 
+    
+    # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden 
+    df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], categories=orden_cat_edad, ordered=True) 
+    df0['grupo'] = df0['grupo'].str.strip() 
+    df0['departamento']=df0['departamento'].str.strip() 
+    df0['departamento']=pd.Categorical(df0['departamento']) 
+    
+    df0['anio'] = df0['anio'].astype(str)
+    
+    # Filtro para Salud Mental 
+    df0_sm=df0[df0['componente']=='Salud Mental']
+    
+    # Tabla Pivote: 
+    df_agregada1 = df0_sm.groupby(['grupo']).count().reset_index() 
+    df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
+    df_agregada1_1.columns = ['grupo', 'cant'] 
+    
+    # Calcular el total de casos 
+    total_casos = df_agregada1_1['cant'].sum() 
+    
+    # Agregar columna de porcentaje 
+    df_agregada1_1['(%)'] = (df_agregada1_1['cant'] / total_casos * 100).round(2) 
+    
+    st.dataframe(df_agregada1_1) 
+    
+    
+    
+    #------------------------------------------------------------------------- 
+    
+    # 1. Crear un selector para que el usuario elija uno o varios grupos 
+    
+    grupos_sm = df0_sm['grupo'].unique().tolist() 
+    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm) 
+    
+    # 2. Filtrar el DataFrame según la selección del usuario 
+    df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel] 
+    df_sm_filtrado2 = df0_sm.groupby(['anio','nombre_cat_edad', 'departamento']).count().reset_index() 
+    df_sm_filtrado2_2 = df_sm_filtrado2[['anio','nombre_cat_edad', 'departamento', 'Tot_Eventos']] 
+    df_sm_filtrado2_2.columns = ['anio', '','nombre_cat_edad', 'departamento','cant'] 
+    
+    
+    
+    # 3. Crear la tabla cruzada sumando la columna 'cant' 
+    # Tabla Cruzada: 
+    tabla_sm2 = df_sm_filtrado2_2.pivot_table(
+        values='cant', 
+        index='nombre_cat_edad', 
+        columns='departamento', 
+        aggfunc='sum', 
+        fill_value=0, 
+        observed=False)
+    
+    # tabla_cruzada2 = tabla_cruzada2.style.set_properties(**{'text-align': 'center'}) 
+    
+    
+    # 4. Mostrar la tabla en Streamlit 
+    st.write("Tabla cruzada, Total de Casos por Rangode Edad") 
+    st.dataframe(tabla_sm2) 
+    
+    
+    
+    
+    
+    #------------------------------------------------------------------------- 
+    # Diagrama de lineas año y sexo: 
+    # ----------------------------- 
+    P_Colores = {"Azul_cl": "#39A8E0", 
+                 "Gris": "#9D9D9C", 
+                 "Verde": "#009640", 
+                 "Naranja": "#F28F1C", 
+                 "Azul_os": "#2A3180", 
+                 "Rojo": "#E5352B",
+                 "Morado":"#662681"} 
+    
+    df0_sm['anio'] = pd.to_numeric(df0_sm['anio'], errors='coerce')  # convierte strings a números, NaNs si no puede 
+    a_min_sm = df0_sm['anio'].min() - 1 
+    a_max_sm = df0_sm['anio'].max()+1 
+    
+    
+    # 1. Crear un selector para que el usuario elija uno o varios grupos: 
+    deptos_sm = df0_sm['departamento'].unique().tolist() 
+    depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm") 
+    
+    
+    df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
+    df_sm_filtrado3_2 = df_sm_filtrado3[['anio','sexo', 'nombre_cat_edad', 'departamento', 'Tot_Eventos']] 
+    df_sm_filtrado3_2.columns = ['anio', 'sexo','nombre_cat_edad', 'departamento','cant'] 
+    
+    
+    
+    df_sm_filtrado3_3 = df_sm_filtrado3_2[df_sm_filtrado3_2['departamento'] == depto_sm_sel] 
+    df0_sm3 = df_sm_filtrado3_3.groupby(['sexo','anio'])['cant'].sum().reset_index() 
+    
+    
+    # Crear gráfico de líneas con Plotly Express 
+    fig_sm = px.line(df0_sm3, x='anio', y='cant', color='sexo', markers=True, 
+                     title="TENDENCIA DE EVENTOS DE MORBILIDAD",
+                     color_discrete_sequence=["#2A3180","#E5352B"]) 
+    
+    
+    # Personalizar marcadores para que tengan borde del color de la línea y fondo blanco 
+    fig_sm.update_traces( 
+        marker=dict(size=10, 
+                    color='white',          # fondo blanco 
+                    line=dict(width=2)      # borde que tomará el color de la línea
+                    ))
+    
+    # Ajustar eje x para mostrar todos los años y con rango fijo 
+    fig_sm.update_xaxes(dtick=1, range=[a_min_sm,a_max_sm], tickmode='linear') 
+    
+    fig_sm.update_xaxes(title_text="") 
+    fig_sm.update_yaxes(title_text="Número de casos") 
+    
+    st.plotly_chart(fig_sm, use_container_width=True)
+#----------------------------------------------------------------------------- 
     
     
     
