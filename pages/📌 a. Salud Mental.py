@@ -180,9 +180,8 @@ with Tab1:
     # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
     #---------------------------------------------------------------------------    
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
-    # Crear tabla de frecuencia por grupo, departamento y grupo de edad
     
-    
+    # Crear tabla de frecuencia por grupo, departamento y grupo de edad:
     #df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
     #df0 = df 
     
@@ -341,6 +340,7 @@ with Tab2:
     
 
 
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades, en Reporte de Mortalidad:</h4>", unsafe_allow_html=True)
     
     #---------------------------------------------------------------------------
     # Tabla de frecuencia de muertes asocciadas a grupos de enfermedades de 
