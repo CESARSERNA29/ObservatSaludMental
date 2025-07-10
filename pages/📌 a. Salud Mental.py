@@ -236,7 +236,7 @@ with Tab1:
     # 2. Filtrar el DataFrame según la selección del usuario 
     df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel] 
     df_sm_filtrado2 = df0_sm.groupby(['anio','nombre_cat_edad', 'departamento']).count().reset_index() 
-    df_sm_filtrado2_2 = df_sm_filtrado2[['anio','nombre_cat_edad', 'departamento', 'Tot_Eventos']] 
+    df_sm_filtrado2_2 = df_sm_filtrado2[['anio','nombre_cat_edad', 'departamento']] 
     df_sm_filtrado2_2.columns = ['anio', '','nombre_cat_edad', 'departamento','cant'] 
     
     
