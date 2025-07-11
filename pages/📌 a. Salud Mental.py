@@ -233,7 +233,9 @@ with Tab1:
     # 1. Crear un selector para que el usuario elija uno o varios grupos 
     
     grupos_sm = df0_sm['grupo'].unique().tolist() 
-    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm) 
+    # grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
+    grupo_sm_sel = st.selectbox("", grupos_sm)
     
     # 2. Filtrar el DataFrame según la selección del usuario 
     df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel] 
@@ -286,7 +288,9 @@ with Tab1:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos: 
     deptos_sm = df0_sm['departamento'].unique().tolist() 
-    depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad") 
+    #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
+    Dptos_sm_sel = st.selectbox("", grupos_sm)
     
     
     df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
@@ -295,7 +299,7 @@ with Tab1:
     
     
     
-    df_sm_filtrado3_3 = df_sm_filtrado3_2[df_sm_filtrado3_2['departamento'] == depto_sm_sel] 
+    df_sm_filtrado3_3 = df_sm_filtrado3_2[df_sm_filtrado3_2['departamento'] == Dptos_sm_sel] 
     df0_sm3 = df_sm_filtrado3_3.groupby(['sexo','anio'])['cant'].sum().reset_index() 
     
     
@@ -371,7 +375,9 @@ with Tab2:
     
     # 1. Crear un selector para que el usuario elija uno o varios grupos
     grupos_sm = df_sm['grupo'].unique().tolist()
-    grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
+    #grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
+    grupo_sm_sel = st.selectbox("", grupos_sm)
     
         # 2. Filtrar el DataFrame según la selección del usuario
     df_sm_filtrado = df_sm[df_sm['grupo'] == grupo_sm_sel]
@@ -415,11 +421,15 @@ with Tab2:
     st.markdown("##")   #SALTO
     
     
+    
+    
     # 1. Crear un selector para que el usuario elija uno o varios grupos
     deptos_sm = df_sm['departamento'].unique().tolist()
-    depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key = "sel_dpto_sm_mortalidad")
+    #depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key = "sel_dpto_sm_mortalidad")
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona un departamento</h5>", unsafe_allow_html=True) 
+    depto_sm_sel = st.selectbox("", deptos_sm)
     
-    df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==depto_sm_sel]
+    df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==Dptos_sm_sel]
     
     df_sm3 = df_sm_filtrado2.groupby(['sexo','anio'])['cant'].sum().reset_index()
     
