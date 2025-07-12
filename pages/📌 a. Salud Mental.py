@@ -328,6 +328,8 @@ with Tab1:
     
     
     # === SECCIÓN 2: GRÁFICO INTERACTIVO ===
+    
+    
     st.header("📊 Frecuencia de Morbilidad por Departamento y Categoría de Edad")
 
     # Crear columnas para los filtros
