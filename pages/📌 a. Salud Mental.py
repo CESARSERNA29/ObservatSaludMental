@@ -325,7 +325,33 @@ with Tab1:
     st.plotly_chart(fig_sm, use_container_width=True)
     #-----------------------------------------------------------------------------  
     # GRÁFICO DE BARRAS SEGÚN DISPONIBILIDAD DE 'sexo' y 'Enfermedad_Evento' 
-    # Agrupar datos
+    
+    
+    # === SECCIÓN 2: GRÁFICO INTERACTIVO ===
+    st.header("📊 Frecuencia de Morbilidad por Departamento y Categoría de Edad")
+
+    # Crear columnas para los filtros
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # Dropdown para departamento (agregando opción "Todos")
+        departamentos_options = ['Todos'] + list(df['departamento'].unique())
+        departamento_selected = st.selectbox(
+            "Selecciona departamento:",
+            options=departamentos_options,
+            index=0
+        )
+
+    with col2:
+        # Dropdown para categoría de edad (agregando opción "Todas")
+        categorias_options = ['Todas'] + list(df['nombre_cat_edad'].unique())
+        categoria_edad_selected = st.selectbox(
+            "Selecciona categoría de edad:",
+            options=categorias_options,
+            index=0
+        )
+
+    # Función para actualizar gráfico
     def crear_grafico(departamento, nombre_cat_edad):
         # Filtrar datos según las selecciones
         df_filtrado = df.copy()
@@ -403,6 +429,39 @@ with Tab1:
         
         return fig
 
+    # Crear y mostrar gráfico
+    fig = crear_grafico(departamento_selected, categoria_edad_selected)
+
+    if fig:
+        st.plotly_chart(fig, use_container_width=True)
+
+    # === SECCIÓN 3: INFORMACIÓN ADICIONAL ===
+    st.header("ℹ️ Información del Dataset")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Total de Registros", f"{len(df):,}")
+
+    with col2:
+        st.metric("Departamentos", f"{df['departamento'].nunique()}")
+
+    with col3:
+        st.metric("Categorías de Edad", f"{df['nombre_cat_edad'].nunique()}")
+
+    # Mostrar vista previa del dataset
+    with st.expander("🔎 Ver Vista Previa del Dataset"):
+        st.dataframe(df.head(), use_container_width=True)
+
+    # Información sobre las columnas
+    with st.expander("📋 Información de Columnas"):
+        st.write("**Columnas disponibles en el dataset:**")
+        for i, col in enumerate(df.columns, 1):
+            st.write(f"{i}. **{col}** - Tipo: {df[col].dtype}")
+
+    ##3
+
+    
     
     
     
