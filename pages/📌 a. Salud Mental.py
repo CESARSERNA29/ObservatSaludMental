@@ -323,13 +323,134 @@ with Tab1:
     fig_sm.update_yaxes(title_text="Número de casos") 
     
     st.plotly_chart(fig_sm, use_container_width=True)
-#----------------------------------------------------------------------------- 
+    #-----------------------------------------------------------------------------  
+    # GRÁFICO DE BARRAS SEGÚN DISPONIBILIDAD DE 'sexo' y 'Enfermedad_Evento' 
+    # Agrupar datos
+    def crear_grafico(departamento, nombre_cat_edad):
+        # Filtrar datos según las selecciones
+        df_filtrado = df.copy()
+        
+        # Aplicar filtro de departamento
+        if departamento != 'Todos':
+            df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
+        
+        # Aplicar filtro de categoría de edad
+        if nombre_cat_edad != 'Todas':
+            df_filtrado = df_filtrado[df_filtrado['nombre_cat_edad'] == nombre_cat_edad]
+        
+        if df_filtrado.empty:
+            st.warning(f"No hay datos para {departamento} - {nombre_cat_edad}")
+            return None
+        
+        # Determinar título del gráfico
+        if departamento == 'Todos' and nombre_cat_edad == 'Todas':
+            titulo = 'Casos de Morbilidad - Todos los Departamentos y Categorías de Edad'
+        elif departamento == 'Todos':
+            titulo = f'Casos de Morbilidad - Todos los Departamentos - {nombre_cat_edad}'
+        elif nombre_cat_edad == 'Todas':
+            titulo = f'Casos de Morbilidad en {departamento} - Todas las Categorías de Edad'
+        else:
+            titulo = f'Casos de Morbilidad en {departamento} - {nombre_cat_edad}'
+        
+        # Agrupar datos
+        if 'sexo' in df_filtrado.columns:
+            # Si tienes columna de casos específica, úsala; si no, cuenta las filas
+            if 'Enfermedad_Evento' in df_filtrado.columns:
+                df_agg = df_filtrado.groupby(['Periodo', 'sexo'])['Enfermedad_Evento'].count().reset_index()
+                y_column = 'Enfermedad_Evento'
+            else:
+                # Contar filas por grupo
+                df_agg = df_filtrado.groupby(['Periodo', 'sexo']).size().reset_index(name='Casos')
+                y_column = 'Casos'
+            df_agg = df_agg.sort_values(by='Periodo')
+            
+            # Crear gráfico con sexo
+            fig = px.bar(
+                df_agg, 
+                x='Periodo', 
+                y=y_column, 
+                color='sexo',
+                barmode='group',
+                labels={y_column: 'Número de Casos', 'Periodo': 'Año'},
+                color_discrete_map={'Masculino': '#2A3180', 'Femenino': '#39A8E0'},
+                title=titulo
+            )
+            
+        else:
+            # Si no hay columna sexo, hacer gráfico simple
+            if 'Enfermedad_Evento' in df_filtrado.columns:
+                df_agg = df_filtrado.groupby('Periodo')['Enfermedad_Evento'].count().reset_index()
+                y_column = 'Enfermedad_Evento'
+            else:
+                df_agg = df_filtrado.groupby('Periodo').size().reset_index(name='Casos')
+                y_column = 'Casos'
+            
+            fig = px.bar(
+                df_agg,
+                x='Periodo',
+                y=y_column,
+                title=titulo,
+                color_discrete_sequence=['#2A3180'],
+                labels={y_column: 'Número de Casos', 'Periodo': 'Año'}
+            )
+        
+        fig.update_layout(
+            title_x=0.5,
+            xaxis_tickangle=-45,
+            height=500,
+            margin=dict(l=60, r=30, t=60, b=80)
+        )
+        
+        return fig
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+##3
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ***********************
 # SECCIÓN DE MORTALIDAD:
 # ----------------------
 
