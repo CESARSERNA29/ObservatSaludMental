@@ -20,7 +20,8 @@ with st.sidebar:
         default_index=0
     )
 
-# ===============================
+# ======================================
+# Nuevo comentario
 # 🏠 Página de inicio / presentación
 if selected == "Inicio":
     st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>📊 Proyecto de Morbilidad en Colombia</h1>", unsafe_allow_html=True)
