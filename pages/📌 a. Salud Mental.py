@@ -50,9 +50,6 @@ st.markdown("""
 
 
 
-
-
-st.markdown("##")
 st.markdown("##")
 st.markdown("##")
 
@@ -181,8 +178,8 @@ Tab1, Tab2 = st.tabs(["Morbilidad", "Mortalidad"])
 with Tab1:
     st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
     st.write("La morbilidad es la frecuencia o proporción de personas que presentan una enfermedad o condición específica dentro de una población determinada. Desde un enfoque estadístico, el análisis de la morbilidad permite identificar patrones, tendencias y distribuciones geográficas o demográficas de las enfermedades, lo cual es clave para la planificación en salud pública. Mediante indicadores como el número de casos absolutos, la tasa de morbilidad (por cada 10.000 habitantes) o la prevalencia y la incidencia, se pueden evaluar los grupos más afectados, detectar zonas de mayor vulnerabilidad y priorizar recursos. Estas métricas también permiten comparar el comportamiento de enfermedades a lo largo del tiempo o entre regiones, facilitando la toma de decisiones basadas en evidencia.  El análisis estadístico de la morbilidad es, por tanto, una herramienta fundamental para monitorear el estado de salud de una población, y diseñar intervenciones efectivas.") 
-    df_sm0=df0[df0['componente']=='SM']
-    
+    df_sm0 = df0[df0['componente']=='SM']
+    df0 = df_sm0
     
     st.markdown("##")
     
@@ -208,10 +205,11 @@ with Tab1:
     
     
     # Orden ctegorias de edad 
-    orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 'Adultez Temprana', 'Adultez Media', 'Adultez Mayor'] 
+    #orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 'Adultez Temprana', 'Adultez Media', 'Adultez Mayor'] 
     
     # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden 
-    df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], categories=orden_cat_edad, ordered=True) 
+    #df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], categories=orden_cat_edad, ordered=True)
+    df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'])
     df0['grupo'] = df0['grupo'].str.strip() 
     df0['departamento']=df0['departamento'].str.strip() 
     df0['departamento']=pd.Categorical(df0['departamento']) 
@@ -271,7 +269,7 @@ with Tab1:
     
     
     # 4. Mostrar la tabla en Streamlit 
-    st.write("Tabla cruzada, Total de Casos por Rangode Edad") 
+    st.write("Tabla cruzada, Total de Casos por Rango de Edad") 
     st.dataframe(tabla_sm2) 
     
     
