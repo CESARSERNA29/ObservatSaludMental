@@ -114,6 +114,16 @@ df0 = load_data()
 
 
 
+# ******
+
+
+
+
+
+
+
+
+
 
 
 
@@ -326,7 +336,7 @@ with Tab1:
     st.plotly_chart(fig_sm, use_container_width=True)
     #-----------------------------------------------------------------------------
     
-    
+    # **********************************************************************************
     # Todos los gráficos se personalizan usando CSS , no Streamlit. 
     theme_plotly = None 
     
@@ -341,8 +351,10 @@ with Tab1:
     
     # cargar archivo Excel | comente esta línea cuando obtenga datos de MySQL:
     
-    # df = pd.read_excel("C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE/Tasas_Morbilidad.xlsx", sheet_name='Hoja1')
-    df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
+    # df = pd.read_excel("C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE/Tasas_Morbilidad.xlsx", sheet_name='Hoja1')    
+    # df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
+    # COMO ESTA BASE YA ESTÁ DEFINIDA DESDE EL INICIO COMO df0, NO LA DEBO LLAMAR DE NUEVO, SOLO LA ASIGNO.
+    df = df0
     
     # Convirtiendo la columna Anio a Categórica:
         # Opción 2: Convertir a categórica (más eficiente)
