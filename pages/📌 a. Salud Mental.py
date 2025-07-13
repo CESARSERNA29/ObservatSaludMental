@@ -299,7 +299,7 @@ with Tab1:
     deptos_sm = df0_sm['departamento'].unique().tolist() 
     #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
     st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
-    Dptos_sm_sel = st.selectbox("", deptos_sm)
+    Dptos_sm_sel = st.selectbox("Selecciona Un Departamento", deptos_sm)
     
     
     df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
