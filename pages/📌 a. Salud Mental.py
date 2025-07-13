@@ -193,6 +193,91 @@ with Tab1:
     #df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
     #df0 = df 
     
+    # -----------
+    # =============================================
+    
+    # 📍 📎 🗺️ 🎯 🔗 ⚓ 🏠 🏢 🏭 🏬
+    # 🏷️ 🔖 📋 📝 📄 📊 📈 📉 🗂️ 📁
+    # 🔧 🔨 ⚙️ 🛠️ ⚡ 🔧 🗝️ 🔑 🎛️ ⚖️
+    #  ⚠️ ❗ ❓ ✅ ❌ 🟢 🔴 🟡 🟠 🔵
+    # 👆 👇 👈 👉 ↗️ ↘️ ↙️ ↖️ ⬆️ ⬇️ ⬅️ ➡️
+    # 💡 🔍 🎲 🎯 🎪 🎨 🎭 🎪 🎊 🎉
+    # 📊 📈 📉 💹 📋 🗃️ 🗄️ 💾 💿 📀
+    # 🏥 ⚕️ 💊 🩺 🧬 🦠 💉 🧪 🔬 📱
+    
+    # =============================================
+    
+    
+    
+    with st.expander("👉 Mostrar Filtros", expanded=False):
+        Departamento = st.multiselect(
+            "Selecciona Departamento",
+            options = df_sm0["departamento"].unique(),
+            default = df_sm0["departamento"].unique(),
+        )
+    
+        Municipio = st.multiselect(
+            "Selecciona Municipio",
+            options = df_sm0["municipio"].unique(),
+            default = df_sm0["municipio"].unique(),
+        )
+    
+        Grupo = st.multiselect(
+            "Selecciona el Grupo de Enfermedad",
+            options = df_sm0["grupo"].unique(),
+            default = df_sm0["grupo"].unique(),
+        )
+    
+    
+    
+    
+    
+    
+    
+    
+    df_selection = df_sm0.query(
+        "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
+    )
+    
+    
+    
+    # Esta función realiza análisis descriptivos básicos como media, moda, suma, etc.
+    def Home():
+        with st.expander("Ver el Conjunto de Datos en Excel"):
+            showData=st.multiselect('Filter: ',df_selection.columns,default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", "componente", "capitulo", "grupo", "Enfermedad_Evento", "pob10", "tasa_morb", "Tot_Eventos"])
+            st.dataframe(df_selection[showData],use_container_width=True)
+        # calcular los análisis:
+        total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+        investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+        investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+        investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
+    
+    
+        total1,total2,total3,total4,total5=st.columns(5,gap='small')
+        with total1:
+            st.info('Tot. Eventos',icon="🎯")
+            st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+        with total2:
+            st.info('Tot. Dptos.',icon="🎯")
+            st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+    
+        with total3:
+            st.info('Tot. Municip.',icon="🎯")
+            st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+    
+        with total4:
+            st.info('Tot. Grupo',icon="🎯")
+            st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
+            
+    
+        #variable distribution Histogram
+        #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
+        # df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
+        # st.pyplot()
+    # -----------
+    
+    
+    
     # Convertir año a categórica 
     df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
     
@@ -352,7 +437,7 @@ with Tab1:
     # df = pd.read_excel("C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE/Tasas_Morbilidad.xlsx", sheet_name='Hoja1')    
     # df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
     # COMO ESTA BASE YA ESTÁ DEFINIDA DESDE EL INICIO COMO df0, NO LA DEBO LLAMAR DE NUEVO, SOLO LA ASIGNO.
-    df = df0
+    df = df0_sm
     
     # Convirtiendo la columna Anio a Categórica:
         # Opción 2: Convertir a categórica (más eficiente)
@@ -388,86 +473,7 @@ with Tab1:
             return "0"
     
     
-    # =============================================
     
-    # 📍 📎 🗺️ 🎯 🔗 ⚓ 🏠 🏢 🏭 🏬
-    # 🏷️ 🔖 📋 📝 📄 📊 📈 📉 🗂️ 📁
-    # 🔧 🔨 ⚙️ 🛠️ ⚡ 🔧 🗝️ 🔑 🎛️ ⚖️
-    #  ⚠️ ❗ ❓ ✅ ❌ 🟢 🔴 🟡 🟠 🔵
-    # 👆 👇 👈 👉 ↗️ ↘️ ↙️ ↖️ ⬆️ ⬇️ ⬅️ ➡️
-    # 💡 🔍 🎲 🎯 🎪 🎨 🎭 🎪 🎊 🎉
-    # 📊 📈 📉 💹 📋 🗃️ 🗄️ 💾 💿 📀
-    # 🏥 ⚕️ 💊 🩺 🧬 🦠 💉 🧪 🔬 📱
-    
-    # =============================================
-    
-    
-    
-    with st.expander("👉 Mostrar Filtros", expanded=False):
-        Departamento = st.multiselect(
-            "Selecciona Departamento",
-            options=df["departamento"].unique(),
-            default=df["departamento"].unique(),
-        )
-    
-        Municipio = st.multiselect(
-            "Selecciona Municipio",
-            options=df["municipio"].unique(),
-            default=df["municipio"].unique(),
-        )
-    
-        Grupo = st.multiselect(
-            "Selecciona el Grupo de Enfermedad",
-            options=df["grupo"].unique(),
-            default=df["grupo"].unique(),
-        )
-    
-    
-    
-    
-    
-    
-    
-    
-    df_selection=df.query(
-        "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
-    )
-    
-    
-    
-    # Esta función realiza análisis descriptivos básicos como media, moda, suma, etc.
-    def Home():
-        with st.expander("Ver el Conjunto de Datos en Excel"):
-            showData=st.multiselect('Filter: ',df_selection.columns,default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", "componente", "capitulo", "grupo", "Enfermedad_Evento", "pob10", "tasa_morb", "Tot_Eventos"])
-            st.dataframe(df_selection[showData],use_container_width=True)
-        # calcular los análisis:
-        total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
-        investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
-        investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
-        investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
-    
-    
-        total1,total2,total3,total4,total5=st.columns(5,gap='small')
-        with total1:
-            st.info('Tot. Eventos',icon="🎯")
-            st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-        with total2:
-            st.info('Tot. Dptos.',icon="🎯")
-            st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
-    
-        with total3:
-            st.info('Tot. Municip.',icon="🎯")
-            st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
-    
-        with total4:
-            st.info('Tot. Grupo',icon="🎯")
-            st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
-            
-    
-        #variable distribution Histogram
-        with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
-         df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
-         st.pyplot()
     
     #graphs
     def graphs():
