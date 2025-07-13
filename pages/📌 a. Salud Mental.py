@@ -217,7 +217,7 @@ with Tab1:
     df_sm0['anio'] = df_sm0['anio'].astype(str)   # esto va en contra de la septima línea de código hacia arriba
     
     # Filtro para Salud Mental 
-    df0_sm=df0[df_sm0['componente']=='Salud Mental']
+    df0_sm = df_sm0[df_sm0['componente']=='Salud Mental']
     
     # Tabla Pivote: 
     df_agregada1 = df0_sm.groupby(['grupo']).count().reset_index() 
