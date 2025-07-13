@@ -164,7 +164,7 @@ df1 = load_data()
 #-------------------------------------------------------------------------------
 
 # Barra lateral de opciones
-st.sidebar.image("data/logo1.png")
+#st.sidebar.image("data/logo1.png")
 #-------------------------------------------------------------------------------
 
 
@@ -569,7 +569,7 @@ with Tab1:
     
     sideBar()
     #st.sidebar.image("data/Logo_UNILLANOS.png",caption="")      # LOGO
-    st.sidebar.image("Logo_UNILLANOS.png",caption="")            # LOGO
+    #st.sidebar.image("Logo_UNILLANOS.png",caption="")            # LOGO
     
     
     
@@ -654,7 +654,7 @@ with Tab1:
     df = load_data()
     
     # Sidebar con logo
-    st.sidebar.image("data/logo1.png")
+    #st.sidebar.image("data/logo1.png")
     
     # Título principal
     st.title("📊 Análisis Comparativo de Morbilidad")
