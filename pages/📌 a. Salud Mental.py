@@ -95,11 +95,11 @@ def load_data():
     df0['sexo'] = df0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
     
     # Orden ctegorias de edad
-    orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 
-                      'Adultez Temprana', 'Adultez Media', 'Adultez Mayor']
+    #orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 
+    #                  'Adultez Temprana', 'Adultez Media', 'Adultez Mayor']
     # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden
-    df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], 
-                               categories=orden_cat_edad, ordered=True)
+    #df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], 
+    #                           categories=orden_cat_edad, ordered=True)
     df0['grupo'] = df0['grupo'].str.strip()  
     df0['departamento']=df0['departamento'].str.strip()
     df0['departamento']=pd.Categorical(df0['departamento'])
