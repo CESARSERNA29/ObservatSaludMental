@@ -181,17 +181,7 @@ with Tab1:
     # Filtro para Salud Mental 
     df_sm0 = df0[df0['componente']=='Salud Mental']
     
-    st.markdown("##")
-    
-    
-    #--------------------------------------------------------------------------- 
-    # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
-    #---------------------------------------------------------------------------    
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
-    
-    # Crear tabla de frecuencia por grupo, departamento y grupo de edad:
-    #df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
-    #df0 = df 
+   
     
     # -----------
     # =============================================
@@ -228,18 +218,11 @@ with Tab1:
             default = df_sm0["grupo"].unique(),
         )
     
-    
-    
-    
-    
-    
-    
+    # -----------
     
     df_selection = df_sm0.query(
         "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
     )
-    
-    
     
     # Esta función realiza análisis descriptivos básicos como media, moda, suma, etc.
     def Home():
@@ -274,7 +257,25 @@ with Tab1:
         #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
         # df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
         # st.pyplot()
-    # -----------
+    
+    
+    # -----------------------------------------------------
+    
+        st.markdown("##")
+        
+        
+        #--------------------------------------------------------------------------- 
+        # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
+        #---------------------------------------------------------------------------    
+        st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
+        
+        # Crear tabla de frecuencia por grupo, departamento y grupo de edad:
+        #df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
+        #df0 = df 
+        
+    
+    
+    
     
     
     
