@@ -316,23 +316,26 @@ with Tab1:
     
     # 1. Crear un selector para que el usuario elija uno grupo de enfermedades 
     
-    grupos_sm = df0_sm['grupo'].unique().tolist() 
-    # grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
+    grupos_sm = df0_sm['grupo'].unique().tolist()
     st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
     grupo_sm_sel = st.selectbox("", grupos_sm)
     
     # 2. Filtrar el DataFrame según la selección del usuario 
-    df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel] 
-    df_sm_filtrado2 = df0_sm.groupby(['anio','nombre_cat_edad', 'departamento']).count().reset_index()
-    df_sm_filtrado2 = df0_sm.groupby(['anio','nombre_cat_edad', 'departamento'])['anio'].count().reset_index(name='cant')
-    df_sm_filtrado2_2 = df_sm_filtrado2
-    df_sm_filtrado2_2.columns = ['anio','nombre_cat_edad', 'departamento','cant'] 
+    df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel]
+    
+    # 3. Agrupar los datos ya filtrados
+    #df_sm_filtrado2 = df_sm_filtrado.groupby(['anio','nombre_cat_edad', 'departamento']).count().reset_index()
+    df_sm_filtrado2 = df_sm_filtrado.groupby(['anio','nombre_cat_edad', 'departamento'])['anio'].count().reset_index(name='cant')
+    #df_sm_filtrado2_2 = df_sm_filtrado2
+    #df_sm_filtrado2_2.columns = ['anio','nombre_cat_edad', 'departamento','cant'] 
     
     
     
-    # 3. Crear la tabla cruzada sumando la columna 'cant' 
+    
+    
+    # 4. Crear la tabla cruzada sumando la columna 'cant' 
     # Tabla Cruzada: 
-    tabla_sm2 = df_sm_filtrado2_2.pivot_table(
+    tabla_sm2 = df_sm_filtrado2.pivot_table(
         values='cant', 
         index='nombre_cat_edad', 
         columns='departamento', 
@@ -340,10 +343,8 @@ with Tab1:
         fill_value=0, 
         observed=False)
     
-    # tabla_cruzada2 = tabla_cruzada2.style.set_properties(**{'text-align': 'center'}) 
     
-    
-    # 4. Mostrar la tabla en Streamlit 
+    # 5. Mostrar la tabla en Streamlit 
     st.write("Tabla cruzada, Total de Casos por Rango de Edad") 
     st.dataframe(tabla_sm2) 
     
