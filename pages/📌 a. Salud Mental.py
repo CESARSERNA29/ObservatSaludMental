@@ -253,17 +253,26 @@ with Tab1:
     # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
     #---------------------------------------------------------------------------
     # Mostrar tabla expandible con el conjunto de datos
+    from streamlit_tags import st_tags
     def Home1(): 
-        with st.expander("Ver el Conjunto de Datos en Excel"): 
-            showData = st.multiselect(
-                'Filter:', 
-                df_selection.columns,
-                default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
-                         "componente", "capitulo", "grupo", "Enfermedad_Evento", 
-                         "pob10", "tasa_morb", "Tot_Eventos"], 
-                key='multiselect_showData'
-                )
+        with st.expander("📊 Ver el Conjunto de Datos en Excel", expanded=True): 
+            st.markdown("**Selecciona las columnas que deseas visualizar:**") 
+            
+            
+            showData = st_tags(
+            label='📁 Columnas:', 
+            text='Presiona Enter para seleccionar o quitar',
+            value=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
+                   "componente", "capitulo", "grupo", "Enfermedad_Evento", 
+                   "pob10", "tasa_morb", "Tot_Eventos"],
+            suggestions=list(df_selection.columns),
+            maxtags=len(df_selection.columns),
+            key='tags_column_selector'
+        )
+
         st.dataframe(df_selection[showData], use_container_width=True)
+    
+    
     
     # Llamar la función antes del resumen tabular
     Home1()
