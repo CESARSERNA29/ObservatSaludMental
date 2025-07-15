@@ -242,15 +242,20 @@ with Tab1:
 
     with total4:
         st.info('Tot. Grupo',icon="🎯")
-        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
-        
-        #variable distribution Histogram
-        #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
-        # df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
-        # st.pyplot()
+        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}") 
     
     
-    # -----------------------------------------------------
+    
+    def Home(): 
+        with st.expander("Ver el Conjunto de Datos en Excel"): 
+            showData=st.multiselect('Filter: ',df_selection.columns,default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", "componente", "capitulo", "grupo", "Enfermedad_Evento", "pob10", "tasa_morb", "Tot_Eventos"])
+        st.dataframe(df_selection[showData],use_container_width=True)
+    
+    
+    
+
+
+# -----------------------------------------------------
     
     st.markdown("##")
         
