@@ -254,7 +254,7 @@ with Tab1:
     #---------------------------------------------------------------------------
     # Mostrar tabla expandible con el conjunto de datos
     def Home1(): 
-        with st.expander("Ver el Conjunto de Datos en Excel"): 
+        with st.expander("<h5 style='font-weight:bold;'>Ver el Conjunto de Datos en Excel</h5>", unsafe_allow_html=True): 
             showData = st.multiselect(
                 'Filter:', 
                 df_selection.columns,
@@ -264,6 +264,14 @@ with Tab1:
                 key='multiselect_showData'
                 )
         st.dataframe(df_selection[showData], use_container_width=True)
+    # Hasta aqui se muestra el excel con la base original
+    # ---------------------------------------------------------------------
+    
+     
+    
+    
+    st.markdown("##")
+        
     
     # Llamar la función antes del resumen tabular
     Home1()
