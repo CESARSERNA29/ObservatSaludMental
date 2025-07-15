@@ -260,9 +260,10 @@ with Tab1:
                 df_selection.columns,
                 default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
                          "componente", "capitulo", "grupo", "Enfermedad_Evento", 
-                         "pob10", "tasa_morb", "Tot_Eventos"]
-            )
-            st.dataframe(df_selection[showData], use_container_width=True)
+                         "pob10", "tasa_morb", "Tot_Eventos"], 
+                key='multiselect_showData'
+                )
+        st.dataframe(df_selection[showData], use_container_width=True)
     
     # Llamar la función antes del resumen tabular
     Home1()
@@ -273,7 +274,7 @@ with Tab1:
     
     
     
-    
+        
     # Convertir año a categórica 
     df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
     
