@@ -268,6 +268,10 @@ with Tab1:
         st.dataframe(df_selection[showData], use_container_width=True)
     # Hasta aqui se muestra el excel con la base original
     # ---------------------------------------------------------------------
+
+
+    st.markdown("##")
+    
     
     st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
     
