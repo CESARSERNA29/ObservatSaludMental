@@ -268,13 +268,13 @@ with Tab1:
     # Llamar la función antes del resumen tabular
     Home1()
     
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
-        
-        
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True) 
     
     
     
-        
+    
+    
+    
     # Convertir año a categórica 
     df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
     
