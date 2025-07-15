@@ -183,6 +183,18 @@ with Tab1:
     # Filtro para Salud Mental 
     df_sm0 = df0[df0['componente']=='Salud Mental']  
     
+    # Esta función realiza análisis descriptivos básicos como media, moda, suma, etc.
+    df_selection = df_sm0.query("departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo")
+    def Home(): 
+        with st.expander("Ver el Conjunto de Datos en Excel"): 
+            showData=st.multiselect('Filter: ',df_selection.columns,
+                                    default=["anio", "sexo", "nombre_cat_edad", 
+                                             "departamento", "municipio", "componente", 
+                                             "capitulo", "grupo", "Enfermedad_Evento", 
+                                             "pob10", "tasa_morb", "Tot_Eventos"]) 
+        st.dataframe(df_selection[showData],use_container_width=True)
+    
+    
     
     
     
@@ -209,18 +221,10 @@ with Tab1:
     
     # ----------- 
     
-    df_selection = df_sm0.query("departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo")
     
-    # Esta función realiza análisis descriptivos básicos como media, moda, suma, etc. 
+     
     
-    def Home(): 
-        with st.expander("Ver el Conjunto de Datos en Excel"): 
-            showData=st.multiselect('Filter: ',df_selection.columns,
-                                    default=["anio", "sexo", "nombre_cat_edad", 
-                                             "departamento", "municipio", "componente", 
-                                             "capitulo", "grupo", "Enfermedad_Evento", 
-                                             "pob10", "tasa_morb", "Tot_Eventos"]) 
-        st.dataframe(df_selection[showData],use_container_width=True) 
+     
     
     
     # calcular los análisis:
