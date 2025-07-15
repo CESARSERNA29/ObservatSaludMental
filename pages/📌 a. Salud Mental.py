@@ -245,10 +245,7 @@ with Tab1:
     
     
     # -----------------------------------------------------
-    
-    st.markdown("##")
-    
-    
+   
     
     #--------------------------------------------------------------------------- 
     # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
@@ -270,12 +267,8 @@ with Tab1:
     # ---------------------------------------------------------------------
 
 
+    
     st.markdown("##")
-    
-    
-    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
-    
-    
     st.markdown("##")
         
     
@@ -283,11 +276,6 @@ with Tab1:
     Home1()
     
     st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True) 
-    
-    
-    
-    
-    
     
     # Convertir año a categórica 
     df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
@@ -335,20 +323,31 @@ with Tab1:
     
     #------------------------------------------------------------------------- 
     
-    # 1. Crear un selector para que el usuario elija uno grupo de enfermedades 
+    # 1. Crear los selectores
+
+# Filtro de grupo
+    grupos_sm = df0_sm['grupo'].dropna().unique().tolist()
+    grupos_sm.sort()
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedades</h5>", unsafe_allow_html=True)
+    grupo_sm_sel = st.selectbox("Grupo de enfermedad", grupos_sm)
     
-    grupos_sm = df0_sm['grupo'].unique().tolist()
-    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
-    grupo_sm_sel = st.selectbox("", grupos_sm)
+    # Filtro de departamento con opción 'Todos'
+    departamentos = sorted(df0_sm['departamento'].dropna().unique().tolist())
+    departamentos_opciones = ['Todos'] + departamentos
+    departamento_sel = st.selectbox("Departamento", departamentos_opciones)
     
-    # 2. Filtrar el DataFrame según la selección del usuario 
+    # 2. Filtrar el DataFrame según la selección del usuario
+    
+    # Filtrar por grupo
     df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel]
     
-    # 3. Agrupar los datos ya filtrados
-    #df_sm_filtrado2 = df_sm_filtrado.groupby(['anio','nombre_cat_edad', 'departamento']).count().reset_index()
+    # Filtrar por departamento solo si no es 'Todos'
+    if departamento_sel != 'Todos':
+        df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['departamento'] == departamento_sel]
+    
+    # 3. Agrupar los datos filtrados
     df_sm_filtrado2 = df_sm_filtrado.groupby(['anio','nombre_cat_edad', 'departamento'])['anio'].count().reset_index(name='cant')
-    #df_sm_filtrado2_2 = df_sm_filtrado2
-    #df_sm_filtrado2_2.columns = ['anio','nombre_cat_edad', 'departamento','cant'] 
+
     
     
     
