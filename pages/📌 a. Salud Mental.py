@@ -247,14 +247,16 @@ with Tab1:
     # -----------------------------------------------------
     
     st.markdown("##")
-        
-
+    
+    
+    
     #--------------------------------------------------------------------------- 
     # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
     #---------------------------------------------------------------------------
     # Mostrar tabla expandible con el conjunto de datos
+    
     def Home1(): 
-        with st.expander("<h5 style='font-weight:bold;'>Ver el Conjunto de Datos en Excel</h5>", unsafe_allow_html=True): 
+        with st.expander("Ver el Conjunto de Datos en Excel"): 
             showData = st.multiselect(
                 'Filter:', 
                 df_selection.columns,
@@ -267,7 +269,7 @@ with Tab1:
     # Hasta aqui se muestra el excel con la base original
     # ---------------------------------------------------------------------
     
-     
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
     
     
     st.markdown("##")
