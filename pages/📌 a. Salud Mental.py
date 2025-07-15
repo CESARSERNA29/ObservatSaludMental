@@ -696,7 +696,8 @@ with Tab1:
     showData = st.multiselect(
         "### FILTRO - Selecciona las columnas a mostrar:",
         summary_table.columns.tolist(),
-        default=summary_table.columns.tolist()
+        default=summary_table.columns.tolist(),
+    key='multiselect_showData_Tasas_Morbilidad'
     )
     
     if showData:
