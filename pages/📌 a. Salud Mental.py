@@ -220,26 +220,29 @@ with Tab1:
     def Home(): 
         with st.expander("Ver el Conjunto de Datos en Excel"): 
             showData=st.multiselect('Filter: ',df_selection.columns,default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", "componente", "capitulo", "grupo", "Enfermedad_Evento", "pob10", "tasa_morb", "Tot_Eventos"])
-            st.dataframe(df_selection[showData],use_container_width=True)
-        # calcular los análisis:
-        total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
-        investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
-        investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
-        investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
-        total1,total2,total3,total4,total5=st.columns(5,gap='small')
-        
+        st.dataframe(df_selection[showData],use_container_width=True)
+    # calcular los análisis:
+    total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+    investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+    investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+    investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
+
+
+    total1,total2,total3,total4,total5=st.columns(5,gap='small')
     with total1:
-        st.info('Tot. Eventos',icon="🎯") 
+        st.info('Tot. Eventos',icon="🎯")
         st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-    with total2: 
-        st.info('Tot. Dptos.',icon="🎯") 
-        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}") 
-    with total3: 
-        st.info('Tot. Municip.',icon="🎯") 
-        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}") 
-    with total4: 
-        st.info('Tot. Grupo',icon="🎯") 
-        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}") 
+    with total2:
+        st.info('Tot. Dptos.',icon="🎯")
+        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+
+    with total3:
+        st.info('Tot. Municip.',icon="🎯")
+        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+
+    with total4:
+        st.info('Tot. Grupo',icon="🎯")
+        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
         
         #variable distribution Histogram
         #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
