@@ -213,11 +213,7 @@ with Tab1:
         "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
     )
     
-    # Esta función realiza análisis descriptivos básicos como media, moda, suma, etc.
-    def Home1(): 
-        with st.expander("Ver el Conjunto de Datos en Excel"): 
-            showData=st.multiselect('Filter: ',df_selection.columns,default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", "componente", "capitulo", "grupo", "Enfermedad_Evento", "pob10", "tasa_morb", "Tot_Eventos"])
-        st.dataframe(df_selection[showData],use_container_width=True)
+    
     # calcular los análisis:
     total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
     investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
@@ -252,22 +248,32 @@ with Tab1:
     
     st.markdown("##")
         
-        
+
     #--------------------------------------------------------------------------- 
     # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
-    #---------------------------------------------------------------------------    
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)  
+    #---------------------------------------------------------------------------
+    # Mostrar tabla expandible con el conjunto de datos
+    def Home1(): 
+        with st.expander("Ver el Conjunto de Datos en Excel"): 
+            showData = st.multiselect(
+                'Filter:', 
+                df_selection.columns,
+                default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
+                         "componente", "capitulo", "grupo", "Enfermedad_Evento", 
+                         "pob10", "tasa_morb", "Tot_Eventos"]
+            )
+            st.dataframe(df_selection[showData], use_container_width=True)
+    
+    # Llamar la función antes del resumen tabular
+    Home1()
+    
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True)
         
-    # Crear tabla de frecuencia por grupo, departamento y grupo de edad:
-    #df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name='Hoja1') 
-    #df0 = df 
+        
     
     
     
-    
-    
-    
-    
+        
     # Convertir año a categórica 
     df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
     
