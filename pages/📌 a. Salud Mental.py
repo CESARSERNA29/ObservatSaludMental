@@ -260,7 +260,7 @@ with Tab1:
                 default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
                          "componente", "capitulo", "grupo", "Enfermedad_Evento", 
                          "pob10", "tasa_morb", "Tot_Eventos"], 
-                key='multiselect_showData'
+                key='multiselect_showData_TablaFrec'
                 )
         st.dataframe(df_selection[showData], use_container_width=True)
     # Hasta aqui se muestra el excel con la base original
@@ -697,7 +697,7 @@ with Tab1:
         "### FILTRO - Selecciona las columnas a mostrar:",
         summary_table.columns.tolist(),
         default=summary_table.columns.tolist(),
-    key='multiselect_showData_Tasas_Morbilidad'
+    key='multiselect_showData_Tasas_Morbilidad1'
     )
     
     if showData:
