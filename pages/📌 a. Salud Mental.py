@@ -323,30 +323,29 @@ with Tab1:
     
     #------------------------------------------------------------------------- 
     
-    # 1. Crear los selectores
-
-# Filtro de grupo
-    grupos_sm = df0_sm['grupo'].dropna().unique().tolist()
-    grupos_sm.sort()
+    # 1. Crear los selectores para grupo de enfermedades y sexo
+    
+    grupos_sm = df0_sm['grupo'].unique().tolist()
+    sexos = ['Todos'] + df0_sm['sexo'].dropna().unique().tolist()
+    
     st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedades</h5>", unsafe_allow_html=True)
-    grupo_sm_sel = st.selectbox("Grupo de enfermedad", grupos_sm)
+    grupo_sm_sel = st.selectbox("Grupo", grupos_sm)
     
-    # Filtro de departamento con opción 'Todos'
-    departamentos = sorted(df0_sm['departamento'].dropna().unique().tolist())
-    departamentos_opciones = ['Todos'] + departamentos
-    departamento_sel = st.selectbox("Departamento", departamentos_opciones)
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona el sexo</h5>", unsafe_allow_html=True)
+    sexo_sel = st.selectbox("Sexo", sexos)
     
-    # 2. Filtrar el DataFrame según la selección del usuario
+    # 2. Filtrar el DataFrame según las selecciones
     
-    # Filtrar por grupo
     df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel]
     
-    # Filtrar por departamento solo si no es 'Todos'
-    if departamento_sel != 'Todos':
-        df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['departamento'] == departamento_sel]
+    if sexo_sel != 'Todos':
+        df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['sexo'] == sexo_sel]
     
-    # 3. Agrupar los datos filtrados
-    df_sm_filtrado2 = df_sm_filtrado.groupby(['anio','nombre_cat_edad', 'departamento'])['anio'].count().reset_index(name='cant')
+    # 3. Agrupar los datos ya filtrados
+    
+    df_sm_filtrado2 = df_sm_filtrado.groupby(
+        ['anio', 'nombre_cat_edad', 'departamento']
+    )['anio'].count().reset_index(name='cant')
 
     
     
