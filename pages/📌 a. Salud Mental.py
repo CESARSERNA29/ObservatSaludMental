@@ -260,7 +260,7 @@ with Tab1:
                 default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
                          "componente", "capitulo", "grupo", "Enfermedad_Evento", 
                          "pob10", "tasa_morb", "Tot_Eventos"], 
-                key='multiselect_showData_TablaFrec1'
+                key='multiselect_showData_TablaFrec1_{idx}'
                 )
         st.dataframe(df_selection[showData], use_container_width=True)
     # Hasta aqui se muestra el excel con la base original
@@ -366,6 +366,10 @@ with Tab1:
     # 5. Mostrar la tabla en Streamlit 
     st.write("Tabla cruzada, Total de Casos por Rango de Edad") 
     st.dataframe(tabla_sm2) 
+    
+    
+    
+    
     
     
     
@@ -632,6 +636,10 @@ with Tab1:
     
     
     
+    
+    
+    
+    
     st.markdown("##")
     st.markdown("##")
     
@@ -697,7 +705,7 @@ with Tab1:
         "### FILTRO - Selecciona las columnas a mostrar:",
         summary_table.columns.tolist(),
         default=summary_table.columns.tolist(),
-    key='multiselect_showData_Tasas_Morbilidad1'
+    key='multiselect_showData_Tasas_Morbilidad1_{idx}'
     )
     
     if showData:
@@ -1534,7 +1542,13 @@ with Tab1:
 
 
 
-
+# *************************************************************************
+# *************************************************************************
+# *************************************************************************
+# *************************************************************************
+# *************************************************************************
+# *************************************************************************
+# *************************************************************************
 
 
 
