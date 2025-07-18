@@ -30,6 +30,13 @@ import plotly.graph_objs as go
 st.set_page_config(page_title="Dashboard",page_icon="🌍",layout="wide")
 #st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
 
+# Título general
+st.markdown("""
+<h1 style='text-align: center; color: #3A3A3A;'>📈 MORBILIDAD: Tratamiento Estadístico, KPI y Tendencias</h1>
+""", unsafe_allow_html=True)
+
+st.markdown("##")
+
 st.markdown("""
         <h3 style='text-align: center; color: #333333;'>SALUD MENTAL:  Tratamiento Estadístico, KPI y Tendencias </h3>
         <hr style="height:2px;border-width:0;color:gray;background-color:gray">
@@ -40,6 +47,7 @@ st.markdown("""
         La salud mental representa un componente fundamental del bienestar general de las personas y de la estabilidad social de los territorios. No se trata únicamente de la presencia de trastornos psicológicos, sino de un estado dinámico en el que el individuo puede desarrollar sus habilidades, enfrentar las tensiones normales de la vida, trabajar de forma productiva y contribuir a su comunidad. Desde una perspectiva analítica, la salud mental puede ser entendida como un constructo multidimensional influenciado por factores biológicos, psicosociales, económicos, ambientales y culturales.
         
         El interés por estudiar la salud mental desde enfoques cuantitativos, especialmente ante el incremento de diagnósticos relacionados con trastornos de ansiedad, depresión, consumo de sustancias y conductas suicidas, es una necesidad cada vez más frecuente. Esta condición ha sido resaltada por eventos globales como la pandemia del COVID-19, crisis migratorias, desigualdades estructurales y violencia comunitaria. En regiones como la Orinoquía colombiana, caracterizadas por una amplia diversidad étnica, condiciones geográficas particulares y limitaciones estructurales de acceso a servicios de salud, el análisis estadístico riguroso de la salud mental se vuelve una herramienta crítica para orientar políticas públicas, optimizar recursos y diseñar intervenciones focalizadas.
+        
         <br>
         A continuación se presenta un sinnúmero de desarrollos estadísticos que caracteriza las condicones de salud mental, en términos de Morbilidad y mortalidad, de la población que conforma la orinoquía colombiana.
         </div>
@@ -50,7 +58,7 @@ st.markdown("""
 
 
 
-st.markdown("##")
+
 st.markdown("##")
 
 
@@ -82,10 +90,7 @@ st.set_page_config(page_title="📊 Dashboard de Morbilidad", page_icon="🧠", 
 with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Título general
-st.markdown("""
-<h1 style='text-align: center; color: #3A3A3A;'>📈 MORBILIDAD: Tratamiento Estadístico, KPI y Tendencias</h1>
-""", unsafe_allow_html=True)
+
 
 # Menú de navegación elegante
 with st.sidebar:
