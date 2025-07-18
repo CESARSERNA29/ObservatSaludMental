@@ -963,64 +963,7 @@ with Tab1:
     st.markdown("##")
     st.markdown("##")
     
-    
-    
-    
-    
-    
-    
-    # Diagrama TREE:
-    # =============
-    import streamlit as st
-    import plotly.express as px
-    import pandas as pd
-    
-    
-    # Cargando las Librerías:
-    import streamlit as st
-    import pandas as pd
-    import streamlit.components.v1 as components
-    import plotly.express as px
-    from streamlit_option_menu import option_menu
-    from numerize import numerize
-    import time
-    from streamlit_extras.metric_cards import style_metric_cards
-    import plotly.graph_objs as go
-    import plotly.graph_objects as go
-    
-    # =====================================
-    # TITULO Y ESTILO DEL ENCABEZADO:
-    st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
-    st.header("Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
-    st.markdown("##")
-    
-    # Carga de datos
-    # Importando la tabla agregada con los resúmenes de las variables:
-    population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja1')
-    
-    # Filtrar años disponibles
-    anios = sorted(population_df['anio'].unique())
-    anio_seleccionado = st.selectbox("Selecciona el Año", anios)
-    
-    # Filtrar por año
-    df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
-    
-    # Crear Treemap
-    fig = px.treemap(
-        df_filtrado,
-        path=['Dptos', 'GrupEnfer'],
-        values='MorbTot',
-        color='MorbTot',
-        color_continuous_scale=["red", "orange", "green"],
-        title=f'Morbilidad Total por Departamento y Grupo de Enfermedad - {anio_seleccionado}'
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    
-    
-    
-    
+ 
     
     
     
