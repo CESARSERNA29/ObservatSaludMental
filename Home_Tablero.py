@@ -47,8 +47,8 @@ if selected == "Inicio":
     # 🔢 KPIs o métricas resumen
     col1, col2, col3 = st.columns(3)
     col1.metric("Total de Casos", "12.547.687")
-    col2.metric("Departamentos Analizados", "32")
-    col3.metric("Años de Estudio", "2013 - 2014")
+    col2.metric("Departamentos Analizados", "4")
+    col3.metric("Temporalidad", "2018 - 2023")
 
     style_metric_cards(
         background_color="#FFFFFF",
