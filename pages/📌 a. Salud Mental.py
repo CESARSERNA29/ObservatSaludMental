@@ -199,7 +199,7 @@ if anio:
 
 
 
-
+# SECCIÓN 1: 
 # INTRODUCCIONA A MORBILIDAD:
 # --------------------------
 st.markdown("##")
@@ -721,7 +721,7 @@ st.markdown("##")
     
 # ------------------------------------------------------------------------
 # CONSTRUCCIÓN DE UNA TABLA DE FRECUENCIA DE EVENTOS POR GRUPOS DE EDADES:
-# ---------------------------------
+# -----------------------------------------------------------------------
 
 st.markdown("##")
 
@@ -1006,103 +1006,80 @@ except FileNotFoundError:
     st.error("Archivo 'TablaMorbilidad_Subsectores.xlsx' no encontrado. Verifica que el archivo esté en el directorio correcto.")
 except Exception as e:
     st.error(f"Error al cargar los datos: {str(e)}")
-    # ---------------------------------------------------------------------
+    
+ 
+
+# ---------------------------------------------------------------------
 
 
 
 
 
-    st.markdown("##")
+st.markdown("##")
 
 
 
 
 
-        
-    # ------------------------------------------------------------------------
-    # GRÁFICO TREE:
-    # ---------------------------------
-
-    st.markdown("##")
-
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasa de Morbilidad por Departamento </h4>", unsafe_allow_html=True) 
-    st.warning("Da click en uno de los departamentos para despregar estadísticas") 
-
-
-
-
+    
+# ------------------------------------------------------------------------
 # Diagrama TREE:
-# =======================================
-# Librerías necesarias:
+# ---------------------------------
+
+
+# =============
+import streamlit as st
+import plotly.express as px
+import pandas as pd
+
+
+# Cargando las Librerías:
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 import plotly.express as px
+from streamlit_option_menu import option_menu
+from numerize import numerize
+import time
+from streamlit_extras.metric_cards import style_metric_cards
+import plotly.graph_objs as go
+import plotly.graph_objects as go
 
-# Configuración de página
-st.set_page_config(page_title="Dashboard", page_icon="📈", layout="wide")  
+# =====================================
+# TITULO Y ESTILO DEL ENCABEZADO:
+st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
 st.header("Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
 st.markdown("##")
 
-# ======================
 # Carga de datos
+# Importando la tabla agregada con los resúmenes de las variables:
 population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja1')
 
-# Validación de columnas necesarias
-columnas_necesarias = ['anio', 'Dptos', 'GrupEnfer', 'sexo', 'grupo_edad', 'MorbTot']
-if not all(col in population_df.columns for col in columnas_necesarias):
-    st.error("❌ El archivo no contiene todas las columnas necesarias.")
-    st.stop()
+# Filtrar años disponibles
+anios = sorted(population_df['anio'].unique())
+anio_seleccionado = st.selectbox("Selecciona el Año", anios)
 
-# ======================
-# Filtros en 4 columnas
-col1, col2, col3, col4 = st.columns(4)
+# Filtrar por año
+df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
 
-with col1:
-    anios = sorted(population_df['anio'].unique())
-    anio_seleccionado = st.selectbox("Selecciona el Año", anios)
+# Crear Treemap
+fig = px.treemap(
+    df_filtrado,
+    path=['Dptos', 'GrupEnfer'],
+    values='MorbTot',
+    color='MorbTot',
+    color_continuous_scale=["red", "orange", "green"],
+    title=f'Morbilidad Total por Departamento y Grupo de Enfermedad - {anio_seleccionado}'
+)
 
-with col2:
-    dptos = ['Todos'] + sorted(population_df['Dptos'].dropna().unique())
-    dpto_seleccionado = st.selectbox("Departamento", dptos)
+st.plotly_chart(fig, use_container_width=True)
 
-with col3:
-    sexos = ['Todos'] + sorted(population_df['sexo'].dropna().unique())
-    sexo_seleccionado = st.selectbox("Sexo", sexos)
 
-with col4:
-    edades = ['Todos'] + sorted(population_df['grupo_edad'].dropna().unique())
-    edad_seleccionada = st.selectbox("Grupo de Edad", edades)
 
-# ======================
-# Filtro compuesto
-df_filtrado = population_df.copy()
 
-df_filtrado = df_filtrado[df_filtrado['anio'] == anio_seleccionado]
 
-if dpto_seleccionado != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['Dptos'] == dpto_seleccionado]
-
-if sexo_seleccionado != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['sexo'] == sexo_seleccionado]
-
-if edad_seleccionada != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['grupo_edad'] == edad_seleccionada]
-
-# ======================
-# Validación
-if df_filtrado.empty:
-    st.warning("⚠️ No hay datos para los filtros seleccionados.")
-else:
-    # Crear Treemap
-    fig = px.treemap(
-        df_filtrado,
-        path=['Dptos', 'GrupEnfer'],
-        values='MorbTot',
-        color='MorbTot',
-        color_continuous_scale=["red", "orange", "green"],
-        title=f"Morbilidad Total - Año {anio_seleccionado}"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+st.markdown("##")
+st.markdown("##")
 
 
 
@@ -1114,8 +1091,27 @@ else:
 
 
 
+# ============================================================================
+# ============================================================================
+# ============================================================================
+# ============================================================================
+# ============================================================================
+# ============================================================================
+# ============================================================================
 
 
+
+# SECCIÓN 2: 
+# INTRODUCCIONA A MORTALIDAD:
+# --------------------------
+st.markdown("##")
+st.markdown("##")
+st.markdown("##")
+
+
+
+st.header("MORTALIDAD")
+st.write(" La mortalidad se refiere a la cantidad de muertes ocurridas en una población durante un período específico. Desde una perspectiva estadística, el análisis de la mortalidad permite comprender el impacto de distintas causas de defunción sobre la salud pública, así como identificar grupos poblacionales en mayor riesgo o vulnerabilidad.  Mediante indicadores como el número absoluto de muertes, la tasa bruta de mortalidad (por cada 10.000 habitantes), la tasa de mortalidad específica por edad, sexo o causa, es posible evaluar la carga de mortalidad y su distribución geográfica y temporal. Este análisis facilita la detección de patrones, tendencias y desigualdades en las causas de muerte, contribuyendo a priorizar acciones de prevención, fortalecer los sistemas de salud y diseñar políticas públicas basadas en evidencia. En conjunto, el estudio estadístico de la mortalidad es esencial para monitorear el estado de salud de una población, evaluar intervenciones sanitarias y reducir el impacto de enfermedades prevenibles.") 
 
 
 
@@ -1125,6 +1121,43 @@ st.markdown("##")
 
 
 
+# --------------------------------
+# Tabla de Datos para Mortalidad:
+# --------------------------------
+    
+def load_data2():
+    df1 = pd.read_excel('data/Mortalidad2.xlsx')
+    # Convertir año a categórica
+    df1['anio'] = pd.to_numeric(df1['anio'], errors='coerce')
+    
+    # Filtro para la region de la orinoquia
+    df1=df1[df1['region']=='Orinoquía']
+    
+    # Reemplazar valores en la columna 'sexo'
+    df1['sexo'] = df1['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
+    
+    # Orden ctegorias de edad
+    orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 
+                      'Adultez Temprana', 'Adultez Media', 'Adultez Mayor']
+    # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden
+    df1['nombre_cat_edad'] = pd.Categorical(df1['nombre_cat_edad'], 
+                               categories=orden_cat_edad, ordered=True)
+    df1['grupo'] = df1['grupo'].str.strip()  
+    df1['departamento']=df1['departamento'].str.strip()
+    df1['departamento']=pd.Categorical(df1['departamento'])
+    
+    #df1_agregada = df1.groupby(['componente','departamento','municipio',
+    #                       'grupo','Enfermedad_Evento', 'sexo',
+    #                       'nombre_cat_edad','anio'])['cant'].sum().reset_index()
+    return df1
+
+df1 = load_data2()
+
+df_sm=df1[df1['componente']=='Salud Mental']
+
+
+
+#-------------------------------------------------------------------------------
 
 
 
