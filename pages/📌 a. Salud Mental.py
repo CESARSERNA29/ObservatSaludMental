@@ -85,7 +85,10 @@ import plotly.express as px
 #-------------------
 df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
 df0['anio'] = df0['anio'].astype(str)
-df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
+#df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
+cols = ['tot_eventos', 'tasa_morbilidad']
+df0[cols] = df0[cols].apply(pd.to_numeric, errors='coerce')
+
 
 
 
@@ -141,7 +144,7 @@ if selected == "📊 KPI":
     st.subheader("Indicadores Clave de Morbilidad")
     col1, col2, col3 = st.columns(3)
     col1.metric("Casos Totales", df_filtrado["Tot_Eventos"].sum(), "↗︎")
-    col2.metric("Tasa Promedio", f"{df_filtrado['tasa_morbilidad'].mean():.2f}")
+    col2.metric("Tasa Promedio", f"{df_filtrado['tasa_morb'].mean():.2f}")
     col3.metric("Número de Municipios", df_filtrado["municipio"].nunique())
 
     style_metric_cards(
@@ -153,7 +156,7 @@ if selected == "📊 KPI":
 elif selected == "📉 Tendencias":
     st.subheader("Tendencia Anual de la Tasa de Morbilidad")
     tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
-    fig = px.line(tendencia, x='anio', y='tasa_morbilidad', title='Tasa de Morbilidad Anual')
+    fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
     st.plotly_chart(fig, use_container_width=True)
 
 elif selected == "📍 Mapa":
