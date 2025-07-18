@@ -199,8 +199,9 @@ if anio:
 
 
 # -----------
+
 df_selection = df_sm0.query(
-    "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
+    "departamento==@departamento & municipio==@municipio & grupo ==@grupo"
 )
 
 st.markdown("##")
