@@ -1,29 +1,31 @@
-[data-testid=metric-container] {
-    box-shadow: 0 0 4px #686664;
-    padding: 10px;
+/* Fondo general */
+body {
+    background-color: #3366CC;
 }
 
-.plot-container>div {
-    box-shadow: 0 0 2px #070505;
+/* Encabezados */
+h1, h2, h3 {
+    color: #2c3e50;
+}
+
+/* Métricas personalizadas */
+[data-testid="metric-container"] {
+    background-color: #305496;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 5px;
+    border: 1px solid #305496;
+}
+
+/* Filtros en la barra lateral */
+.stSelectbox > div > div {
+    border-radius: 8px;
     padding: 5px;
-    border-color: #000000;
-    
-   
+    background-color: #305496;
 }
 
-div[data-testid="stExpander"] div[role="button"] p
-{
-    font-size: 1.2rem;
-    color:rgb(0, 0, 0);
-    border-color: #000000;
-    color-scheme: #000000;
+/* Sidebar */
+.sidebar .sidebar-content {
+    background-color: #305496;
 }
 
-.sidebar-content {
-    color: white;
-}
-
-[data-testid=stSidebar] {
-    color: white;
-     
-}
