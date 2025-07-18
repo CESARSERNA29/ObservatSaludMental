@@ -247,6 +247,11 @@ with st.expander("👉 Mostrar Filtros", expanded=False):
     )    
 
 
+# ✅ Filtrar el dataframe según los valores seleccionados
+df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+
+    
+
 # ✅ Mostrar resultados
 st.write("Datos filtrados:", df_selection)
 
