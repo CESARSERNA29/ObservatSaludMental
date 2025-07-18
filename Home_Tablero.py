@@ -29,7 +29,7 @@ if selected == "Inicio":
     st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>📊 Observatorio de Salud Mental de la Orinoquia Colombiana</h1>", unsafe_allow_html=True)
 
     st.markdown("""
-        <h3 style='text-align: center; color: #333333;'>Análisis exploratorio, y modelamiento de enfermedades de Salud Mental (2013 - 2023)</h3>
+        <h3 style='text-align: center; color: #333333;'>Análisis exploratorio, y modelamiento de enfermedades de Salud Mental (2018 - 2023)</h3>
         <hr style="height:2px;border-width:0;color:gray;background-color:gray">
     """, unsafe_allow_html=True)
 
@@ -79,12 +79,15 @@ if selected == "Inicio":
             "x": 0.5,
             "xanchor": "center",
             "yanchor": "top",
-            "font": dict(size=24, color="black")
+            "font": dict(size=20, color="black")
         },
-        margin=dict(t=80, l=10, r=10, b=10)
+        margin=dict(t=40, l=10, r=10, b=10)
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+
+
 
     # ===============================
     # 🔹 Recuadro elegante informativo
