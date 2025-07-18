@@ -230,51 +230,10 @@ df_selection = df_sm0.query(
 # ✅ Mostrar resultados
 st.write("Datos filtrados:", df_selection)
 
-
-
-
-
-
-
-
-
-
 # ----------------------------------------------------------------------------
 
 
 
-'''
-# calcular los análisis:
-total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
-investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
-investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
-investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
-
-
-total1,total2,total3,total4,total5=st.columns(5,gap='small')
-with total1:
-    st.info('Tot. Eventos',icon="🎯")
-    st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-with total2:
-    st.info('Tot. Dptos.',icon="🎯")
-    st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
-
-with total3:
-    st.info('Tot. Municip.',icon="🎯")
-    st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
-
-with total4:
-    st.info('Tot. Grupo',icon="🎯")
-    st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
-        
-
-    #variable distribution Histogram
-    #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
-    # df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
-    # st.pyplot()
-
-'''
-# -----------------------------------------------------
 
 
 
@@ -285,18 +244,6 @@ with total4:
 # Secciones del dashboard
 if selected == "📊 KPI":
     st.subheader("Indicadores Clave de Morbilidad")
-    '''
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Casos Totales", df0["Tot_Eventos"].sum())
-    #col2.metric("Tasa Promedio", f"{df0['tasa_morb'].mean():.2f}")
-    col2.metric("Número de Departamentos", df0["departamento"].nunique())
-    col3.metric("Número de Municipios", df0["municipio"].nunique())
-
-    style_metric_cards(
-        background_color="#F0F2F6",
-        border_left_color="#0d6efd",
-        border_color="#e6e6e6"
-    )'''
     # calcular los Indicadores Clave de Morbilidad:
     total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
     investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
