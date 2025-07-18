@@ -336,8 +336,11 @@ def Home1():
 
 
 st.markdown("##")
-st.markdown("##")
+
+
+
     
+# ----------------------------------------------------------------------
 
 # Llamar la función antes del resumen tabular
 Home1()
@@ -382,11 +385,17 @@ total_casos = df_agregada1_1['cant'].sum()
 df_agregada1_1['(%)'] = (df_agregada1_1['cant'] / total_casos * 100).round(2) 
 
 st.dataframe(df_agregada1_1) 
+# ----------------------------------------------------------------------
+
 
 
 
 
 st.markdown("##")   # SALTO
+
+
+
+
 
 #------------------------------------------------------------------------- 
 
@@ -417,7 +426,7 @@ df_sm_filtrado2 = df_sm_filtrado.groupby(
 
 
 
-
+# ----------------------------------------------------------------------
 
 # 4. Crear la tabla cruzada sumando la columna 'cant' 
 # Tabla Cruzada: 
@@ -434,6 +443,76 @@ tabla_sm2 = df_sm_filtrado2.pivot_table(
 st.write("Tabla cruzada, Total de Casos por Rango de Edad") 
 st.dataframe(tabla_sm2) 
 
+# ---------------------------------------------------------------------
+
+
+
+
+
+st.markdown("##")
+
+
+
+
+
+    
+# ----------------------------------------------------------------------
+# Diagrama de lineas año y sexo: 
+# ----------------------------- 
+P_Colores = {"Azul_cl": "#39A8E0", 
+             "Gris": "#9D9D9C", 
+             "Verde": "#009640", 
+             "Naranja": "#F28F1C", 
+             "Azul_os": "#2A3180", 
+             "Rojo": "#E5352B",
+             "Morado":"#662681"} 
+
+df0_sm['anio'] = pd.to_numeric(df0_sm['anio'], errors='coerce')  # convierte strings a números, NaNs si no puede 
+a_min_sm = df0_sm['anio'].min() - 1 
+a_max_sm = df0_sm['anio'].max()+1 
+
+
+st.markdown("##")   # SALTO
+
+
+# 1. Crear un selector para que el usuario elija uno o varios grupos: 
+deptos_sm = df0_sm['departamento'].unique().tolist() 
+#depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
+st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
+Dptos_sm_sel = st.selectbox("Selecciona Un Departamento", deptos_sm)
+
+
+df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
+df_sm_filtrado3_2 = df_sm_filtrado3[['anio','sexo', 'nombre_cat_edad', 'departamento', 'Tot_Eventos']] 
+df_sm_filtrado3_2.columns = ['anio', 'sexo','nombre_cat_edad', 'departamento','cant'] 
+
+
+
+df_sm_filtrado3_3 = df_sm_filtrado3_2[df_sm_filtrado3_2['departamento'] == Dptos_sm_sel] 
+df0_sm3 = df_sm_filtrado3_3.groupby(['sexo','anio'])['cant'].sum().reset_index() 
+
+
+# Crear gráfico de líneas con Plotly Express 
+fig_sm = px.line(df0_sm3, x='anio', y='cant', color='sexo', markers=True, 
+                 title="TENDENCIA DE EVENTOS DE MORBILIDAD",
+                 color_discrete_sequence=["#2A3180","#E5352B"]) 
+
+
+# Personalizar marcadores para que tengan borde del color de la línea y fondo blanco 
+fig_sm.update_traces( 
+    marker=dict(size=10, 
+                color='white',          # fondo blanco 
+                line=dict(width=2)      # borde que tomará el color de la línea
+                ))
+
+# Ajustar eje x para mostrar todos los años y con rango fijo 
+fig_sm.update_xaxes(dtick=1, range=[a_min_sm,a_max_sm], tickmode='linear') 
+
+fig_sm.update_xaxes(title_text="") 
+fig_sm.update_yaxes(title_text="Número de casos") 
+
+st.plotly_chart(fig_sm, use_container_width=True)
+#-----------------------------------------------------------------------------
 
 
 
