@@ -711,6 +711,8 @@ sideBar()
 
 
 st.markdown("##")
+st.markdown("##")
+
 
 
 
@@ -944,7 +946,7 @@ import plotly.graph_objects as go
 # =====================================
 # TITULO Y ESTILO DEL ENCABEZADO:
 st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
-st.header("Resumen Gráfico Exploratorio Multidimensional")
+#st.header("Resumen Gráfico Exploratorio Multidimensional")
 st.markdown("##")
  
 # Cargar CSS si existe el archivo
@@ -990,7 +992,7 @@ try:
             "x": 0.5, 
             "xanchor": "center", 
             "yanchor": "top", 
-            "font": dict(size=34, family="Agency FB", color="black")
+            "font": dict(size=34, color="black")
         }, 
         margin=dict(t=80, l=10, r=10, b=10)
     )
