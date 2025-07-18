@@ -1,11 +1,10 @@
-
-
 # 📦 Cargando librerías necesarias
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from streamlit_option_menu import option_menu
 from streamlit_extras.metric_cards import style_metric_cards
+import time
 
 # 🧭 Configurar la página
 st.set_page_config(page_title="Observatorio de Salud Mental", page_icon="📈", layout="wide")
@@ -15,40 +14,38 @@ st.set_page_config(page_title="Observatorio de Salud Mental", page_icon="📈", 
 with st.sidebar:
     selected = option_menu(
         menu_title="Menú Principal",
-        options=["Inicio", "Análisis", "Datos"],
-        icons=["house", "bar-chart", "table"],
+        options=["Inicio", "Progreso"],
+        icons=["house", "bar-chart"],
+        menu_icon="cast",
         default_index=0
     )
+    st.image("Logo_UNILLANOS.png", caption="")
 
-# ======================================
-# Nuevo comentario1
-# Nuevo comentario2 
-
+# ===============================
 # 🏠 Página de inicio / presentación
 if selected == "Inicio":
-    st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>📊 Proyecto de Morbilidad en Colombia</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #4B8BBE;'>📊 Observatorio de Salud Mental </h1>", unsafe_allow_html=True)
 
     st.markdown("""
-        <h3 style='text-align: center; color: #333333;'>Análisis exploratorio por departamentos y grupos de enfermedades (2013 - 2014)</h3>
+        <h3 style='text-align: center; color: #333333;'>Análisis Estadístico de Casos de Morbilidad, Mortalidad y Ponal (2018 - 2023).</h3>
         <hr style="height:2px;border-width:0;color:gray;background-color:gray">
     """, unsafe_allow_html=True)
 
     st.markdown("""
         <div style="text-align: justify; font-size: 18px; color: #444444;">
         Este tablero interactivo tiene como objetivo mostrar la distribución de enfermedades más relevantes reportadas
-        por los subsectores del país durante los años 2018 - 2023. Con visualizaciones dinámicas, métricas clave
-        y comparaciones por departamento, buscamos facilitar la toma de decisiones informadas en salud pública.
+        por los subsectores del país durante los años 2018 - 2023.  De igual manera, analiza el comportamiento distribucional de los casos de mortalidad, e información de la Policía nacional.  Con visualizaciones dinámicas, métricas clave
+        y comparaciones por departamento, municipio, sexo, etc., buscamos facilitar la toma de decisiones informadas en salud pública.
         </div>
     """, unsafe_allow_html=True)
 
     st.markdown("##")
 
-    # ===============================
     # 🔢 KPIs o métricas resumen
     col1, col2, col3 = st.columns(3)
     col1.metric("Total de Casos", "12.547.687")
     col2.metric("Departamentos Analizados", "32")
-    col3.metric("Años de Estudio", "2013 - 2014")
+    col3.metric("Años de Estudio", "2018 - 2023")
 
     style_metric_cards(
         background_color="#FFFFFF",
@@ -59,7 +56,6 @@ if selected == "Inicio":
 
     st.markdown("##")
 
-    # ===============================
     # 📊 Gráfico de bienvenida tipo Sunburst (ejemplo ficticio)
     labels = ["Colombia", "Andina", "Caribe", "Bogotá", "Antioquia", "Atlántico"]
     parents = ["", "Colombia", "Colombia", "Andina", "Andina", "Caribe"]
@@ -72,11 +68,9 @@ if selected == "Inicio":
         branchvalues="total",
     ))
 
-    fig.update_layout(
-        title={
-            "text": "Distribución de Casos por Región y Departamento",
-            "y": 0.95,
-            "x": 0.5,
+    fig.update_layout(title={
+            "text": "Distribución de Casos por Región, Departamento, Municipio,",
+            "y": 0.95, "x": 0.5,
             "xanchor": "center",
             "yanchor": "top",
             "font": dict(size=24, color="black")
@@ -86,7 +80,6 @@ if selected == "Inicio":
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # ===============================
     # 🔹 Recuadro elegante informativo
     st.markdown("""
     <div style="border: 2px solid #4B8BBE; padding: 20px; border-radius: 15px; background-color: #F5F5F5;">
@@ -100,17 +93,11 @@ if selected == "Inicio":
     </div>
     """, unsafe_allow_html=True)
 
-# Otras páginas (dejar en blanco por ahora)
-elif selected == "Análisis":
-    st.markdown("🚧 Página en construcción: Aquí irán los gráficos analíticos...")
-
-elif selected == "Datos":
-    st.markdown("📄 Aquí podrás explorar los datos fuente...")
-
-
-
-
-
+# ===============================
+# 📈 Página Progreso (puedes reemplazarlo por otra función luego)
+elif selected == "Progreso":
+    st.subheader("🚧 Esta sección está en construcción.")
+    st.info("Aquí se mostrará el avance frente a metas o líneas base.")
 
 
 
