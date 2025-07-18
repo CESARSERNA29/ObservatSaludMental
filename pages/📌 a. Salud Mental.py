@@ -1303,9 +1303,24 @@ st.markdown("##")
 
 
 
-
+# BASE DE DATOS:
+# ----------------
+# Aplicar filtros:
+# ----------------
+df_filtrado = df_sm1
+if departamento != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
+if municipio != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
+if anio:
+    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
+# -----------------------------
     
 # ----------------------------------------------------------------------
+
+
+
+
 
 # Llamar la función antes del resumen tabular
 Home1()
@@ -1313,6 +1328,9 @@ Home1()
 st.markdown("##")
 
 st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del Número de Decesos Por Grupo de Enfermedades</h4>", unsafe_allow_html=True) 
+
+
+
 
 # Convertir año a categórica 
 df_sm1['anio'] = pd.to_numeric(df_sm1['anio'], errors='coerce') 
@@ -1338,10 +1356,10 @@ df_sm1['departamento']=pd.Categorical(df_sm1['departamento'])
 df_sm1['anio'] = df_sm1['anio'].astype(str)   # esto va en contra de la septima línea de código hacia arriba
 
 # Filtro para Salud Mental 
-df_sm1 = df_sm1[df_sm1['componente']=='Salud Mental']
+df0_sm = df_sm1[df_sm1['componente']=='Salud Mental']
 
 # Tabla Pivote: 
-df_agregada1 = df_sm1.groupby(['grupo']).count().reset_index() 
+df_agregada1 = df0_sm.groupby(['grupo']).count().reset_index() 
 df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
 df_agregada1_1.columns = ['grupo', 'cant'] 
 
@@ -1368,8 +1386,8 @@ st.markdown("##")   # SALTO
 
 # 1. Crear los selectores para grupo de enfermedades y sexo
 
-grupos_sm = df_sm1['grupo'].unique().tolist()
-sexos = ['Todos'] + df_sm1['sexo'].dropna().unique().tolist()
+grupos_sm = df0_sm['grupo'].unique().tolist()
+sexos = ['Todos'] + df0_sm['sexo'].dropna().unique().tolist()
 
 st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedades</h5>", unsafe_allow_html=True)
 grupo_sm_sel = st.selectbox("Grupo", grupos_sm)
@@ -1379,7 +1397,7 @@ sexo_sel = st.selectbox("Sexo", sexos)
 
 # 2. Filtrar el DataFrame según las selecciones
 
-df_sm_filtrado = df_sm1[df_sm1['grupo'] == grupo_sm_sel]
+df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel]
 
 if sexo_sel != 'Todos':
     df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['sexo'] == sexo_sel]
@@ -1434,8 +1452,8 @@ P_Colores = {"Azul_cl": "#39A8E0",
              "Rojo": "#E5352B",
              "Morado":"#662681"} 
 
-df0_sm['anio'] = pd.to_numeric(df_sm1['anio'], errors='coerce')  # convierte strings a números, NaNs si no puede 
-a_min_sm = df_sm1['anio'].min() - 1 
-a_max_sm = df_sm1['anio'].max()+1 
+df0_sm['anio'] = pd.to_numeric(df0_sm['anio'], errors='coerce')  # convierte strings a números, NaNs si no puede 
+a_min_sm = df0_sm['anio'].min() - 1 
+a_max_sm = df0_sm['anio'].max()+1 
 # -----------------------------------------------------------------------------
 
