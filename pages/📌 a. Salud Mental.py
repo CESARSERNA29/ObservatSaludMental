@@ -335,7 +335,9 @@ def Home1():
 
 
 
+
 st.markdown("##")
+
 
 
 
@@ -344,6 +346,8 @@ st.markdown("##")
 
 # Llamar la función antes del resumen tabular
 Home1()
+
+st.markdown("##")
 
 st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True) 
 
@@ -512,10 +516,193 @@ fig_sm.update_xaxes(title_text="")
 fig_sm.update_yaxes(title_text="Número de casos") 
 
 st.plotly_chart(fig_sm, use_container_width=True)
-#-----------------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 
 
+
+
+st.markdown("##")
+
+
+
+
+
+    
+# ----------------------------------------------------------------------
+# **********************************************************************************
+# Todos los gráficos se personalizan usando CSS , no Streamlit. 
+theme_plotly = None 
+
+
+# Cargar los estilo css:
+with open('style.css')as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
+
+# Descomenta estas dos líneas si obtienes datos de MySQL:
+# result = view_all_data()
+# df=pd.DataFrame(result,columns=["Policy","Expiry","Location","State","Investment","Construction","BusinessType","Earthquake","Flood","Rating","id"])
+
+# cargar archivo Excel | comente esta línea cuando obtenga datos de MySQL:
+
+# df = pd.read_excel("C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE/Tasas_Morbilidad.xlsx", sheet_name='Hoja1')    
+# df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
+# COMO ESTA BASE YA ESTÁ DEFINIDA DESDE EL INICIO COMO df0, NO LA DEBO LLAMAR DE NUEVO, SOLO LA ASIGNO.
+df = df0_sm
+
+# Convirtiendo la columna Anio a Categórica:
+    # Opción 2: Convertir a categórica (más eficiente)
+df['anio'] = df['anio'].astype(str)
+    
+# ======================================================================
+
+
+
+def safe_numerize(value):
+    """Convierte un valor a formato numerize de forma segura"""
+    try:
+        # Manejar valores None o vacíos
+        if value is None:
+            return "0"
+        
+        # Convertir a string y limpiar
+        str_value = str(value).strip().lower()
+        if str_value in ['', 'nan', 'none', 'null']:
+            return "0"
+        
+        # Convertir a número
+        num_value = float(value)
+        
+        # Verificar si es NaN
+        if num_value != num_value:  # NaN check sin pandas
+            return "0"
+        
+        # Aplicar numerize
+        return numerize(int(num_value))
+        
+    except (ValueError, TypeError, AttributeError):
+        return "0"
+
+
+
+
+#graphs
+def graphs():
+    investment_by_business_type=(
+        df_selection.groupby(by=["anio"]).count()[["tasa_morb"]].sort_values(by="tasa_morb")
+    )
+    
+    # Convertir el índice en una columna
+    investment_by_business_type = investment_by_business_type.reset_index()
+    
+    # CORRECCIÓN: Usar 'tasa_morb' como y, no 'index'
+    fig_investment = px.bar(
+        investment_by_business_type,
+        x="anio", 
+        y="tasa_morb",  # ← Esta es la columna correcta
+        title="Análisis de Morbilidad por Año", 
+        color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
+        template="plotly_white"
+    )
+    
+    fig_investment.update_layout(
+     plot_bgcolor="rgba(0,0,0,0)",
+     font=dict(color="black"),
+     yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje y y establecer su color  
+     paper_bgcolor='rgba(0, 0, 0, 0)',  # Establecer el color del fondo  en transparente
+     xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje x y establecer su color
+     )
+    
+    # gráfico de regresión lineal simple de inversión por nombre_cat_edad
+    investment_state = df_selection.groupby(by=["nombre_cat_edad"]).count()[["tasa_morb"]]
+    
+    investment_state_reset = investment_state.reset_index()    
+    
+    fig_state = px.line(investment_state_reset, 
+                   x="nombre_cat_edad",  # Categorías de edad en el eje X
+                   y="tasa_morb",        # Conteo/tasa en el eje Y
+                   orientation="v", 
+                   title="<b> TASA DE MORBILIDAD POR CATEGORÍA DE EDADES </b>",
+                   color_discrete_sequence=["#0083b8"]*len(investment_state_reset), 
+                   template="plotly_white",
+                   
+    )
+    
+    fig_state.update_layout(
+        xaxis=dict(tickmode="linear"), 
+        plot_bgcolor="rgba(0,0,0,0)",
+        yaxis=(dict(showgrid=False))
+        )
+    
+    left,right,center=st.columns(3)
+    left.plotly_chart(fig_state,use_container_width=True)
+    right.plotly_chart(fig_investment,use_container_width=True)
+    
+    with center:
+      #pie chart
+      fig = px.pie(df_selection, values='tasa_morb', names='departamento', title="<b> TASA  MORBILIDAD POR DEPARTAMENTO </b>")
+      fig.update_layout(legend_title="Dptos.", legend_y=0.9)
+      fig.update_traces(textinfo='percent+label', textposition='inside')
+      st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
+
+
+# función para mostrar las ganancias actuales frente al objetivo esperado
+def Progressbar():
+    st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #99ff99 , #FFFF00)}</style>""",unsafe_allow_html=True,)
+    target=3000000000
+    current=df_selection["Investment"].sum()
+    percent=round((current/target*100))
+    mybar=st.progress(0)
+
+    if percent>100:
+        st.subheader("Objetivo cumplido !")
+    else:
+     st.write("tienes ",percent, "% " ,"of ", (format(target, 'd')), "TZS")
+     for percent_complete in range(percent):
+        time.sleep(0.1)
+        mybar.progress(percent_complete+1,text=" Objetivo Porcentual")
+
+#menu bar
+def sideBar():
+ with st.sidebar:
+    selected=option_menu(
+        menu_title="Menú Principal",
+        options=["Home","Progress"],
+        icons=["house","eye"],
+        menu_icon="cast",
+        default_index=0
+    )
+ if selected=="Home":
+    #st.subheader(f"Page: {selected}")
+    graphs()
+ if selected=="Progress":
+    #st.subheader(f"Page: {selected}")
+    Progressbar()
+    graphs()
+
+
+sideBar()
+#st.sidebar.image("data/Logo_UNILLANOS.png",caption="")      # LOGO
+#st.sidebar.image("Logo_UNILLANOS.png",caption="")            # LOGO
+
+
+
+#st.subheader('Seleccione Atributos para Observar Tendencias de Distrib. Por Cuartiles',)
+#feature_x = st.selectbox('Select feature for x Qualitative data', df_selection.select_dtypes("object").columns)
+#feature_y = st.selectbox('Seleccionar función para (Y) Datos cuantitativos', df_selection.select_dtypes("number").columns)
+#fig2 = go.Figure(
+#    data=[go.Box(x=df['grupo'], y=df[feature_y])],
+#    layout=go.Layout(
+#        title=go.layout.Title(text="Distribución Numérica, por Grupo de Enfermedades"),
+#        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
+#        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
+#        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
+#        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color
+#        font=dict(color='#cecdcd'),  # Set text color to black
+#    )
+#)
+# Display the Plotly figure using Streamlit
+#st.plotly_chart(fig2,use_container_width=True)
 
 
 
