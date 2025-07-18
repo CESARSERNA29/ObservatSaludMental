@@ -198,32 +198,48 @@ if anio:
 
 
 
-# -----------
-
-df_selection = df_sm0.query(
-    "departamento==@departamento & municipio==@municipio & grupo ==@grupo"
-)
-
+# ---------------------------------------------------------------------------
+# Sección de Filtrado:
+# -------------------
 st.markdown("##")
-
 
 with st.expander("👉 Mostrar Filtros", expanded=False):
     Departamento = st.multiselect(
         "Selecciona Departamento", 
-        options = df_sm0["departamento"].unique(), 
-        default = df_sm0["departamento"].unique(),
-        )
+        options=df_sm0["departamento"].unique(), 
+        default=df_sm0["departamento"].unique()
+    )
+    
     Municipio = st.multiselect( 
         "Selecciona Municipio", 
-        options = df_sm0["municipio"].unique(), 
-        default = df_sm0["municipio"].unique(),
-        ) 
+        options=df_sm0["municipio"].unique(), 
+        default=df_sm0["municipio"].unique()
+    ) 
+    
     Grupo = st.multiselect(
         "Selecciona el Grupo de Enfermedad", 
-        options = df_sm0["grupo"].unique(), 
-        default = df_sm0["grupo"].unique(),
-        )    
+        options=df_sm0["grupo"].unique(), 
+        default=df_sm0["grupo"].unique()
+    )    
 
+# ✅ Filtrar el dataframe según los valores seleccionados
+df_selection = df_sm0.query(
+    "departamento in @Departamento and municipio in @Municipio and grupo in @Grupo"
+)
+
+# ✅ Mostrar resultados
+st.write("Datos filtrados:", df_selection)
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------------
 
 
 
