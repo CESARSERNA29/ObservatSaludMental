@@ -1286,8 +1286,7 @@ def Home1():
             'Filter:', 
             df_selection.columns,
             default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
-                     "componente", "capitulo", "grupo", "Enfermedad_Evento", 
-                     "pob10", "tasa_morb", "Tot_Eventos"], 
+                     "componente", "grupo", "Enfermedad_Evento", "cant"], 
             key='SelectorMultiple'
             ) 
         st.dataframe(df_selection[showData], use_container_width=True)
@@ -1456,4 +1455,13 @@ df1_sm['anio'] = pd.to_numeric(df1_sm['anio'], errors='coerce')  # convierte str
 a_min_sm = df1_sm['anio'].min() - 1 
 a_max_sm = df1_sm['anio'].max()+1 
 # -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 
