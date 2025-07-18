@@ -146,6 +146,11 @@ st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
 
 
 # Estilo Tablero Personalizado:
+
+#st.sidebar.image("data/Logo_UNILLANOS.png",caption="")      # LOGO
+st.sidebar.image("Logo_UNILLANOS.png",caption="")            # LOGO
+
+
 with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
@@ -1087,23 +1092,27 @@ st.markdown("##")
 # ============================================================================
 # ============================================================================
 # ============================================================================
-st.markdown("---")  # Línea separadora
-
-st.markdown(
-    "<h3 style='text-align: center; color: #DC143C;'>🕊️ Sección de Mortalidad</h3>", 
-    unsafe_allow_html=True
-)
+# ============================================================================
+# ============================================================================
 
 st.markdown("---")  # Otra línea si quieres enfatizarlo aún más
-
-
-
-st.markdown("## Mortalidad")
+st.markdown("<h3 style='text-align: center; color: #DC143C;'> Sección Mortalidad")
 st.markdown("---")
 
 # ============================================================================
 # ============================================================================
 # ============================================================================
+# ============================================================================
+# ============================================================================
+# ============================================================================
+
+
+
+
+
+
+
+
 
 
 
