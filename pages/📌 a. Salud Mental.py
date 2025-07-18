@@ -85,6 +85,7 @@ import plotly.express as px
 #-------------------
 df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
 df0['anio'] = df0['anio'].astype(str)
+df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
 
 
 
@@ -192,6 +193,7 @@ def load_data1():
     df0 = pd.read_excel('data/Tasas_Morbilidad_25MB.xlsx')
     # Convertir año a categórica
     df0['anio'] = pd.to_numeric(df0['anio'], errors='coerce')
+    df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
     
     # Filtro para la region de la orinoquia
     # df0=df0[df0['region']=='Orinoquía']
