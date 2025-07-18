@@ -69,8 +69,8 @@ import plotly.express as px
 #-------------------------------------------------------------------------------
 # CONFIGURACIÓN DE PÁGINA:
 #st.set_page_config(page_title="Salud Mental", layout="wide")
-st.header("Eventos de Morbilidad y Mortalidad, en Salud Mental")
-st.markdown("##")
+#st.header("Eventos de Morbilidad y Mortalidad, en Salud Mental")
+#st.markdown("##")
 
 
 df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
