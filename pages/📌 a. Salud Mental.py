@@ -349,7 +349,7 @@ Home1()
 
 st.markdown("##")
 
-st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades:</h4>", unsafe_allow_html=True) 
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades</h4>", unsafe_allow_html=True) 
 
 # Convertir año a categórica 
 df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
@@ -490,7 +490,7 @@ st.markdown("##")   # SALTO
 
 st.markdown("##")
 
-st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica de Nro. de Eventos de Morbilidad:</h4>", unsafe_allow_html=True) 
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica de Nro. de Eventos de Morbilidad</h4>", unsafe_allow_html=True) 
 
 
 
@@ -549,7 +549,7 @@ st.markdown("##")
 # ---------------------------------------------------
 st.markdown("##")
 
-st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasas de Morbilidad:</h4>", unsafe_allow_html=True) 
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasas de Morbilidad</h4>", unsafe_allow_html=True) 
 
 
 # Todos los gráficos se personalizan usando CSS , no Streamlit. 
@@ -718,6 +718,12 @@ st.markdown("##")
 
     
 # ----------------------------------------------------------------------
+# NO RECUERDO QUE HACE ESTE BLOQUE:
+# ---------------------------------
+
+st.markdown("##")
+
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasas de Morbilidad</h4>", unsafe_allow_html=True) 
 
 
 
@@ -749,10 +755,11 @@ df = load_data3()
 #st.sidebar.image("data/logo1.png")
 
 # Título principal
-st.title("📊 Análisis Comparativo de Morbilidad")
+#st.title("📊 Análisis Comparativo de Morbilidad")
 
 # === SECCIÓN 1: TABLA DE FRECUENCIAS ===
-st.header("📈 Tabla de Frecuencias por Categoría de Edad")
+#st.header("📈 Tabla de Frecuencias por Categoría de Edad")
+st.markdown("<h5 style='font-weight:bold;'>📈 Tabla de Frecuencias por Categoría de Edad</h5>", unsafe_allow_html=True)
 
 # Calcular frecuencias
 frequency = df.nombre_cat_edad.value_counts().sort_index()
