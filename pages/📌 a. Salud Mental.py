@@ -633,19 +633,15 @@ with Tab1:
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
+    st.markdown("##")
     st.markdown("##")
     st.markdown("##")
     
-    st.markdown("##")
-    
+
+
+
+
+
     
     
     
@@ -1543,19 +1539,14 @@ with Tab1:
 
 
 
-# *************************************************************************
-# *************************************************************************
-# *************************************************************************
-# *************************************************************************
-# *************************************************************************
-# *************************************************************************
-# *************************************************************************
-
-
-
-
-
-
+# ****************************************************************************
+# ****************************************************************************
+# ****************************************************************************
+# ****************************************************************************
+# ****************************************************************************
+# ****************************************************************************
+# ****************************************************************************
+# ****************************************************************************
 
 
 
@@ -1573,126 +1564,3 @@ with Tab2:
     
     st.markdown("##")
     
-
-
-    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades, en Reporte de Mortalidad:</h4>", unsafe_allow_html=True)
-    
-    #---------------------------------------------------------------------------
-    # Tabla de frecuencia de muertes asocciadas a grupos de enfermedades de 
-    # Salud mental
-    #---------------------------------------------------------------------------    
-    tabla_sm1 = pd.pivot_table(
-    df_sm,
-    values='cant',
-    index='grupo',
-    aggfunc='sum',
-    fill_value=0
-    )
-    # Calcular el total de casos
-    total_casos = tabla_sm1['cant'].sum()
-    
-    # Agregar columna de porcentaje
-    tabla_sm1['(%)'] = (tabla_sm1['cant'] / total_casos * 100).round(2)
-    
-    st.dataframe(tabla_sm1)
-    
-    
-    
-    st.markdown("##")   # SALTO
-    
-    
-    
-    #---------------------------------------------------------------------------
-    
-    # 1. Crear un selector para que el usuario elija uno o varios grupos
-    grupos_sm = df_sm['grupo'].unique().tolist()
-    #grupo_sm_sel = st.selectbox("Selecciona un grupo de enfermedad", grupos_sm)
-    st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedad</h5>", unsafe_allow_html=True) 
-    grupo_sm_sel = st.selectbox("", grupos_sm)
-    
-        # 2. Filtrar el DataFrame según la selección del usuario
-    df_sm_filtrado = df_sm[df_sm['grupo'] == grupo_sm_sel]
-    
-    # 3. Crear la tabla cruzada sumando la columna 'cant'
-    tabla_sm2 = pd.pivot_table(
-    df_sm_filtrado,
-    values='cant',
-    index='nombre_cat_edad',
-    columns='departamento',
-    aggfunc='sum',
-    fill_value=0,
-    observed=False
-    )
-    
-    #tabla_cruzada2 = tabla_cruzada2.style.set_properties(**{'text-align': 'center'})
-    
-    # 4. Mostrar la tabla en Streamlit
-    st.write("Tabla cruzada de suma de 'cant' por rango_edad y sexo")
-    st.dataframe(tabla_sm2)
-    
-    
-    
-    
-    #---------------------------------------------------------------------------
-    # Diagrama de lineas año y sexo
-    P_Colores = {
-    "Azul_cl": "#39A8E0",
-    "Gris": "#9D9D9C",
-    "Verde": "#009640",
-    "Naranja": "#F28F1C",
-    "Azul_os": "#2A3180",
-    "Rojo": "#E5352B",
-    "Morado":"#662681"}
-    
-    a_min_sm=df_sm['anio'].min()-1
-    a_max_sm=df_sm['anio'].max()+1
-    
-    
-    
-    st.markdown("##")   #SALTO
-    
-    
-    
-    
-    # 1. Crear un selector para que el usuario elija uno o varios grupos
-    deptos_sm = df_sm['departamento'].unique().tolist()
-    #depto_sm_sel = st.selectbox("Selecciona un departamento", deptos_sm, key = "sel_dpto_sm_mortalidad")
-    st.markdown("<h5 style='font-weight:bold;'>Selecciona un departamento</h5>", unsafe_allow_html=True) 
-    depto_sm_sel = st.selectbox("", deptos_sm)
-    
-    df_sm_filtrado2=df_sm_filtrado[df_sm_filtrado['departamento']==Dptos_sm_sel]
-    
-    df_sm3 = df_sm_filtrado2.groupby(['sexo','anio'])['cant'].sum().reset_index()
-    
-    # Crear gráfico de líneas con Plotly Express
-    fig_sm = px.line(df_sm3,x='anio',y='cant',
-          color='sexo',markers=True,
-          title="TENDENCIA DE EVENTOS DE MORTALIDAD",
-          color_discrete_sequence=["#2A3180","#E5352B"])
-    
-    # Personalizar marcadores para que tengan borde del color de la línea y fondo blanco
-    fig_sm.update_traces(
-        marker=dict(size=10,
-            color='white',          # fondo blanco
-            line=dict(width=2)      # borde que tomará el color de la línea
-       )
-    )
-    
-    # Ajustar eje x para mostrar todos los años y con rango fijo
-    fig_sm.update_xaxes(
-        dtick=1,
-        range=[a_min_sm,a_max_sm],
-        tickmode='linear'
-    )
-    
-    fig_sm.update_xaxes(title_text="")
-    fig_sm.update_yaxes(title_text="Número de casos")
-    
-    st.plotly_chart(fig_sm, use_container_width=True)
-    #----------------------------------------------------------------------------- 
-    
-
-
-
-
-
