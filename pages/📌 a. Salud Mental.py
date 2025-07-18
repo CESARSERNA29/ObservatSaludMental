@@ -203,6 +203,29 @@ df_selection = df_sm0.query(
     "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
 )
 
+st.markdown("##")
+
+
+with st.expander("👉 Mostrar Filtros", expanded=False):
+    Departamento = st.multiselect(
+        "Selecciona Departamento", 
+        options = df_sm0["departamento"].unique(), 
+        default = df_sm0["departamento"].unique(),
+        )
+    Municipio = st.multiselect( 
+        "Selecciona Municipio", 
+        options = df_sm0["municipio"].unique(), 
+        default = df_sm0["municipio"].unique(),
+        ) 
+    Grupo = st.multiselect(
+        "Selecciona el Grupo de Enfermedad", 
+        options = df_sm0["grupo"].unique(), 
+        default = df_sm0["grupo"].unique(),
+        )    
+
+
+
+
 '''
 # calcular los análisis:
 total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
@@ -388,25 +411,6 @@ with Tab1:
     
     
     
-    st.markdown("##")
-    
-    
-    with st.expander("👉 Mostrar Filtros", expanded=False):
-        Departamento = st.multiselect(
-            "Selecciona Departamento", 
-            options = df_sm0["departamento"].unique(), 
-            default = df_sm0["departamento"].unique(),
-            )
-        Municipio = st.multiselect( 
-            "Selecciona Municipio", 
-            options = df_sm0["municipio"].unique(), 
-            default = df_sm0["municipio"].unique(),
-            ) 
-        Grupo = st.multiselect(
-            "Selecciona el Grupo de Enfermedad", 
-            options = df_sm0["grupo"].unique(), 
-            default = df_sm0["grupo"].unique(),
-            )    
     
     # -----------
     
