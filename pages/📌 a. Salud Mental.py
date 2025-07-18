@@ -86,7 +86,7 @@ import plotly.express as px
 df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
 df0['anio'] = df0['anio'].astype(str)
 #df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
-cols = ['tot_eventos', 'tasa_morbilidad']
+cols = ['Tot_Eventos', 'tasa_morb']
 df0[cols] = df0[cols].apply(pd.to_numeric, errors='coerce')
 
 
