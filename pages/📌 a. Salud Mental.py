@@ -75,116 +75,8 @@ import plotly.express as px
 #from streamlit-aggrid import AgGrid, GridOptionsBuilder
 
 
-#------------------------------------------------------------------------------
-# CONFIGURACIÓN DE PÁGINA:
-#st.set_page_config(page_title="Salud Mental", layout="wide")
-#st.header("Eventos de Morbilidad y Mortalidad, en Salud Mental")
-#st.markdown("##")
-
-# Base de Referencia:
-#-------------------
-df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
-df0['anio'] = df0['anio'].astype(str)
-#df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
-cols = ['Tot_Eventos', 'tasa_morb']
-df0[cols] = df0[cols].apply(pd.to_numeric, errors='coerce')
-
-
-
-
-st.set_page_config(page_title="📊 Dashboard de Morbilidad", page_icon="🧠", layout="wide")
-
-
-
-# Estilo Tablero Personalizado:
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-
-# Menú de navegación elegante
-with st.sidebar:
-    selected = option_menu(
-        menu_title="Navegación",
-        options=["📊 KPI", "📉 Tendencias", "📍 Mapa", "📥 Datos"],
-        icons=["speedometer", "bar-chart-line", "geo-alt", "table"],
-        default_index=0,
-        orientation="vertical",
-        styles={
-            "container": {"padding": "5px", "background-color": "#f8f9fa"},
-            "icon": {"color": "#0d6efd", "font-size": "18px"},
-            "nav-link": {"font-size": "16px", "text-align": "left", "margin": "5px"},
-            "nav-link-selected": {"background-color": "#0d6efd", "color": "white"},
-        }
-    )
-
-# Filtros elegantes
-st.sidebar.markdown("### Filtros")
-anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df0['anio'].dropna().unique().tolist()))  
-departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df0['departamento'].dropna().unique().tolist()))
-municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df0['municipio'].dropna().unique().tolist()))
-
-
-# BASE DE DATOS:
-# ----------------
-# Aplicar filtros:
-# ----------------
-df_filtrado = df0
-if departamento != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
-if municipio != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
-if anio:
-    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
-# -----------------------------
-
-
-
-# Secciones del dashboard
-if selected == "📊 KPI":
-    st.subheader("Indicadores Clave de Morbilidad")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Casos Totales", df0["Tot_Eventos"].sum())
-    col2.metric("Tasa Promedio", f"{df0['tasa_morb'].mean():.2f}")
-    col3.metric("Número de Municipios", df0["municipio"].nunique())
-
-    style_metric_cards(
-        background_color="#F0F2F6",
-        border_left_color="#0d6efd",
-        border_color="#e6e6e6"
-    )
-
-elif selected == "📉 Tendencias":
-    st.subheader("Tendencia Anual de la Tasa de Morbilidad")
-    tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
-    fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
-    st.plotly_chart(fig, use_container_width=True)
-
-elif selected == "📍 Mapa":
-    st.subheader("Mapa Interactivo de Morbilidad")
-    if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
-        st.map(df_filtrado[['latitud', 'longitud']].dropna())
-    else:
-        st.warning("No hay coordenadas disponibles para mostrar el mapa.")
-
-elif selected == "📥 Datos":
-    st.subheader("Datos Detallados")
-    st.dataframe(df_filtrado)
-#------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
 
 #-------------------------------------------------------------------------------
-
 # Cargar y preparación de las fuentes de datos
 #-------------------------------------------------------------------------------
 # -----------------------
@@ -216,11 +108,208 @@ def load_data1():
     
     df0['anio'] = df0['anio'].astype(str)
     
+    cols = ['Tot_Eventos', 'tasa_morb']
+    df0[cols] = df0[cols].apply(pd.to_numeric, errors='coerce')
+    
     #df_agregada = df.groupby(['componente','departamento','municipio',
     #                       'grupo','Enfermedad_Evento', 'sexo',
     #                       'nombre_cat_edad','anio'])['cant'].sum().reset_index()
     return df0  
 df0 = load_data1()
+
+# Filtro para Salud Mental 
+df_sm0 = df0[df0['componente']=='Salud Mental'] 
+
+# -------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+#------------------------------------------------------------------------------
+# CONFIGURACIÓN DE PÁGINA:
+#st.set_page_config(page_title="Salud Mental", layout="wide")
+#st.header("Eventos de Morbilidad y Mortalidad, en Salud Mental")
+#st.markdown("##")
+
+# Base de Referencia:
+#-------------------
+#df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
+#df0['anio'] = df0['anio'].astype(str)
+#df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
+
+
+
+
+
+st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
+
+
+
+# Estilo Tablero Personalizado:
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+# Menú de navegación elegante
+with st.sidebar:
+    selected = option_menu(
+        menu_title="Navegación",
+        options=["📊 KPI", "📉 Tendencias", "📍 Mapa", "📥 Datos"],
+        icons=["speedometer", "bar-chart-line", "geo-alt", "table"],
+        default_index=0,
+        orientation="vertical",
+        styles={
+            "container": {"padding": "5px", "background-color": "#f8f9fa"},
+            "icon": {"color": "#0d6efd", "font-size": "18px"},
+            "nav-link": {"font-size": "16px", "text-align": "left", "margin": "5px"},
+            "nav-link-selected": {"background-color": "#0d6efd", "color": "white"},
+        }
+    )
+
+# Filtros elegantes
+st.sidebar.markdown("### Filtros")
+anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df_sm0['anio'].dropna().unique().tolist()))  
+departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df_sm0['departamento'].dropna().unique().tolist()))
+municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df_sm0['municipio'].dropna().unique().tolist()))
+
+
+# BASE DE DATOS:
+# ----------------
+# Aplicar filtros:
+# ----------------
+df_filtrado = df_sm0
+if departamento != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
+if municipio != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
+if anio:
+    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
+# -----------------------------
+
+
+
+
+
+# -----------
+df_selection = df_sm0.query(
+    "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
+)
+
+'''
+# calcular los análisis:
+total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
+
+
+total1,total2,total3,total4,total5=st.columns(5,gap='small')
+with total1:
+    st.info('Tot. Eventos',icon="🎯")
+    st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+with total2:
+    st.info('Tot. Dptos.',icon="🎯")
+    st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+
+with total3:
+    st.info('Tot. Municip.',icon="🎯")
+    st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+
+with total4:
+    st.info('Tot. Grupo',icon="🎯")
+    st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
+        
+
+    #variable distribution Histogram
+    #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
+    # df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
+    # st.pyplot()
+
+'''
+# -----------------------------------------------------
+
+
+
+
+
+
+
+# Secciones del dashboard
+if selected == "📊 KPI":
+    st.subheader("Indicadores Clave de Morbilidad")
+    '''
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Casos Totales", df0["Tot_Eventos"].sum())
+    #col2.metric("Tasa Promedio", f"{df0['tasa_morb'].mean():.2f}")
+    col2.metric("Número de Departamentos", df0["departamento"].nunique())
+    col3.metric("Número de Municipios", df0["municipio"].nunique())
+
+    style_metric_cards(
+        background_color="#F0F2F6",
+        border_left_color="#0d6efd",
+        border_color="#e6e6e6"
+    )'''
+    # calcular los Indicadores Clave de Morbilidad:
+    total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+    investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+    investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+    investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
+
+
+    total1,total2,total3,total4,total5=st.columns(5,gap='small')
+    with total1:
+        st.info('Tot. Eventos',icon="🎯")
+        st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+    with total2:
+        st.info('Tot. Dptos.',icon="🎯")
+        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+
+    with total3:
+        st.info('Tot. Municip.',icon="🎯")
+        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+
+    with total4:
+        st.info('Tot. Grupo',icon="🎯")
+        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
+
+elif selected == "📉 Tendencias":
+    st.subheader("Tendencia Anual de la Tasa de Morbilidad")
+    tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
+    fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
+    st.plotly_chart(fig, use_container_width=True)
+
+elif selected == "📍 Mapa":
+    st.subheader("Mapa Interactivo de Morbilidad")
+    if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
+        st.map(df_filtrado[['latitud', 'longitud']].dropna())
+    else:
+        st.warning("No hay coordenadas disponibles para mostrar el mapa.")
+
+elif selected == "📥 Datos":
+    st.subheader("Datos Detallados")
+    st.dataframe(df_filtrado)
+#------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -289,13 +378,12 @@ Tab1, Tab2 = st.tabs(["Morbilidad", "Mortalidad"])
 
 # Contenido de la primera pestaña
 with Tab1:
-    st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
-    st.write("La morbilidad es la frecuencia o proporción de personas que presentan una enfermedad o condición específica dentro de una población determinada. Desde un enfoque estadístico, el análisis de la morbilidad permite identificar patrones, tendencias y distribuciones geográficas o demográficas de las enfermedades, lo cual es clave para la planificación en salud pública. Mediante indicadores como el número de casos absolutos, la tasa de morbilidad (por cada 10.000 habitantes) o la prevalencia y la incidencia, se pueden evaluar los grupos más afectados, detectar zonas de mayor vulnerabilidad y priorizar recursos. Estas métricas también permiten comparar el comportamiento de enfermedades a lo largo del tiempo o entre regiones, facilitando la toma de decisiones basadas en evidencia.  El análisis estadístico de la morbilidad es, por tanto, una herramienta fundamental para monitorear el estado de salud de una población, y diseñar intervenciones efectivas.") 
+    st.header("MORBILIDAD")
+    st.write("La morbilidad es la frecuencia o proporción de personas que presentan una enfermedad o condición específica dentro de una población determinada. Desde un enfoque estadístico, el análisis de la morbilidad permite identificar patrones, tendencias y distribuciones geográficas o demográficas de las enfermedades, lo cual es clave para la planificación en salud pública.  \n Mediante indicadores como el número de casos absolutos, la tasa de morbilidad (por cada 10.000 habitantes) o la prevalencia y la incidencia, se pueden evaluar los grupos más afectados, detectar zonas de mayor vulnerabilidad y priorizar recursos. Estas métricas también permiten comparar el comportamiento de enfermedades a lo largo del tiempo o entre regiones, facilitando la toma de decisiones basadas en evidencia.  El análisis estadístico de la morbilidad es, por tanto, una herramienta fundamental para monitorear el estado de salud de una población, y diseñar intervenciones efectivas.") 
     
     
     
-    # Filtro para Salud Mental 
-    df_sm0 = df0[df0['componente']=='Salud Mental']  
+     
     
     
     
@@ -322,42 +410,11 @@ with Tab1:
     
     # -----------
     
-    df_selection = df_sm0.query(
-        "departamento==@Departamento & municipio==@Municipio & grupo ==@Grupo"
-    )
     
     
-    # calcular los análisis:
-    total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
-    investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
-    investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
-    investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
-
-
-    total1,total2,total3,total4,total5=st.columns(5,gap='small')
-    with total1:
-        st.info('Tot. Eventos',icon="🎯")
-        st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-    with total2:
-        st.info('Tot. Dptos.',icon="🎯")
-        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
-
-    with total3:
-        st.info('Tot. Municip.',icon="🎯")
-        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
-
-    with total4:
-        st.info('Tot. Grupo',icon="🎯")
-        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
-            
-    
-        #variable distribution Histogram
-        #with st.expander("Distribución de Frecuencias - Variables Cuantitativas"):
-        # df.hist(figsize=(16,8),color='#898784', zorder=2, rwidth=0.9,legend = ['tasa_morb']);
-        # st.pyplot()
     
     
-    # -----------------------------------------------------
+    
    
     
     #--------------------------------------------------------------------------- 
