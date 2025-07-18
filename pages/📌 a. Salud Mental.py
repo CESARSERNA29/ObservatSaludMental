@@ -474,9 +474,24 @@ P_Colores = {"Azul_cl": "#39A8E0",
 df0_sm['anio'] = pd.to_numeric(df0_sm['anio'], errors='coerce')  # convierte strings a números, NaNs si no puede 
 a_min_sm = df0_sm['anio'].min() - 1 
 a_max_sm = df0_sm['anio'].max()+1 
+# -----------------------------------------------------------------------------
+
+
 
 
 st.markdown("##")   # SALTO
+
+
+
+
+
+
+# ----------------------------------------------------------------------------
+
+st.markdown("##")
+
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica de Nro. de Eventos de Morbilidad:</h4>", unsafe_allow_html=True) 
+
 
 
 # 1. Crear un selector para que el usuario elija uno o varios grupos: 
@@ -531,6 +546,11 @@ st.markdown("##")
     
 # ----------------------------------------------------------------------
 # **********************************************************************************
+st.markdown("##")
+
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasas de Morbilidad:</h4>", unsafe_allow_html=True) 
+
+
 # Todos los gráficos se personalizan usando CSS , no Streamlit. 
 theme_plotly = None 
 
