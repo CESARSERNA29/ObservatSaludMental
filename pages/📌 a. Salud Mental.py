@@ -929,7 +929,7 @@ st.markdown("##")
 st.markdown("##")
 
 st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasa de Morbilidad por Departamento </h4>", unsafe_allow_html=True) 
-
+st.warning("Da click en uno de los departamentos para despregar estadísticas") 
 
 # Cargando las Librerías:
 import streamlit as st
@@ -947,7 +947,6 @@ import plotly.graph_objects as go
 # TITULO Y ESTILO DEL ENCABEZADO:
 st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
 #st.header("Resumen Gráfico Exploratorio Multidimensional")
-st.markdown("##")
  
 # Cargar CSS si existe el archivo
 try:
@@ -992,7 +991,7 @@ try:
             "x": 0.5, 
             "xanchor": "center", 
             "yanchor": "top", 
-            "font": dict(size=34, color="black")
+            "font": dict(size=24, color="black")
         }, 
         margin=dict(t=80, l=10, r=10, b=10)
     )
@@ -1007,13 +1006,120 @@ except FileNotFoundError:
     st.error("Archivo 'TablaMorbilidad_Subsectores.xlsx' no encontrado. Verifica que el archivo esté en el directorio correcto.")
 except Exception as e:
     st.error(f"Error al cargar los datos: {str(e)}")
-    
- 
+    # ---------------------------------------------------------------------
 
 
 
 
 
+    st.markdown("##")
+
+
+
+
+
+        
+    # ------------------------------------------------------------------------
+    # GRÁFICO TREE:
+    # ---------------------------------
+
+    st.markdown("##")
+
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasa de Morbilidad por Departamento </h4>", unsafe_allow_html=True) 
+    st.warning("Da click en uno de los departamentos para despregar estadísticas") 
+
+
+
+
+# Diagrama TREE:
+# =======================================
+# Librerías necesarias:
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# Configuración de página
+st.set_page_config(page_title="Dashboard", page_icon="📈", layout="wide")  
+st.header("Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
+st.markdown("##")
+
+# ======================
+# Carga de datos
+population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja1')
+
+# Validación de columnas necesarias
+columnas_necesarias = ['anio', 'Dptos', 'GrupEnfer', 'sexo', 'grupo_edad', 'MorbTot']
+if not all(col in population_df.columns for col in columnas_necesarias):
+    st.error("❌ El archivo no contiene todas las columnas necesarias.")
+    st.stop()
+
+# ======================
+# Filtros en 4 columnas
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    anios = sorted(population_df['anio'].unique())
+    anio_seleccionado = st.selectbox("Selecciona el Año", anios)
+
+with col2:
+    dptos = ['Todos'] + sorted(population_df['Dptos'].dropna().unique())
+    dpto_seleccionado = st.selectbox("Departamento", dptos)
+
+with col3:
+    sexos = ['Todos'] + sorted(population_df['sexo'].dropna().unique())
+    sexo_seleccionado = st.selectbox("Sexo", sexos)
+
+with col4:
+    edades = ['Todos'] + sorted(population_df['grupo_edad'].dropna().unique())
+    edad_seleccionada = st.selectbox("Grupo de Edad", edades)
+
+# ======================
+# Filtro compuesto
+df_filtrado = population_df.copy()
+
+df_filtrado = df_filtrado[df_filtrado['anio'] == anio_seleccionado]
+
+if dpto_seleccionado != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['Dptos'] == dpto_seleccionado]
+
+if sexo_seleccionado != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['sexo'] == sexo_seleccionado]
+
+if edad_seleccionada != "Todos":
+    df_filtrado = df_filtrado[df_filtrado['grupo_edad'] == edad_seleccionada]
+
+# ======================
+# Validación
+if df_filtrado.empty:
+    st.warning("⚠️ No hay datos para los filtros seleccionados.")
+else:
+    # Crear Treemap
+    fig = px.treemap(
+        df_filtrado,
+        path=['Dptos', 'GrupEnfer'],
+        values='MorbTot',
+        color='MorbTot',
+        color_continuous_scale=["red", "orange", "green"],
+        title=f"Morbilidad Total - Año {anio_seleccionado}"
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+st.markdown("##")
 
 
 
