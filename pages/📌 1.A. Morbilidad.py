@@ -47,7 +47,7 @@ with st.sidebar:
 
 # Filtros elegantes
 st.sidebar.markdown("### Filtros")
-anio = st.sidebar.selectbox("Selecciona Año", options=sorted(df['anio'].unique(), reverse=True))
+anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df['anio'].unique(), reverse=True))
 departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df['departamento'].dropna().unique().tolist()))
 municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df['municipio'].dropna().unique().tolist()))
 
