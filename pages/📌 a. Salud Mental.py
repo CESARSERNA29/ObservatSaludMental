@@ -147,10 +147,6 @@ st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
 
 # Estilo Tablero Personalizado:
 
-#st.sidebar.image("data/Logo_UNILLANOS.png",caption="")      # LOGO
-st.sidebar.image("Logo_UNILLANOS.png",caption="")            # LOGO
-
-
 with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
