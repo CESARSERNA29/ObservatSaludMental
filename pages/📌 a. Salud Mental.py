@@ -75,9 +75,6 @@ import plotly.express as px
 #from streamlit-aggrid import AgGrid, GridOptionsBuilder
 
 
-
-
-
 #------------------------------------------------------------------------------
 # CONFIGURACIÓN DE PÁGINA:
 #st.set_page_config(page_title="Salud Mental", layout="wide")
@@ -85,10 +82,14 @@ import plotly.express as px
 #st.markdown("##")
 
 # Base de Referencia:
-df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
-df['anio'] = df['anio'].astype(str)
+#-------------------
+df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
+df0['anio'] = df0['anio'].astype(str)
+
+
 
 st.set_page_config(page_title="📊 Dashboard de Morbilidad", page_icon="🧠", layout="wide")
+
 
 
 # Estilo Tablero Personalizado:
@@ -114,14 +115,16 @@ with st.sidebar:
 
 # Filtros elegantes
 st.sidebar.markdown("### Filtros")
-anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df['anio'].dropna().unique().tolist()))  
-departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df['departamento'].dropna().unique().tolist()))
-municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df['municipio'].dropna().unique().tolist()))
+anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df0['anio'].dropna().unique().tolist()))  
+departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df0['departamento'].dropna().unique().tolist()))
+municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df0['municipio'].dropna().unique().tolist()))
 
 
+# BASE DE DATOS:
+# ----------------
 # Aplicar filtros:
 # ----------------
-df_filtrado = df.copy()
+df_filtrado = df0.copy()
 if departamento != "Todos":
     df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
 if municipio != "Todos":
@@ -874,7 +877,7 @@ with Tab1:
             else:
                 # Contar filas por grupo
                 df_agg = df_filtrado.groupby(['Periodo', 'sexo']).size().reset_index(name='Tot_Eventos')
-                y_column = 'Tot_Eventos'
+                y_column = 'Casos'
             df_agg = df_agg.sort_values(by='Periodo')
             
             # Crear gráfico con sexo
