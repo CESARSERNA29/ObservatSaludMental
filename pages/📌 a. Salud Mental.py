@@ -79,9 +79,9 @@ import plotly.express as px
 #-------------------------------------------------------------------------------
 # Cargar y preparación de las fuentes de datos
 #-------------------------------------------------------------------------------
-# -----------------------
-# Tablas para Morbilidad:
-# -----------------------
+# -------------------------------
+# Tabla de Datos para Morbilidad:
+# -------------------------------
 
 @st.cache_data  # Esta linea permite acceder al df desde la memoria cache
 def load_data1():
@@ -135,17 +135,9 @@ df_sm0 = df0[df0['componente']=='Salud Mental']
 
 #------------------------------------------------------------------------------
 # CONFIGURACIÓN DE PÁGINA:
-#st.set_page_config(page_title="Salud Mental", layout="wide")
-#st.header("Eventos de Morbilidad y Mortalidad, en Salud Mental")
-#st.markdown("##")
 
 # Base de Referencia:
 #-------------------
-#df0 = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
-#df0['anio'] = df0['anio'].astype(str)
-#df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
-
-
 
 
 
@@ -1153,11 +1145,143 @@ def load_data2():
 
 df1 = load_data2()
 
-df_sm=df1[df1['componente']=='Salud Mental']
+df_sm1=df1[df1['componente']=='Salud Mental']
 
 
 
 #-------------------------------------------------------------------------------
 
+
+
+
+st.markdown("##")
+
+
+
+
+
+
+# ---------------------------------------------------------------------------
+# Sección de Filtrado:
+# -------------------
+
+st.subheader("Indicadores Clave de Morbilidad")
+
+with st.expander("👉 Mostrar Filtros", expanded=False):
+    Departamento = st.multiselect(
+        "Selecciona Departamento", 
+        options = df_sm1["departamento"].unique(), 
+        default = df_sm1["departamento"].unique()
+    )
+    
+    Municipio = st.multiselect( 
+        "Selecciona Municipio", 
+        options = df_sm1["municipio"].unique(), 
+        default = df_sm1["municipio"].unique()
+    ) 
+    
+    Grupo = st.multiselect(
+        "Selecciona el Grupo de Enfermedad", 
+        options = df_sm1["grupo"].unique(), 
+        default = df_sm1["grupo"].unique()
+    )    
+
+
+# ✅ Filtrar el dataframe según los valores seleccionados
+df_selection2 = df_sm1.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+
+    
+
+# ✅ Mostrar resultados
+st.write("Datos filtrados:", df_selection)
+
+# ----------------------------------------------------------------------------
+
+
+
+# Secciones del dashboard
+if selected == "📊 KPI":
+    st.subheader("KPI")
+    # calcular los Indicadores Clave de Morbilidad:
+    total_investment = float(pd.Series(df_selection2['Tot_Eventos']).sum())
+    investment_mode1 = float(pd.Series(df_selection2['departamento']).nunique())
+    investment_mode2 = float(pd.Series(df_selection2['municipio']).nunique())
+    investment_median= float(pd.Series(df_selection2['Enfermedad_Evento']).nunique()) 
+
+
+    total1,total2,total3,total4,total5=st.columns(5,gap='small')
+    with total1:
+        st.info('Tot. Eventos',icon="🎯")
+        st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+    with total2:
+        st.info('Tot. Dptos.',icon="🎯")
+        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+
+    with total3:
+        st.info('Tot. Municip.',icon="🎯")
+        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+
+    with total4:
+        st.info('Tot. Grupo',icon="🎯")
+        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
+
+elif selected == "📉 Tendencias":
+    st.subheader("Tendencia Anual de la Tasa de Morbilidad")
+    tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
+    fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
+    st.plotly_chart(fig, use_container_width=True)
+
+elif selected == "📍 Mapa":
+    st.subheader("Mapa Interactivo de Morbilidad")
+    if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
+        st.map(df_filtrado[['latitud', 'longitud']].dropna())
+    else:
+        st.warning("No hay coordenadas disponibles para mostrar el mapa.")
+
+elif selected == "📥 Datos":
+    st.subheader("Datos Detallados")
+    st.dataframe(df_filtrado)
+#------------------------------------------------------------------------------
+
+
+
+
+
+# ******
+
+# ✅ Filtrar el dataframe según los valores seleccionados
+df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+
+    
+#--------------------------------------------------------------------------- 
+# Tabla de frecuencia de grupos de enfermedades de Salud Mental 
+#---------------------------------------------------------------------------
+# Mostrar tabla expandible con el conjunto de datos
+
+def Home1(): 
+    with st.expander("Ver el Conjunto de Datos en Excel"): 
+        showData = st.multiselect(
+            'Filter:', 
+            df_selection.columns,
+            default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
+                     "componente", "capitulo", "grupo", "Enfermedad_Evento", 
+                     "pob10", "tasa_morb", "Tot_Eventos"], 
+            key='SelectorMultiple'
+            ) 
+        st.dataframe(df_selection[showData], use_container_width=True)
+
+# Hasta aqui se muestra el excel con la base original
+# ---------------------------------------------------------------------
+
+
+
+
+st.markdown("##")
+
+
+
+
+    
+# ----------------------------------------------------------------------
 
 
