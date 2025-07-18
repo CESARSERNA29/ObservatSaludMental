@@ -140,7 +140,7 @@ if anio:
 if selected == "📊 KPI":
     st.subheader("Indicadores Clave de Morbilidad")
     col1, col2, col3 = st.columns(3)
-    col1.metric("Casos Totales", numerize.numerize(df_filtrado["Tot_Eventos"].sum()), "↗︎")
+    col1.metric("Casos Totales", df_filtrado["Tot_Eventos"].sum(), "↗︎")
     col2.metric("Tasa Promedio", f"{df_filtrado['tasa_morbilidad'].mean():.2f}")
     col3.metric("Número de Municipios", df_filtrado["municipio"].nunique())
 
