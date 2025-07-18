@@ -74,22 +74,26 @@ import numpy as np
 import plotly.express as px
 #from streamlit-aggrid import AgGrid, GridOptionsBuilder
 
-#-------------------------------------------------------------------------------
+
+
+
+
+#------------------------------------------------------------------------------
 # CONFIGURACIÓN DE PÁGINA:
 #st.set_page_config(page_title="Salud Mental", layout="wide")
 #st.header("Eventos de Morbilidad y Mortalidad, en Salud Mental")
 #st.markdown("##")
 
-
+# Base de Referencia:
 df = pd.read_excel('Tasas_Morbilidad_25MB.xlsx', sheet_name='Hoja1')
 df['anio'] = df['anio'].astype(str)
 
 st.set_page_config(page_title="📊 Dashboard de Morbilidad", page_icon="🧠", layout="wide")
 
-# Estilo personalizado
+
+# Estilo Tablero Personalizado:
 with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
 
 
 # Menú de navegación elegante
@@ -114,7 +118,9 @@ anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df['an
 departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df['departamento'].dropna().unique().tolist()))
 municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df['municipio'].dropna().unique().tolist()))
 
-# Aplicar filtros
+
+# Aplicar filtros:
+# ----------------
 df_filtrado = df.copy()
 if departamento != "Todos":
     df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
@@ -122,12 +128,15 @@ if municipio != "Todos":
     df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
 if anio:
     df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
+# -----------------------------
+
+
 
 # Secciones del dashboard
 if selected == "📊 KPI":
     st.subheader("Indicadores Clave de Morbilidad")
     col1, col2, col3 = st.columns(3)
-    col1.metric("Casos Totales", numerize.numerize(df_filtrado["casos"].sum()), "↗︎")
+    col1.metric("Casos Totales", numerize.numerize(df_filtrado["Tot_Eventos"].sum()), "↗︎")
     col2.metric("Tasa Promedio", f"{df_filtrado['tasa_morbilidad'].mean():.2f}")
     col3.metric("Número de Municipios", df_filtrado["municipio"].nunique())
 
@@ -153,7 +162,7 @@ elif selected == "📍 Mapa":
 elif selected == "📥 Datos":
     st.subheader("Datos Detallados")
     st.dataframe(df_filtrado)
-
+#------------------------------------------------------------------------------
 
 
 
@@ -864,8 +873,8 @@ with Tab1:
                 y_column = 'Enfermedad_Evento'
             else:
                 # Contar filas por grupo
-                df_agg = df_filtrado.groupby(['Periodo', 'sexo']).size().reset_index(name='Casos')
-                y_column = 'Casos'
+                df_agg = df_filtrado.groupby(['Periodo', 'sexo']).size().reset_index(name='Tot_Eventos')
+                y_column = 'Tot_Eventos'
             df_agg = df_agg.sort_values(by='Periodo')
             
             # Crear gráfico con sexo
