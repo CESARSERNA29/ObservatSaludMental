@@ -32,7 +32,7 @@ st.set_page_config(page_title="Dashboard",page_icon="🌍",layout="wide")
 
 # Título general
 st.markdown("""
-<h1 style='text-align: center; color: #3A3A3A;'>📈 MORBILIDAD: Tratamiento Estadístico, KPI y Tendencias</h1>
+<h1 style='text-align: center; color: #3A3A3A;'>📈 SALUD MENTAL: Tratamiento Estadístico, KPI y Tendencias</h1>
 """, unsafe_allow_html=True)
 
 st.markdown("##")
@@ -125,7 +125,7 @@ municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df0['mu
 # ----------------
 # Aplicar filtros:
 # ----------------
-df_filtrado = df0.copy()
+df_filtrado = df0
 if departamento != "Todos":
     df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
 if municipio != "Todos":
