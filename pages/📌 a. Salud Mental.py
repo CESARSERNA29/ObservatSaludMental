@@ -717,13 +717,13 @@ st.markdown("##")
 
 
     
-# ----------------------------------------------------------------------
-# NO RECUERDO QUE HACE ESTE BLOQUE:
+# ------------------------------------------------------------------------
+# CONSTRUCCIÓN DE UNA TABLA DE FRECUENCIA DE EVENTOS POR GRUPOS DE EDADES:
 # ---------------------------------
 
 st.markdown("##")
 
-st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasas de Morbilidad</h4>", unsafe_allow_html=True) 
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Casos de Morbilidad por Categoría de Edades y Regiones </h4>", unsafe_allow_html=True) 
 
 
 
@@ -790,8 +790,17 @@ if showData:
 else:
     st.warning("Selecciona al menos una columna para mostrar")
 
+
+
+
+st.markdown("##")
+
+
+
+
 # === SECCIÓN 2: GRÁFICO INTERACTIVO ===
-st.header("📊 Frecuencia de Morbilidad por Departamento y Categoría de Edad")
+#st.header("📊 Frecuencia de Morbilidad por Departamento y Categoría de Edad")
+st.markdown("<h5 style='font-weight:bold;'>📊 Frecuencia de Morbilidad por Departamento y Categoría de Edad </h5>", unsafe_allow_html=True)
 
 # Crear columnas para los filtros
 col1, col2 = st.columns(2)
