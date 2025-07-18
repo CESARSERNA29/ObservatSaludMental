@@ -1163,9 +1163,9 @@ st.markdown("##")
 
 # ---------------------------------------------------------------------------
 # Sección de Filtrado:
-# -------------------
+# --------------------
 
-st.subheader("Indicadores Clave de Morbilidad")
+st.subheader("Indicadores Clave de Mortalidad")
 
 with st.expander("👉 Mostrar Filtros", expanded=False):
     Departamento = st.multiselect(
@@ -1203,7 +1203,7 @@ st.write("Datos filtrados:", df_selection)
 if selected == "📊 KPI":
     st.subheader("KPI")
     # calcular los Indicadores Clave de Morbilidad:
-    total_investment = float(pd.Series(df_selection2['Tot_Eventos']).sum())
+    total_investment = float(pd.Series(df_selection2['cant']).sum())
     investment_mode1 = float(pd.Series(df_selection2['departamento']).nunique())
     investment_mode2 = float(pd.Series(df_selection2['municipio']).nunique())
     investment_median= float(pd.Series(df_selection2['Enfermedad_Evento']).nunique()) 
