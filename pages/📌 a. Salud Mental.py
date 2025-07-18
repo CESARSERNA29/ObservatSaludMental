@@ -1092,7 +1092,10 @@ st.markdown("##")
 # ============================================================================
 
 st.markdown("---")  # Otra línea si quieres enfatizarlo aún más
-st.markdown("<h3 style='text-align: center; color: #DC143C;'> Sección Mortalidad")
+st.markdown(
+    "<h3 style='text-align: center; color: #DC143C;'>Sección de Mortalidad</h3>", 
+    unsafe_allow_html=True
+)
 st.markdown("---")
 
 # ============================================================================
@@ -1269,7 +1272,7 @@ elif selected == "📥 Datos":
 # ******
 
 # ✅ Filtrar el dataframe según los valores seleccionados
-df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+df_selection = df_sm1.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
 
     
 #--------------------------------------------------------------------------- 
@@ -1295,6 +1298,7 @@ def Home1():
 
 
 
+
 st.markdown("##")
 
 
@@ -1303,4 +1307,135 @@ st.markdown("##")
     
 # ----------------------------------------------------------------------
 
+# Llamar la función antes del resumen tabular
+Home1()
+
+st.markdown("##")
+
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del Número de Decesos Por Grupo de Enfermedades</h4>", unsafe_allow_html=True) 
+
+# Convertir año a categórica 
+df_sm1['anio'] = pd.to_numeric(df_sm1['anio'], errors='coerce') 
+
+# Filtro para la region de la orinoquia 
+df_sm1=df_sm1[df_sm1['region']=='Orinoquía'] 
+
+
+# Reemplazar valores en la columna 'sexo' 
+df_sm1['sexo'] = df_sm1['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
+
+
+# Orden ctegorias de edad 
+#orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 'Adultez Temprana', 'Adultez Media', 'Adultez Mayor'] 
+
+# Convertir la columna 'nombre_cat_edad' a tipo categórico con orden 
+#df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], categories=orden_cat_edad, ordered=True)
+df_sm1['nombre_cat_edad'] = pd.Categorical(df_sm1['nombre_cat_edad'])
+df_sm1['grupo'] = df_sm1['grupo'].str.strip() 
+df_sm1['departamento']= df_sm1['departamento'].str.strip() 
+df_sm1['departamento']=pd.Categorical(df_sm1['departamento']) 
+
+df_sm1['anio'] = df_sm1['anio'].astype(str)   # esto va en contra de la septima línea de código hacia arriba
+
+# Filtro para Salud Mental 
+df_sm1 = df_sm1[df_sm1['componente']=='Salud Mental']
+
+# Tabla Pivote: 
+df_agregada1 = df_sm1.groupby(['grupo']).count().reset_index() 
+df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
+df_agregada1_1.columns = ['grupo', 'cant'] 
+
+# Calcular el total de casos 
+total_casos = df_agregada1_1['cant'].sum() 
+
+# Agregar columna de porcentaje 
+df_agregada1_1['(%)'] = (df_agregada1_1['cant'] / total_casos * 100).round(2) 
+
+st.dataframe(df_agregada1_1) 
+# ----------------------------------------------------------------------
+
+
+
+
+
+st.markdown("##")   # SALTO
+
+
+
+
+
+#------------------------------------------------------------------------- 
+
+# 1. Crear los selectores para grupo de enfermedades y sexo
+
+grupos_sm = df_sm1['grupo'].unique().tolist()
+sexos = ['Todos'] + df_sm1['sexo'].dropna().unique().tolist()
+
+st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedades</h5>", unsafe_allow_html=True)
+grupo_sm_sel = st.selectbox("Grupo", grupos_sm)
+
+st.markdown("<h5 style='font-weight:bold;'>Selecciona el sexo</h5>", unsafe_allow_html=True)
+sexo_sel = st.selectbox("Sexo", sexos)
+
+# 2. Filtrar el DataFrame según las selecciones
+
+df_sm_filtrado = df_sm1[df_sm1['grupo'] == grupo_sm_sel]
+
+if sexo_sel != 'Todos':
+    df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['sexo'] == sexo_sel]
+
+# 3. Agrupar los datos ya filtrados
+
+df_sm_filtrado2 = df_sm_filtrado.groupby(
+    ['anio', 'nombre_cat_edad', 'departamento']
+)['anio'].count().reset_index(name='cant')
+
+
+
+
+# ----------------------------------------------------------------------
+
+# 4. Crear la tabla cruzada sumando la columna 'cant' 
+# Tabla Cruzada: 
+tabla_sm2 = df_sm_filtrado2.pivot_table(
+    values='cant', 
+    index='nombre_cat_edad', 
+    columns='departamento', 
+    aggfunc='sum', 
+    fill_value=0, 
+    observed=False)
+
+
+# 5. Mostrar la tabla en Streamlit 
+st.write("Tabla cruzada, Total de Casos por Rango de Edad") 
+st.dataframe(tabla_sm2) 
+
+# ---------------------------------------------------------------------
+
+
+
+
+
+st.markdown("##")
+
+
+
+
+
+    
+# ----------------------------------------------------------------------
+# Diagrama de lineas año y sexo: 
+# ----------------------------- 
+P_Colores = {"Azul_cl": "#39A8E0", 
+             "Gris": "#9D9D9C", 
+             "Verde": "#009640", 
+             "Naranja": "#F28F1C", 
+             "Azul_os": "#2A3180", 
+             "Rojo": "#E5352B",
+             "Morado":"#662681"} 
+
+df0_sm['anio'] = pd.to_numeric(df_sm1['anio'], errors='coerce')  # convierte strings a números, NaNs si no puede 
+a_min_sm = df_sm1['anio'].min() - 1 
+a_max_sm = df_sm1['anio'].max()+1 
+# -----------------------------------------------------------------------------
 
