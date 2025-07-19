@@ -46,11 +46,9 @@ st.markdown("""
 
 st.markdown("""
         <div style="text-align: justify; font-size: 18px; color: #444444;">
-        La salud mental es un componente fundamental del bienestar individual y colectivo de la humanidad, especialmente en contextos marcados por desigualdad, la violencia o la exclusión social.
+        La salud mental es un componente fundamental del bienestar individual y colectivo de la humanidad, especialmente en contextos marcados por desigualdad, la violencia o la exclusión social.  Desde el bienestar general de las personas y de la estabilidad social de los territorios, la Salud Mental no se trata únicamente de la presencia de trastornos psicológicos, sino de un estado dinámico en el que el individuo puede desarrollar sus habilidades, enfrentar las tensiones normales de la vida, trabajar de forma productiva y contribuir a su comunidad. 
         
-        \nDesde el bienestar general de las personas y de la estabilidad social de los territorios, la Salud Mental no se trata únicamente de la presencia de trastornos psicológicos, sino de un estado dinámico en el que el individuo puede desarrollar sus habilidades, enfrentar las tensiones normales de la vida, trabajar de forma productiva y contribuir a su comunidad. 
-        
-        \nAhora, el interés por estudiar la salud mental desde enfoques cuantitativos, especialmente ante el incremento de diagnósticos relacionados con trastornos de ansiedad, depresión, consumo de sustancias y conductas suicidas, es una necesidad cada vez más frecuente. Esta condición ha sido resaltada por eventos globales como la pandemia del COVID-19, crisis migratorias (desplazamientos), desigualdades estructurales y violencia comunitaria. 
+        \nAhora bien, el interés por estudiar la salud mental desde enfoques cuantitativos, especialmente ante el incremento de diagnósticos relacionados con trastornos de ansiedad, depresión, consumo de sustancias y conductas suicidas, es una necesidad cada vez más frecuente. Esta condición ha sido resaltada por eventos globales como la pandemia del COVID-19, crisis migratorias (desplazamientos), desigualdades estructurales y violencia comunitaria. 
         
         \nEn regiones como la Orinoquía colombiana, caracterizada por una amplia diversidad étnica, condiciones geográficas particulares y limitaciones estructurales de acceso a servicios de salud, el análisis estadístico riguroso de la salud mental se vuelve una herramienta crítica para orientar políticas públicas, optimizar recursos y diseñar intervenciones focalizadas.
        
