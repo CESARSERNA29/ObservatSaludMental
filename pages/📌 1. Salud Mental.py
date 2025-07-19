@@ -45,8 +45,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.markdown("""
-        <div style="text-align: justify; font-size: 18px; color: #444444;"> 
-        
+        <div style="text-align: justify; font-size: 18px; color: #444444;">
         La salud mental es un componente fundamental del bienestar individual y colectivo de la humanidad, especialmente en contextos marcados por desigualdad, la violencia o la exclusión social.
         
         \nDesde el bienestar general de las personas y de la estabilidad social de los territorios, la Salud Mental no se trata únicamente de la presencia de trastornos psicológicos, sino de un estado dinámico en el que el individuo puede desarrollar sus habilidades, enfrentar las tensiones normales de la vida, trabajar de forma productiva y contribuir a su comunidad. 
@@ -56,9 +55,7 @@ st.markdown("""
         \nEn regiones como la Orinoquía colombiana, caracterizada por una amplia diversidad étnica, condiciones geográficas particulares y limitaciones estructurales de acceso a servicios de salud, el análisis estadístico riguroso de la salud mental se vuelve una herramienta crítica para orientar políticas públicas, optimizar recursos y diseñar intervenciones focalizadas.
        
        
-        
-        <br>
-        A continuación se presenta un sinnúmero de desarrollos estadísticos que caracteriza las condicones de salud mental, en términos de Morbilidad y mortalidad, de la población que conforma la orinoquía colombiana.
+     
         </div>
     """, unsafe_allow_html=True)
 
@@ -76,7 +73,7 @@ st.markdown("""
 
 st.markdown("---")  # Otra línea si quieres enfatizarlo aún más
 st.markdown(
-    "<h3 style='text-align: center; color: #DC143C;'>Adicionar ALgo de Salud Mental (Profes...)</h3>", 
+    "<h3 style='text-align: center; color: #DC143C;'>Adicionar aLgo de Salud Mental (Profes...)</h3>", 
     unsafe_allow_html=True
 )
 st.markdown("---")
