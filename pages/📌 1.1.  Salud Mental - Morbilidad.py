@@ -906,7 +906,9 @@ st.markdown("##")
 st.markdown("##")
 
 st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasa de Morbilidad por Departamento </h4>", unsafe_allow_html=True) 
-st.warning("Da click en uno de los departamentos para despregar estadísticas") 
+st.write("Da click en uno de los departamentos (en el centro del gráfico) para desplegar estadísticas") 
+
+
 
 # Cargando las Librerías:
 import streamlit as st
@@ -1061,3 +1063,64 @@ st.markdown("##")
 
 
 
+# =========================================================
+
+
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# Configurar página
+st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")
+st.header("📌 Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
+st.markdown("###")
+
+# 📥 Cargar los datos
+population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja2')
+
+# 📅 Filtro por Año
+anios = sorted(population_df['anio'].unique())
+anio_seleccionado = st.selectbox("📆 Selecciona el Año", anios)
+
+# 📊 Filtros horizontales
+col1, col2 = st.columns(2)
+
+# 📍 Filtro Departamento
+departamentos = ["Total"] + sorted(population_df["Dptos"].dropna().unique())
+with col1:
+    dpto_seleccionado = st.selectbox("🏛️ Departamento", departamentos)
+
+# 🚻 Filtro Sexo
+sexos = ["Ambos sexos"] + sorted(population_df["sexo"].dropna().unique())
+with col2:
+    sexo_seleccionado = st.selectbox("🚻 Sexo", sexos)
+
+# 🎯 Aplicar filtros
+df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
+
+if dpto_seleccionado != "Total":
+    df_filtrado = df_filtrado[df_filtrado["Dptos"] == dpto_seleccionado]
+
+if sexo_seleccionado != "Ambos sexos":
+    df_filtrado = df_filtrado[df_filtrado["sexo"] == sexo_seleccionado]
+
+# 🌳 Crear el Treemap
+fig = px.treemap(
+    df_filtrado,
+    path=['Dptos', 'GrupEnfer'],
+    values='MorbTot',
+    color='MorbTot',
+    color_continuous_scale=["red", "orange", "green"],
+)
+
+# 🧾 Título dinámico
+titulo = f"Morbilidad por Departamento y Grupo de Enfermedad - {anio_seleccionado}"
+if dpto_seleccionado != "Total":
+    titulo += f" | {dpto_seleccionado}"
+if sexo_seleccionado != "Ambos sexos":
+    titulo += f" | Sexo: {sexo_seleccionado}"
+
+fig.update_layout(title=titulo)
+
+# 📊 Mostrar gráfico
+st.plotly_chart(fig, use_container_width=True)
