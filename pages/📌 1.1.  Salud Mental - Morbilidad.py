@@ -821,7 +821,7 @@ def crear_grafico(departamento, nombre_cat_edad):
     if df_filtrado.empty:
         st.warning(f"No hay datos para {departamento} - {nombre_cat_edad}")
         return None
-    
+    st.markdown("##")
     # Determinar título del gráfico
     if departamento == 'Todos' and nombre_cat_edad == 'Todas':
         titulo = 'Casos de Morbilidad - Todos los Departamentos y Categorías de Edad'
