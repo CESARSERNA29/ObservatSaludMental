@@ -249,7 +249,7 @@ if selected == "📊 KPI":
     total1,total2,total3,total4,total5=st.columns(5,gap='small')
     with total1: 
         st.info('Años', icon="📆") 
-        st.metric(label="Periodo", value="2018 - 2022")
+        st.metric(label="Periodo", value="2018 - 2023")
     with total2:
         st.info('Tot. Eventos',icon="🎯")
         st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
@@ -383,26 +383,28 @@ st.markdown("##")   # SALTO
 
 #------------------------------------------------------------------------- 
 
-# 1. Crear los selectores para grupo de enfermedades y sexo
-
+# Crear las listas de opciones
 grupos_sm = df0_sm['grupo'].unique().tolist()
 sexos = ['Todos'] + df0_sm['sexo'].dropna().unique().tolist()
 
-st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedades</h5>", unsafe_allow_html=True)
-grupo_sm_sel = st.selectbox("Grupo", grupos_sm)
+# Crear dos columnas para los filtros en una misma línea
+col1, col2 = st.columns([2, 1])  # Ajusta proporción si quieres que Grupo sea más ancho
 
-st.markdown("<h5 style='font-weight:bold;'>Selecciona el sexo</h5>", unsafe_allow_html=True)
-sexo_sel = st.selectbox("Sexo", sexos)
+with col1:
+    st.markdown("<h5 style='font-weight:bold;'>Grupo de Enfermedades</h5>", unsafe_allow_html=True)
+    grupo_sm_sel = st.selectbox("Grupo", grupos_sm, label_visibility="collapsed")
 
-# 2. Filtrar el DataFrame según las selecciones
+with col2:
+    st.markdown("<h5 style='font-weight:bold;'>Sexo</h5>", unsafe_allow_html=True)
+    sexo_sel = st.selectbox("Sexo", sexos, label_visibility="collapsed")
 
+# Filtrar según selección
 df_sm_filtrado = df0_sm[df0_sm['grupo'] == grupo_sm_sel]
 
 if sexo_sel != 'Todos':
     df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['sexo'] == sexo_sel]
 
-# 3. Agrupar los datos ya filtrados
-
+# Agrupar los datos filtrados
 df_sm_filtrado2 = df_sm_filtrado.groupby(
     ['anio', 'nombre_cat_edad', 'departamento']
 )['anio'].count().reset_index(name='cant')
@@ -477,8 +479,8 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica
 # 1. Crear un selector para que el usuario elija uno o varios grupos: 
 deptos_sm = df0_sm['departamento'].unique().tolist() 
 #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
-st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
-Dptos_sm_sel = st.selectbox("", deptos_sm)
+#st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
+Dptos_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm)
 
 
 df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
@@ -1027,8 +1029,8 @@ population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja2')
 
 # 📅 Filtro por Año
 anios = sorted(population_df['anio'].unique())
-st.markdown("<h5 style='font-weight:bold;'>Selecciona el Año</h5>", unsafe_allow_html=True) 
-anio_seleccionado = st.selectbox("", anios)
+#st.markdown("<h5 style='font-weight:bold;'>Selecciona el Año</h5>", unsafe_allow_html=True) 
+anio_seleccionado = st.selectbox("Selecciona el Año", anios)
 
 # 📊 Filtros horizontales
 col1, col2 = st.columns(2)
@@ -1036,14 +1038,14 @@ col1, col2 = st.columns(2)
 # 📍 Filtro Departamento
 departamentos = ["Total"] + sorted(population_df["Dptos"].dropna().unique())
 with col1:
-    st.markdown("<h5 style='font-weight:bold;'>Selecciona el Departamento</h5>", unsafe_allow_html=True) 
-    dpto_seleccionado = st.selectbox("", departamentos)
+    #st.markdown("<h5 style='font-weight:bold;'>Selecciona el Departamento</h5>", unsafe_allow_html=True) 
+    dpto_seleccionado = st.selectbox("Selecciona el Departamento", departamentos)
 
 # 🚻 Filtro Sexo
 sexos = ["Ambos sexos"] + sorted(population_df["sexo"].dropna().unique())
 with col2:
-    st.markdown("<h5 style='font-weight:bold;'>Selecciona el Sexo</h5>", unsafe_allow_html=True)
-    sexo_seleccionado = st.selectbox("", sexos)
+    #st.markdown("<h5 style='font-weight:bold;'>Selecciona el Sexo</h5>", unsafe_allow_html=True)
+    sexo_seleccionado = st.selectbox("Selecciona el Sexo", sexos)
 
 # 🎯 Aplicar filtros
 df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
