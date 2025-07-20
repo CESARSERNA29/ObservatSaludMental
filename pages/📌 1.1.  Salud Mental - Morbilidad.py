@@ -1151,9 +1151,9 @@ if selected == "📍 Mapa":
 
     # 1. Cargar la tabla con tasas y el geopandas:
     # Leer shapefile
-    gdf_municipios = gpd.read_file("/ciudades_shp/MGN_ADM_MPIO_GRAFICO.shp")
+    gdf_municipios = gpd.read_file("MGN_ADM_MPIO_GRAFICO.shp")
 
-    df_tasas = pd.read_excel("/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
+    df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
     
     # 2. Unir con geometrías por municipio
     gdf_merged = gdf_municipios.merge(df_tasas, on=["mpio_cdpmp"], how="left")
