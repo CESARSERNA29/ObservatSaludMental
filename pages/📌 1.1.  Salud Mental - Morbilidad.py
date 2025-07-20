@@ -474,8 +474,8 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica
 # 1. Crear un selector para que el usuario elija uno o varios grupos: 
 deptos_sm = df0_sm['departamento'].unique().tolist() 
 #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
-#st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
-Dptos_sm_sel = st.selectbox("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", deptos_sm)
+st.markdown("***Selecciona un Departamento***", unsafe_allow_html=True) 
+Dptos_sm_sel = st.selectbox("", deptos_sm)
 
 
 df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
@@ -1026,7 +1026,7 @@ population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja2')
 
 # 📅 Filtro por Año
 anios = sorted(population_df['anio'].unique())
-anio_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Selecciona el Año</h5>", anios)
+anio_seleccionado = st.selectbox("***Selecciona el Año***", anios)
 
 # 📊 Filtros horizontales
 col1, col2 = st.columns(2)
@@ -1034,12 +1034,12 @@ col1, col2 = st.columns(2)
 # 📍 Filtro Departamento
 departamentos = ["Total"] + sorted(population_df["Dptos"].dropna().unique())
 with col1:
-    dpto_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Departamento</h5>", departamentos)
+    dpto_seleccionado = st.selectbox("***Selecciona el Departamento***", departamentos)
 
 # 🚻 Filtro Sexo
 sexos = ["Ambos sexos"] + sorted(population_df["sexo"].dropna().unique())
 with col2:
-    sexo_seleccionado = st.selectbox("h5 style='font-weight:bold;'>Sexo</h5>", sexos)
+    sexo_seleccionado = st.selectbox("***Selecciona el Sexo***", sexos)
 
 # 🎯 Aplicar filtros
 df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
