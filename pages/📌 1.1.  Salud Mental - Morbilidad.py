@@ -1024,7 +1024,8 @@ population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja2')
 
 # 📅 Filtro por Año
 anios = sorted(population_df['anio'].unique())
-anio_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Selecciona el Año</h5>", anios)
+st.markdown("<h5 style='font-weight:bold;'>Selecciona el Año</h5>", unsafe_allow_html=True) 
+anio_seleccionado = st.selectbox("", anios)
 
 # 📊 Filtros horizontales
 col1, col2 = st.columns(2)
@@ -1032,12 +1033,14 @@ col1, col2 = st.columns(2)
 # 📍 Filtro Departamento
 departamentos = ["Total"] + sorted(population_df["Dptos"].dropna().unique())
 with col1:
-    dpto_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Selecciona el Departamento</h5>", departamentos)
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona el Departamento</h5>", unsafe_allow_html=True) 
+    dpto_seleccionado = st.selectbox("", departamentos)
 
 # 🚻 Filtro Sexo
 sexos = ["Ambos sexos"] + sorted(population_df["sexo"].dropna().unique())
 with col2:
-    sexo_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Selecciona el Sexo</h5>", sexos)
+    st.markdown("<h5 style='font-weight:bold;'>Selecciona el Sexo</h5>", unsafe_allow_html=True)
+    sexo_seleccionado = st.selectbox("", sexos)
 
 # 🎯 Aplicar filtros
 df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
