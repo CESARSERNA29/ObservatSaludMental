@@ -232,6 +232,14 @@ st.subheader("Indicadores Clave de Morbilidad")
 
 # ✅ Mostrar resultados
 #st.write("Datos filtrados:", df_selection)
+# ---------------------------------------------------------------------------
+# Filtros visibles para el usuario, pero aún no se aplican
+Departamento = st.multiselect("Selecciona Departamento", df_sm0['departamento'].dropna().unique())
+Municipio = st.multiselect("Selecciona Municipio", df_sm0['municipio'].dropna().unique())
+Grupo = st.multiselect("Selecciona Grupo", df_sm0['grupo'].dropna().unique())
+
+df_selection = df_sm0.copy()  # No se filtra todavía
+
 
 # ----------------------------------------------------------------------------
 # Asignación directa sin filtros interactivos
