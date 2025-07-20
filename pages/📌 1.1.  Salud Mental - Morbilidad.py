@@ -247,22 +247,22 @@ if selected == "📊 KPI":
 
 
     total1,total2,total3,total4,total5=st.columns(5,gap='small')
-    with total5: 
+    with total1: 
         st.info('Años', icon="📆") 
         st.metric(label="Periodo", value="2018 - 2022")
-    with total1:
+    with total2:
         st.info('Tot. Eventos',icon="🎯")
         st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-    with total2:
+    with total3:
         st.info('Tot. Dptos.',icon="🎯")
         st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
 
-    with total3:
+    with total4:
         st.info('Tot. Municip.',icon="🎯")
         st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
 
-    with total4:
-        st.info('Tot. Grupo',icon="🎯")
+    with total5:
+        st.info('Tot. Grupo Enferm.',icon="🎯")
         st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
 
 elif selected == "📉 Tendencias":
