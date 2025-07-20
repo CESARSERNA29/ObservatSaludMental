@@ -158,6 +158,11 @@ departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(d
 municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df_sm0['municipio'].dropna().unique().tolist()))
 
 
+
+
+
+
+
 # BASE DE DATOS:
 # ----------------
 # Aplicar filtros:
@@ -1106,3 +1111,81 @@ fig.update_layout(title=titulo)
 
 # 📊 Mostrar gráfico
 st.plotly_chart(fig, use_container_width=True)
+# ---------------------------------------------------------------------
+
+
+
+
+
+st.markdown("##")
+st.markdown("##")
+
+
+
+
+    
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+# ===========================
+# Mapa Leaflet de Morbilidad:
+# ---------------------------
+#pip install streamlit-folium
+
+import geopandas as gpd
+import folium
+import numpy as np
+
+
+
+if selected == "📍 Mapa":
+
+    st.markdown("## 🗺️ Mapa de Tasa de Morbilidad por Municipio")
+    st.markdown("Este mapa muestra la tasa de morbilidad por cada municipio de la Orinoquía, de acuerdo con la tabla consolidada.")
+
+    # 1. Cargar la tabla con tasas y el geopandas:
+    # Leer shapefile
+    gdf_municipios = gpd.read_file("/ciudades_shp/MGN_ADM_MPIO_GRAFICO.shp")
+
+    df_tasas = pd.read_excel("/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
+    
+    # 2. Unir con geometrías por municipio
+    gdf_merged = gdf_municipios.merge(df_tasas, on=["mpio_cdpmp"], how="left")
+
+    # 3. Rellenar valores faltantes con 0 o NaN si se quiere ignorar
+    gdf_merged['Tasa_Morbi'] = gdf_merged['Tasa_Morbi'].fillna(0)
+
+    # 4. Crear el mapa base
+    m = folium.Map(location=[4.5, -72.5], zoom_start=6.3, tiles="cartodb positron", control_scale=True)
+
+    # 5. Agregar capa coroplética
+    folium.Choropleth(
+        geo_data=gdf_merged,
+        name="Tasa de Morbilidad",
+        data=gdf_merged,
+        columns=["municipio", "Tasa_Morbi"],
+        key_on="feature.properties.municipio",
+        fill_color="Blues",  # Puedes cambiar a "YlGnBu", "BuPu", etc.
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name="Tasa de Morbilidad"
+    ).add_to(m)
+
+    # 6. Etiquetas emergentes con el valor de tasa
+    for _, row in gdf_merged.iterrows():
+        if row['geometry'] is not None and not pd.isna(row['Tasa_Morbi']):
+            folium.Marker(
+                location=[row['geometry'].centroid.y, row['geometry'].centroid.x],
+                popup=f"{row['municipio']}: {row['Tasa_Morbi']:.2f}",
+                icon=folium.Icon(color="blue", icon="info-sign")
+            ).add_to(m)
+
+    # 7. Mostrar el mapa en Streamlit
+    from streamlit_folium import st_folium
+    st_data = st_folium(m, width=1100, height=650)
