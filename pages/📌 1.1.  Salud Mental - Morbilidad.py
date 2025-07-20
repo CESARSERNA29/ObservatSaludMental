@@ -247,6 +247,9 @@ if selected == "📊 KPI":
 
 
     total1,total2,total3,total4,total5=st.columns(5,gap='small')
+    with total5: 
+        st.info('Años', icon="📆") 
+        st.metric(label="Periodo", value="2018 - 2022")
     with total1:
         st.info('Tot. Eventos',icon="🎯")
         st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
@@ -1016,7 +1019,7 @@ import plotly.express as px
 
 # Configurar página
 st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")
-st.header("Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
+st.header("Diagrama Tree por Departamento, Grupo de Enfermedad, Sexo y Año")
 st.markdown("###")
 
 # 📥 Cargar los datos
