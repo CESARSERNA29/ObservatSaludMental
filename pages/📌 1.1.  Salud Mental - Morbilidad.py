@@ -204,24 +204,24 @@ st.markdown("##")
 
 st.subheader("Indicadores Clave de Morbilidad")
 
-with st.expander("👉 Mostrar Filtros", expanded=False):
-    Departamento = st.multiselect(
-        "Selecciona Departamento", 
-        options=df_sm0["departamento"].unique(), 
-        default=df_sm0["departamento"].unique()
-    )
-    
-    Municipio = st.multiselect( 
-        "Selecciona Municipio", 
-        options=df_sm0["municipio"].unique(), 
-        default=df_sm0["municipio"].unique()
-    ) 
-    
-    Grupo = st.multiselect(
-        "Selecciona el Grupo de Enfermedad", 
-        options=df_sm0["grupo"].unique(), 
-        default=df_sm0["grupo"].unique()
-    )    
+#with st.expander("👉 Mostrar Filtros", expanded=False):
+#    Departamento = st.multiselect(
+#        "Selecciona Departamento", 
+#        options=df_sm0["departamento"].unique(), 
+#        default=df_sm0["departamento"].unique()
+#    )
+#    
+#    Municipio = st.multiselect( 
+#        "Selecciona Municipio", 
+#        options=df_sm0["municipio"].unique(), 
+#        default=df_sm0["municipio"].unique()
+#    ) 
+#    
+#    Grupo = st.multiselect(
+#        "Selecciona el Grupo de Enfermedad", 
+#        options=df_sm0["grupo"].unique(), 
+#        default=df_sm0["grupo"].unique()
+#    )    
 
 
 # ✅ Filtrar el dataframe según los valores seleccionados
@@ -230,7 +230,7 @@ df_selection = df_sm0.query("departamento in @Departamento and municipio in @Mun
     
 
 # ✅ Mostrar resultados
-st.write("Datos filtrados:", df_selection)
+#st.write("Datos filtrados:", df_selection)
 
 # ----------------------------------------------------------------------------
 
