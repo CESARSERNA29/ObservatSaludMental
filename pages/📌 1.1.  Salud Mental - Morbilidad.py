@@ -205,7 +205,7 @@ st.markdown("##")
 st.subheader("Indicadores Clave de Morbilidad")
 
 # st.expander("👉 Mostrar Filtros", expanded=False)
-#with st.expander("", expanded=False):
+#with st.expander("👉 Mostrar Filtros", expanded=False):
 #    Departamento = st.multiselect(
 #        "Selecciona Departamento", 
 #        options=df_sm0["departamento"].unique(), 
@@ -226,7 +226,7 @@ st.subheader("Indicadores Clave de Morbilidad")
 
 
 # ✅ Filtrar el dataframe según los valores seleccionados
-df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+#df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
 
     
 
@@ -234,6 +234,8 @@ df_selection = df_sm0.query("departamento in @Departamento and municipio in @Mun
 #st.write("Datos filtrados:", df_selection)
 
 # ----------------------------------------------------------------------------
+# Asignación directa sin filtros interactivos
+df_selection = df_sm0.copy()
 
 
 
