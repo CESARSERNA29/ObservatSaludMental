@@ -204,6 +204,25 @@ st.markdown("##")
 
 st.subheader("Indicadores Clave de Morbilidad")
 
+# ---------------------------------------------------------------------------
+# Sección de Filtros – Ocultos pero definidos por defecto
+# ---------------------------------------------------------------------------
+
+# 🧩 Valores por defecto para los filtros (sin mostrarlos)
+Departamento = df_sm0['departamento'].dropna().unique().tolist()
+Municipio = df_sm0['municipio'].dropna().unique().tolist()
+Grupo = df_sm0['grupo'].dropna().unique().tolist()
+
+# ✅ DataFrame filtrado (en este caso sin aplicar restricciones)
+df_selection = df_sm0[
+    (df_sm0['departamento'].isin(Departamento)) &
+    (df_sm0['municipio'].isin(Municipio)) &
+    (df_sm0['grupo'].isin(Grupo))
+]
+
+# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------
 # st.expander("👉 Mostrar Filtros", expanded=False)
 #with st.expander("👉 Mostrar Filtros", expanded=False):
 #    Departamento = st.multiselect(
@@ -234,9 +253,9 @@ st.subheader("Indicadores Clave de Morbilidad")
 #st.write("Datos filtrados:", df_selection)
 # ---------------------------------------------------------------------------
 # Filtros visibles para el usuario, pero aún no se aplican
-Departamento = st.multiselect("Selecciona Departamento", df_sm0['departamento'].dropna().unique())
-Municipio = st.multiselect("Selecciona Municipio", df_sm0['municipio'].dropna().unique())
-Grupo = st.multiselect("Selecciona Grupo", df_sm0['grupo'].dropna().unique())
+#Departamento = st.multiselect("Selecciona Departamento", df_sm0['departamento'].dropna().unique())
+#Municipio = st.multiselect("Selecciona Municipio", df_sm0['municipio'].dropna().unique())
+#Grupo = st.multiselect("Selecciona Grupo", df_sm0['grupo'].dropna().unique())
 
 df_selection = df_sm0.copy()  # No se filtra todavía
 
