@@ -474,8 +474,8 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica
 # 1. Crear un selector para que el usuario elija uno o varios grupos: 
 deptos_sm = df0_sm['departamento'].unique().tolist() 
 #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
-st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
-Dptos_sm_sel = st.selectbox("Selecciona Un Departamento", deptos_sm)
+#st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
+Dptos_sm_sel = st.selectbox("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", deptos_sm)
 
 
 df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
@@ -995,7 +995,7 @@ except Exception as e:
 
 
 st.markdown("##")
-
+st.markdown("##")
 
 
 
@@ -1006,65 +1006,11 @@ st.markdown("##")
 # ---------------------------------
 
 
-# =============
-import streamlit as st
-import plotly.express as px
-import pandas as pd
-
-
-# Cargando las Librerías:
-import streamlit as st
-import pandas as pd
-import streamlit.components.v1 as components
-import plotly.express as px
-from streamlit_option_menu import option_menu
-from numerize import numerize
-import time
-from streamlit_extras.metric_cards import style_metric_cards
-import plotly.graph_objs as go
-import plotly.graph_objects as go
-
-# =====================================
-# TITULO Y ESTILO DEL ENCABEZADO:
-st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
-st.header("Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
-st.markdown("##")
-
-# Carga de datos
-# Importando la tabla agregada con los resúmenes de las variables:
-population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja1')
-
-# Filtrar años disponibles
-anios = sorted(population_df['anio'].unique())
-anio_seleccionado = st.selectbox("Selecciona el Año", anios)
-
-# Filtrar por año
-df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
-
-# Crear Treemap
-fig = px.treemap(
-    df_filtrado,
-    path=['Dptos', 'GrupEnfer'],
-    values='MorbTot',
-    color='MorbTot',
-    color_continuous_scale=["red", "orange", "green"],
-    title=f'Morbilidad Total por Departamento y Grupo de Enfermedad - {anio_seleccionado}'
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-
-
-
-
-st.markdown("##")
-st.markdown("##")
-
-
 
 
 # =========================================================
 
+Dptos_sm_sel = st.selectbox("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", deptos_sm)
 
 import streamlit as st
 import pandas as pd
@@ -1072,7 +1018,7 @@ import plotly.express as px
 
 # Configurar página
 st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")
-st.header("📌 Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
+st.header("Diagrama Tree por Departamento, Grupo de Enfermedad y Año")
 st.markdown("###")
 
 # 📥 Cargar los datos
@@ -1080,7 +1026,7 @@ population_df = pd.read_excel("Tabla_Morbilidad_TREE.xlsx", sheet_name='Hoja2')
 
 # 📅 Filtro por Año
 anios = sorted(population_df['anio'].unique())
-anio_seleccionado = st.selectbox("📆 Selecciona el Año", anios)
+anio_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Selecciona el Año</h5>", anios)
 
 # 📊 Filtros horizontales
 col1, col2 = st.columns(2)
@@ -1088,12 +1034,12 @@ col1, col2 = st.columns(2)
 # 📍 Filtro Departamento
 departamentos = ["Total"] + sorted(population_df["Dptos"].dropna().unique())
 with col1:
-    dpto_seleccionado = st.selectbox("🏛️ Departamento", departamentos)
+    dpto_seleccionado = st.selectbox("<h5 style='font-weight:bold;'>Departamento</h5>", departamentos)
 
 # 🚻 Filtro Sexo
 sexos = ["Ambos sexos"] + sorted(population_df["sexo"].dropna().unique())
 with col2:
-    sexo_seleccionado = st.selectbox("🚻 Sexo", sexos)
+    sexo_seleccionado = st.selectbox("h5 style='font-weight:bold;'>Sexo</h5>", sexos)
 
 # 🎯 Aplicar filtros
 df_filtrado = population_df[population_df['anio'] == anio_seleccionado]
@@ -1110,7 +1056,7 @@ fig = px.treemap(
     path=['Dptos', 'GrupEnfer'],
     values='MorbTot',
     color='MorbTot',
-    color_continuous_scale=["red", "orange", "green"],
+    color_continuous_scale=["blue", "yellow", "orange"],
 )
 
 # 🧾 Título dinámico
