@@ -1189,6 +1189,10 @@ gdf_merged = gdf_merged.drop_duplicates(subset=["mpio_cdpmp"])
 # 6. Llenar vacíos en la tasa para evitar errores
 gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 
+
+st.write("Columnas de gdf_merged:", gdf_merged.columns.tolist())
+st.write("Ejemplo de fila:", gdf_merged.iloc[0])
+
 # ===========================
 # CREACIÓN DEL MAPA
 # ---------------------------
