@@ -102,7 +102,7 @@ def load_data1():
 df0 = load_data1()
 
 # Filtro para Salud Mental 
-df_sm0 = df0[df0['componente']=='SM'] 
+df_sm0 = df0[df0['componente']=='Salud Mental'] 
 
 # -------------------------------------------------------------------------
 
@@ -231,7 +231,7 @@ df_selection = df_sm0[
 #Municipio = st.multiselect("Selecciona Municipio", df_sm0['municipio'].dropna().unique())
 #Grupo = st.multiselect("Selecciona Grupo", df_sm0['grupo'].dropna().unique())
 
-#df_selection = df_sm0.copy()  # No se filtra todavía
+df_selection = df_sm0.copy()  # No se filtra todavía
 
 
 # ----------------------------------------------------------------------------
@@ -293,9 +293,10 @@ elif selected == "📥 Datos":
 
 # ******
 
-# ✅ Filtrar el dataframe según los valores seleccionados: Esto genera los filtros dinámicos
+# ✅ Filtrar el dataframe según los valores seleccionados
 df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
 
+    
 #--------------------------------------------------------------------------- 
 # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
 #---------------------------------------------------------------------------
@@ -338,7 +339,7 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del gr
 df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
 
 # Filtro para la region de la orinoquia 
-#df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
+df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
 
 
 # Reemplazar valores en la columna 'sexo' 
