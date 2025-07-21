@@ -124,27 +124,27 @@ df_sm0 = df0[df0['componente']=='SM']
 # Base de Referencia:
 #-------------------
 
-st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
+#st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
 
 # Estilo personalizado
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+#with open("style.css") as f:
+#    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Menú sin mapa ni datos
-with st.sidebar:
-    selected = option_menu(
-        menu_title="Navegación",
-        options=["📊 KPI"],
-        icons=["speedometer", "bar-chart-line"],
-        default_index=0,
-        orientation="vertical",
-        styles={
-            "container": {"padding": "5px", "background-color": "#f8f9fa"},
-            "icon": {"color": "#0d6efd", "font-size": "18px"},
-            "nav-link": {"font-size": "16px", "text-align": "left", "margin": "5px"},
-            "nav-link-selected": {"background-color": "#0d6efd", "color": "white"},
-        }
-    )
+#with st.sidebar:
+#    selected = option_menu(
+#        menu_title="Navegación",
+#        options=["📊 KPI"],
+#        icons=["speedometer", "bar-chart-line"],
+#        default_index=0,
+#        orientation="vertical",
+#        styles={
+#            "container": {"padding": "5px", "background-color": "#f8f9fa"},
+#            "icon": {"color": "#0d6efd", "font-size": "18px"},
+#            "nav-link": {"font-size": "16px", "text-align": "left", "margin": "5px"},
+#            "nav-link-selected": {"background-color": "#0d6efd", "color": "white"},
+#        }
+#    )
 
 # Dataset sin filtros
 df_filtrado = df_sm0.copy()
