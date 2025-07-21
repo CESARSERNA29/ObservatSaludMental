@@ -1132,94 +1132,70 @@ st.markdown("##")
 
 
 
-
 # ===========================
-# Mapa Leaflet de Morbilidad:
+# Mapa Leaflet de Morbilidad
 # ---------------------------
-#pip install streamlit-folium
+
 import geopandas as gpd
-import folium
-import numpy as np
 import pandas as pd
+import folium
 from streamlit_folium import st_folium
+import streamlit as st
 
-# if selected == "📍 Mapa":
-
+# Título y descripción
 st.markdown("## 🗺️ Mapa de Tasa de Morbilidad por Municipio")
-st.markdown("Este mapa muestra la tasa de morbilidad por cada municipio de la Orinoquía, de acuerdo con la tabla consolidada.")
+st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
 
-# 1. Cargar shapefile y Excel
-gdf_municipios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
+# 1. Cargar archivos
+try:
+    gdf_mpios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
+    df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
+except Exception as e:
+    st.error(f"❌ Error cargando archivos: {e}")
+    st.stop()
 
-df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
+# 2. Filtrar departamentos de interés
+departamentos_orinoquia = ["META", "CASANARE", "ARAUCA", "VICHADA"]
+gdf_mpios = gdf_mpios[gdf_mpios["dpto_cnmbr"].isin(departamentos_orinoquia)].copy()
 
-# 2. Unificar llaves de merge como texto
-gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str)
+# 3. Unificar llaves para hacer merge
+gdf_mpios["mpio_cdpmp"] = gdf_mpios["mpio_cdpmp"].astype(str)
 df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
+# 4. Hacer merge
+gdf_merged = gdf_mpios.merge(df_tasas, on="mpio_cdpmp", how="left")
 
-departamentos_orinoquia = ["META", "CASANARE", "ARAUCA", "VICHADA"]
-gdf_municipios = gdf_municipios[gdf_municipios["dpto_cnmbr"].isin(departamentos_orinoquia)]
+# 5. Limpiar columnas innecesarias y asegurar consistencia
+if "geometry_y" in gdf_merged.columns:
+    gdf_merged = gdf_merged.drop(columns=["geometry_y"])
 
+# Asegurar columna 'geometry' válida
+if "geometry_x" in gdf_merged.columns:
+    gdf_merged = gdf_merged.rename(columns={"geometry_x": "geometry"})
 
+if "geometry" not in gdf_merged.columns:
+    st.error("❌ No se encontró la columna 'geometry' luego del merge.")
+    st.stop()
 
-# 3. Merge y asegurarse que siga siendo GeoDataFrame
-gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left") 
-# Asegurarnos de que la geometría quede bien asignada 
-if 'geometry_x' in gdf_merged.columns: 
-    gdf_merged = gdf_merged.rename(columns={"geometry_x": "geometry"}) 
-elif 'geometry' not in gdf_merged.columns: 
-    st.error("❌ No se encontró la columna 'geometry'. Verifica el geojson original.") 
-
-
-gdf_merged["mpio_cdpmp"] = gdf_merged["mpio_cdpmp"].astype(str)
-
-# Conservar solo una geometría (la buena es 'geometry', no 'geometry_y')
-gdf_merged = gdf_merged.set_geometry("geometry")
-gdf_merged = gdf_merged.drop(columns=["geometry_y"], errors="ignore")
-
-# Quitar nulos o duplicados en la columna clave
-gdf_merged = gdf_merged.dropna(subset=["mpio_cdpmp", "geometry"])
+# 6. Eliminar registros nulos o duplicados
+gdf_merged = gdf_merged.dropna(subset=["geometry", "mpio_cdpmp"])
 gdf_merged = gdf_merged.drop_duplicates(subset="mpio_cdpmp")
 
+# 7. Convertir a GeoDataFrame
+gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_mpios.crs)
 
-
-# Convertimos nuevamente a GeoDataFrame 
-gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs) 
-
-
-# Eliminamos filas sin geometría válida 
-# Asegurar que mpio_cdpmp está bien
-gdf_merged = gdf_merged.dropna(subset=["geometry", "mpio_cdpmp"])
-gdf_merged["mpio_cdpmp"] = gdf_merged["mpio_cdpmp"].astype(str)
-gdf_merged = gdf_merged.drop_duplicates(subset=["mpio_cdpmp"])
-
-
-
-# 6. Llenar vacíos en la tasa para evitar errores
+# 8. Rellenar nulos en la tasa
 gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 
-
-st.write("Columnas de gdf_merged:", gdf_merged.columns.tolist())
-st.write("Ejemplo de fila:", gdf_merged.iloc[0])
-
 # ===========================
-# CREACIÓN DEL MAPA
+# Crear Mapa con Folium
 # ---------------------------
-# Centro aproximado en el corazón de la Orinoquía
-# Crear mapa
+
 m = folium.Map(location=[4.5, -72.5], zoom_start=6)
 
-# Agregar capa de coropletas
-import folium
-from streamlit_folium import st_folium
-
-# Crear el mapa base centrado en Colombia
-m = folium.Map(location=[4.5, -72.5], zoom_start=6)
-
-# Añadir la capa de coropletas
+# Capa de coropletas
 folium.Choropleth(
-    geo_data=gdf_merged.to_json(),  # Importante: pasar el GeoJSON serializado
+    geo_data=gdf_merged.to_json(),
     data=gdf_merged,
     columns=["mpio_cdpmp", "Tasa_Morbi"],
     key_on="feature.properties.mpio_cdpmp",
@@ -1227,29 +1203,28 @@ folium.Choropleth(
     fill_opacity=0.7,
     line_opacity=0.2,
     nan_fill_color="gray",
-    legend_name="Tasa de Morbilidad"
+    legend_name="Tasa de Morbilidad",
 ).add_to(m)
 
-
-
-
-# Añadir etiquetas con nombre del municipio y valor
+# Capa de etiquetas emergentes
 folium.GeoJson(
     gdf_merged,
     name="Tasa Morbilidad",
-    tooltip=folium.features.GeoJsonTooltip(
+    tooltip=folium.GeoJsonTooltip(
         fields=["mpio_nom", "Tasa_Morbi"],
         aliases=["Municipio:", "Tasa de Morbilidad:"],
         localize=True,
-        labels=True,
+        labels=True
     ),
-    style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
+    style_function=lambda x: {
+        "fillOpacity": 0,
+        "color": "black",
+        "weight": 0.2
+    },
 ).add_to(m)
 
-# Mostrar en Streamlit
-st_data = st_folium(m, width=1000, height=600)
-
-
+# Mostrar mapa en Streamlit
+st_folium(m, width=1000, height=600)
 
 
 
