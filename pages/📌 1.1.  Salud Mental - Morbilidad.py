@@ -1171,12 +1171,18 @@ if 'geometry_x' in gdf_merged.columns:
 elif 'geometry' not in gdf_merged.columns: 
     st.error("❌ No se encontró la columna 'geometry'. Verifica el geojson original.") 
 
+
+gdf_merged["mpio_cdpmp"] = gdf_merged["mpio_cdpmp"].astype(str)
+
 # Convertimos nuevamente a GeoDataFrame 
 gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs) 
 
 
 # Eliminamos filas sin geometría válida 
-gdf_merged = gdf_merged.dropna(subset=["geometry"])
+# Asegurar que mpio_cdpmp está bien
+gdf_merged = gdf_merged.dropna(subset=["geometry", "mpio_cdpmp"])
+gdf_merged["mpio_cdpmp"] = gdf_merged["mpio_cdpmp"].astype(str)
+gdf_merged = gdf_merged.drop_duplicates(subset=["mpio_cdpmp"])
 
 
 
@@ -1187,19 +1193,20 @@ gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 # CREACIÓN DEL MAPA
 # ---------------------------
 # Centro aproximado en el corazón de la Orinoquía
-m = folium.Map(location=[4.1, -72.9], zoom_start=6.5, tiles="CartoDB positron")
+# Crear mapa
+m = folium.Map(location=[4.5, -72.5], zoom_start=6)
 
-# Añadir capa choropleth (por tasa)
+# Agregar capa de coropletas
 folium.Choropleth(
     geo_data=gdf_merged,
     data=gdf_merged,
     columns=["mpio_cdpmp", "Tasa_Morbi"],
-    key_on="feature.properties.mpio_cdpmp",
+    key_on="feature.properties.mpio_cdpmp",  # Debe existir dentro de properties
     fill_color="YlOrRd",
     fill_opacity=0.7,
-    line_opacity=0.3,
-    legend_name="Tasa de Morbilidad por Municipio",
+    line_opacity=0.2,
     nan_fill_color="gray",
+    legend_name="Tasa de Morbilidad"
 ).add_to(m)
 
 # Añadir etiquetas con nombre del municipio y valor
