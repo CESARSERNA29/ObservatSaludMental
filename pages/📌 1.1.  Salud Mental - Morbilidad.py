@@ -231,7 +231,7 @@ df_selection = df_sm0[
 #Municipio = st.multiselect("Selecciona Municipio", df_sm0['municipio'].dropna().unique())
 #Grupo = st.multiselect("Selecciona Grupo", df_sm0['grupo'].dropna().unique())
 
-df_selection = df_sm0.copy()  # No se filtra todavía
+#df_selection = df_sm0.copy()  # No se filtra todavía
 
 
 # ----------------------------------------------------------------------------
