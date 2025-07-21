@@ -1191,7 +1191,7 @@ gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 # Crear Mapa con Folium
 # ---------------------------
 
-m = folium.Map(location=[4.5, -72.5], zoom_start=6)
+m = folium.Map(location=[4.5, -72.5], zoom_start=6, tiles="CartoDB positron")
 
 # Capa de coropletas
 folium.Choropleth(
@@ -1212,13 +1212,13 @@ folium.GeoJson(
     gdf_merged,
     name="Tasa Morbilidad",
     tooltip=folium.features.GeoJsonTooltip(
-        fields=["municipio", "Tasa_Morbi"],  # ✅ Usamos 'municipio' que sí existe
-        aliases=["Municipio:", "Tasa de Morbilidad:"],
+        fields=["departamento", "municipio", "Tasa_Morbi"],  # ✅ Usamos 'municipio' que sí existe
+        aliases=["Dpto.", "Municipio:", "Tasa de Morbilidad:"],
         localize=True,
         labels=True,
     ),
     style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
-).add_to(m)
+).add_to(m) 
 
 # Mostrar mapa en Streamlit
 st_folium(m, width=1000, height=600)
