@@ -1161,35 +1161,27 @@ if selected == "📍 Mapa":
     gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str) 
     df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
     gdf_merged = gdf_municipios.merge(df_tasas, on=["mpio_cdpmp"], how="left")
-
-    # 3. Rellenar valores faltantes con 0 o NaN si se quiere ignorar
-    gdf_merged['Tasa_Morbi'] = gdf_merged['Tasa_Morbi'].fillna(0)
-
-    # 4. Crear el mapa base
-    m = folium.Map(location=[4.5, -72.5], zoom_start=6.3, tiles="cartodb positron", control_scale=True)
-
-    # 5. Agregar capa coroplética
-    folium.Choropleth(
-        geo_data=gdf_merged,
-        name="Tasa de Morbilidad",
-        data=gdf_merged,
-        columns=["municipio", "Tasa_Morbi"],
-        key_on="feature.properties.municipio",
-        fill_color="Blues",  # Puedes cambiar a "YlGnBu", "BuPu", etc.
+    gdf_merged = gdf_merged.dropna(subset=['geometry'])
+    geojson_data = gdf_merged.to_json()
+    
+    m = folium.Map(location=[4.15, -73.63], zoom_start=6)
+    
+    folium.Choropleth( 
+        geo_data=geojson_data,
+        data=gdf_merged, 
+        columns=["mpio_cdpmp", "tasa_morbilidad"], 
+        key_on="feature.properties.mpio_cdpmp",  
+        fill_color="YlOrRd", 
         fill_opacity=0.7,
-        line_opacity=0.2,
-        legend_name="Tasa de Morbilidad"
-    ).add_to(m)
-
-    # 6. Etiquetas emergentes con el valor de tasa
-    for _, row in gdf_merged.iterrows():
-        if row['geometry'] is not None and not pd.isna(row['Tasa_Morbi']):
-            folium.Marker(
-                location=[row['geometry'].centroid.y, row['geometry'].centroid.x],
-                popup=f"{row['municipio']}: {row['Tasa_Morbi']:.2f}",
-                icon=folium.Icon(color="blue", icon="info-sign")
-            ).add_to(m)
+        line_opacity=0.2, 
+        legend_name="Tasa de Morbilidad").add_to(m)
+    
+    
+    
+    from streamlit_folium import st_folium 
+    st_folium(m, width=800, height=600)
+    
 
     # 7. Mostrar el mapa en Streamlit
-    from streamlit_folium import st_folium
-    st_data = st_folium(m, width=1100, height=650)
+    #from streamlit_folium import st_folium
+    #st_data = st_folium(m, width=1100, height=650)
