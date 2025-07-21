@@ -243,7 +243,7 @@ df_selection = df_sm0.copy()
 
 # Secciones del dashboard
 #if selected == "📊 KPI":
-    
+
 st.subheader("KPI")
 # calcular los Indicadores Clave de Morbilidad:
 total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
@@ -271,22 +271,8 @@ with total5:
     st.info('Tot. Grupo Enferm.',icon="🎯")
     st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
 
-elif selected == "📉 Tendencias":
-st.subheader("Tendencia Anual de la Tasa de Morbilidad")
-tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
-fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
-st.plotly_chart(fig, use_container_width=True)
 
-elif selected == "📍 Mapa":
-st.subheader("Mapa Interactivo de Morbilidad")
-if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
-    st.map(df_filtrado[['latitud', 'longitud']].dropna())
-else:
-    st.warning("No hay coordenadas disponibles para mostrar el mapa.")
 
-elif selected == "📥 Datos":
-st.subheader("Datos Detallados")
-st.dataframe(df_filtrado)
 #------------------------------------------------------------------------------
 
 
