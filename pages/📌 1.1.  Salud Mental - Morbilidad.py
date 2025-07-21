@@ -1158,8 +1158,8 @@ gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str)
 df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
 
-departamentos_orinoquia = ["META", "CASANARE", "ARAUCA", "VICHADA"]
-gdf_municipios = gdf_municipios[gdf_municipios["dpto_nom"].isin(departamentos_orinoquia)]
+departamentos_orinoquia = ["Meta", "Casanare", "Arauca", "Vichada"]
+gdf_municipios = gdf_municipios[gdf_municipios["departamento"].isin(departamentos_orinoquia)]
 
 
 
