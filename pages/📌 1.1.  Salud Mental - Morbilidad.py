@@ -294,9 +294,9 @@ elif selected == "📥 Datos":
 # ******
 
 # ✅ Filtrar el dataframe según los valores seleccionados
-df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+#df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
 
-    
+df_selection = df_sm0
 #--------------------------------------------------------------------------- 
 # Tabla de frecuencia de grupos de enfermedades de Salud Mental 
 #---------------------------------------------------------------------------
