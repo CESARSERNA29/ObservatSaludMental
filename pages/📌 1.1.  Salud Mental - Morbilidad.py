@@ -242,50 +242,51 @@ df_selection = df_sm0.copy()
 
 
 # Secciones del dashboard
-if selected == "📊 KPI":
-    st.subheader("KPI")
-    # calcular los Indicadores Clave de Morbilidad:
-    total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
-    investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
-    investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
-    investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
+#if selected == "📊 KPI":
+    
+st.subheader("KPI")
+# calcular los Indicadores Clave de Morbilidad:
+total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
 
 
-    total1,total2,total3,total4,total5=st.columns(5,gap='small')
-    with total1: 
-        st.info('Años', icon="📆") 
-        st.metric(label="Periodo", value="2018 - 2023")
-    with total2:
-        st.info('Tot. Eventos',icon="🎯")
-        st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-    with total3:
-        st.info('Tot. Dptos.',icon="🎯")
-        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+total1,total2,total3,total4,total5=st.columns(5,gap='small')
+with total1: 
+    st.info('Años', icon="📆") 
+    st.metric(label="Periodo", value="2018 - 2023")
+with total2:
+    st.info('Tot. Eventos',icon="🎯")
+    st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+with total3:
+    st.info('Tot. Dptos.',icon="🎯")
+    st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
 
-    with total4:
-        st.info('Tot. Municip.',icon="🎯")
-        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+with total4:
+    st.info('Tot. Municip.',icon="🎯")
+    st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
 
-    with total5:
-        st.info('Tot. Grupo Enferm.',icon="🎯")
-        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
+with total5:
+    st.info('Tot. Grupo Enferm.',icon="🎯")
+    st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
 
 elif selected == "📉 Tendencias":
-    st.subheader("Tendencia Anual de la Tasa de Morbilidad")
-    tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
-    fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
-    st.plotly_chart(fig, use_container_width=True)
+st.subheader("Tendencia Anual de la Tasa de Morbilidad")
+tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
+fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
+st.plotly_chart(fig, use_container_width=True)
 
 elif selected == "📍 Mapa":
-    st.subheader("Mapa Interactivo de Morbilidad")
-    if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
-        st.map(df_filtrado[['latitud', 'longitud']].dropna())
-    else:
-        st.warning("No hay coordenadas disponibles para mostrar el mapa.")
+st.subheader("Mapa Interactivo de Morbilidad")
+if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
+    st.map(df_filtrado[['latitud', 'longitud']].dropna())
+else:
+    st.warning("No hay coordenadas disponibles para mostrar el mapa.")
 
 elif selected == "📥 Datos":
-    st.subheader("Datos Detallados")
-    st.dataframe(df_filtrado)
+st.subheader("Datos Detallados")
+st.dataframe(df_filtrado)
 #------------------------------------------------------------------------------
 
 
