@@ -1152,7 +1152,7 @@ if selected == "📍 Mapa":
     # 1. Cargar la tabla con tasas y el geopandas:
     # Leer shapefile
     #gdf_municipios = gpd.read_file("ciudades_shp/MGN_ADM_MPIO_GRAFICO.shp")
-    gdf_municipios = gpd.read_file("municipios_orinoquia.geojson", engine="fiona")
+    gdf_municipios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
 
     df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
     
