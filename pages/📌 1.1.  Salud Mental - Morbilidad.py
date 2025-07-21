@@ -339,7 +339,7 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del gr
 df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
 
 # Filtro para la region de la orinoquia 
-df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
+#df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
 
 
 # Reemplazar valores en la columna 'sexo' 
