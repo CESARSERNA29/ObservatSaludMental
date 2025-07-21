@@ -1158,10 +1158,18 @@ if selected == "📍 Mapa":
     df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
     # 3. Merge y asegurarse que siga siendo GeoDataFrame
-    gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left")
-    gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs)
-
-    # 4. Limpiar filas sin geometría
+    gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left") 
+    # Asegurarnos de que la geometría quede bien asignada 
+    if 'geometry_x' in gdf_merged.columns: 
+        gdf_merged = gdf_merged.rename(columns={"geometry_x": "geometry"}) 
+    elif 'geometry' not in gdf_merged.columns: 
+        st.error("❌ No se encontró la columna 'geometry'. Verifica el geojson original.") 
+    
+    # Convertimos nuevamente a GeoDataFrame 
+    gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs) 
+    
+    
+    # Eliminamos filas sin geometría válida 
     gdf_merged = gdf_merged.dropna(subset=["geometry"])
 
     # 5. Crear mapa
