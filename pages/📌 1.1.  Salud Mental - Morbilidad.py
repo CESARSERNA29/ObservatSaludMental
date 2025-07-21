@@ -1157,6 +1157,12 @@ df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
 gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str)
 df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
+
+departamentos_orinoquia = ["META", "CASANARE", "ARAUCA", "VICHADA"]
+gdf_municipios = gdf_municipios[gdf_municipios["dpto_nom"].isin(departamentos_orinoquia)]
+
+
+
 # 3. Merge y asegurarse que siga siendo GeoDataFrame
 gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left") 
 # Asegurarnos de que la geometría quede bien asignada 
