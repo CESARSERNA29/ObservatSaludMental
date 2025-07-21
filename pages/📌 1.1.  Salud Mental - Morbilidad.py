@@ -1172,6 +1172,59 @@ gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipio
 # Eliminamos filas sin geometría válida 
 gdf_merged = gdf_merged.dropna(subset=["geometry"])
 
+
+
+# 6. Llenar vacíos en la tasa para evitar errores
+gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
+
+# ===========================
+# CREACIÓN DEL MAPA
+# ---------------------------
+# Centro aproximado en el corazón de la Orinoquía
+m = folium.Map(location=[4.1, -72.9], zoom_start=6.5, tiles="CartoDB positron")
+
+# Añadir capa choropleth (por tasa)
+folium.Choropleth(
+    geo_data=gdf_merged,
+    data=gdf_merged,
+    columns=["mpio_cdpmp", "Tasa_Morbi"],
+    key_on="feature.properties.mpio_cdpmp",
+    fill_color="YlOrRd",
+    fill_opacity=0.7,
+    line_opacity=0.3,
+    legend_name="Tasa de Morbilidad por Municipio",
+    nan_fill_color="gray",
+).add_to(m)
+
+# Añadir etiquetas con nombre del municipio y valor
+folium.GeoJson(
+    gdf_merged,
+    name="Tasa Morbilidad",
+    tooltip=folium.features.GeoJsonTooltip(
+        fields=["mpio_nom", "Tasa_Morbi"],
+        aliases=["Municipio:", "Tasa de Morbilidad:"],
+        localize=True,
+        labels=True,
+    ),
+    style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
+).add_to(m)
+
+# Mostrar en Streamlit
+st_data = st_folium(m, width=1000, height=600)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 '''
 
 # 5. Crear mapa
