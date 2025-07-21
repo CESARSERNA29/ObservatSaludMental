@@ -123,24 +123,18 @@ df_sm0 = df0[df0['componente']=='Salud Mental']
 # Base de Referencia:
 #-------------------
 
-
-
 st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
 
-
-
-# Estilo Tablero Personalizado:
-
+# Estilo personalizado
 with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-
-# Menú de navegación elegante
+# Menú sin mapa ni datos
 with st.sidebar:
     selected = option_menu(
         menu_title="Navegación",
-        options=["📊 KPI", "📉 Tendencias", "📍 Mapa", "📥 Datos"],
-        icons=["speedometer", "bar-chart-line", "geo-alt", "table"],
+        options=["📊 KPI", "📉 Tendencias"],
+        icons=["speedometer", "bar-chart-line"],
         default_index=0,
         orientation="vertical",
         styles={
@@ -151,33 +145,8 @@ with st.sidebar:
         }
     )
 
-# Filtros elegantes
-st.sidebar.markdown("### Filtros")
-anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df_sm0['anio'].dropna().unique().tolist()))  
-departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df_sm0['departamento'].dropna().unique().tolist()))
-municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df_sm0['municipio'].dropna().unique().tolist()))
-
-
-
-
-
-
-
-# BASE DE DATOS:
-# ----------------
-# Aplicar filtros:
-# ----------------
-df_filtrado = df_sm0
-if departamento != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
-if municipio != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
-if anio:
-    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
-# -----------------------------
-
-
-
+# Dataset sin filtros
+df_filtrado = df_sm0.copy()
 
 
 
