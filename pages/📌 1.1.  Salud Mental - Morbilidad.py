@@ -1174,6 +1174,16 @@ elif 'geometry' not in gdf_merged.columns:
 
 gdf_merged["mpio_cdpmp"] = gdf_merged["mpio_cdpmp"].astype(str)
 
+# Conservar solo una geometría (la buena es 'geometry', no 'geometry_y')
+gdf_merged = gdf_merged.set_geometry("geometry")
+gdf_merged = gdf_merged.drop(columns=["geometry_y"], errors="ignore")
+
+# Quitar nulos o duplicados en la columna clave
+gdf_merged = gdf_merged.dropna(subset=["mpio_cdpmp", "geometry"])
+gdf_merged = gdf_merged.drop_duplicates(subset="mpio_cdpmp")
+
+
+
 # Convertimos nuevamente a GeoDataFrame 
 gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs) 
 
@@ -1201,17 +1211,27 @@ st.write("Ejemplo de fila:", gdf_merged.iloc[0])
 m = folium.Map(location=[4.5, -72.5], zoom_start=6)
 
 # Agregar capa de coropletas
+import folium
+from streamlit_folium import st_folium
+
+# Crear el mapa base centrado en Colombia
+m = folium.Map(location=[4.5, -72.5], zoom_start=6)
+
+# Añadir la capa de coropletas
 folium.Choropleth(
-    geo_data=gdf_merged,
+    geo_data=gdf_merged.to_json(),  # Importante: pasar el GeoJSON serializado
     data=gdf_merged,
     columns=["mpio_cdpmp", "Tasa_Morbi"],
-    key_on="feature.properties.mpio_cdpmp",  # Debe existir dentro de properties
+    key_on="feature.properties.mpio_cdpmp",
     fill_color="YlOrRd",
     fill_opacity=0.7,
     line_opacity=0.2,
     nan_fill_color="gray",
     legend_name="Tasa de Morbilidad"
 ).add_to(m)
+
+
+
 
 # Añadir etiquetas con nombre del municipio y valor
 folium.GeoJson(
