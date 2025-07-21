@@ -1207,20 +1207,17 @@ folium.Choropleth(
 ).add_to(m)
 
 # Capa de etiquetas emergentes
+# Añadir etiquetas con nombre del municipio y valor
 folium.GeoJson(
     gdf_merged,
     name="Tasa Morbilidad",
-    tooltip=folium.GeoJsonTooltip(
-        fields=["mpio_nom", "Tasa_Morbi"],
+    tooltip=folium.features.GeoJsonTooltip(
+        fields=["municipio", "Tasa_Morbi"],  # ✅ Usamos 'municipio' que sí existe
         aliases=["Municipio:", "Tasa de Morbilidad:"],
         localize=True,
-        labels=True
+        labels=True,
     ),
-    style_function=lambda x: {
-        "fillOpacity": 0,
-        "color": "black",
-        "weight": 0.2
-    },
+    style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
 ).add_to(m)
 
 # Mostrar mapa en Streamlit
