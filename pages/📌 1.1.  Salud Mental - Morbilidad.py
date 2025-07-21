@@ -70,6 +70,7 @@ import plotly.express as px
 @st.cache_data  # Esta linea permite acceder al df desde la memoria cache
 def load_data1():
     df0 = pd.read_excel('data/Tasas_Morbilidad_25MB.xlsx')
+    df0 = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx")
     # Convertir año a categórica
     df0['anio'] = pd.to_numeric(df0['anio'], errors='coerce')
     df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
@@ -102,7 +103,7 @@ def load_data1():
 df0 = load_data1()
 
 # Filtro para Salud Mental 
-df_sm0 = df0[df0['componente']=='Salud Mental'] 
+df_sm0 = df0[df0['componente']=='SM'] 
 
 # -------------------------------------------------------------------------
 
