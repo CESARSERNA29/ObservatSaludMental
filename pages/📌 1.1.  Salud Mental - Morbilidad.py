@@ -308,7 +308,7 @@ def Home1():
         showData = st.multiselect(
             'Filter:', 
             df_selection.columns,
-            default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
+            default=["anio", "sexo", "nombre_cat_edad", "region","departamento", "municipio", 
                      "componente", "capitulo", "grupo", "Enfermedad_Evento", 
                      "pob10", "tasa_morb", "Tot_Eventos"], 
             key='SelectorMultiple'
