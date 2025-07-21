@@ -1178,7 +1178,7 @@ if selected == "📍 Mapa":
     folium.Choropleth(
         geo_data=gdf_merged.to_json(),  # convierte a geojson
         data=gdf_merged,
-        columns=["mpio_cdpmp", "tasa_morbilidad"],
+        columns=["mpio_cdpmp", "Tasa_Morbi"],
         key_on="feature.properties.mpio_cdpmp",
         fill_color="YlOrRd",
         fill_opacity=0.7,
