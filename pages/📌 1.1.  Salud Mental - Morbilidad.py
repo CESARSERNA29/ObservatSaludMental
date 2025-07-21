@@ -102,7 +102,7 @@ def load_data1():
 df0 = load_data1()
 
 # Filtro para Salud Mental 
-df_sm0 = df0[df0['componente']=='Salud Mental'] 
+df_sm0 = df0[df0['componente']=='SM'] 
 
 # -------------------------------------------------------------------------
 
