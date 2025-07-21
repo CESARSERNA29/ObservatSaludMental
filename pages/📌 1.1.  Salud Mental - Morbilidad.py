@@ -1137,50 +1137,50 @@ st.markdown("##")
 # Mapa Leaflet de Morbilidad:
 # ---------------------------
 #pip install streamlit-folium
-
 import geopandas as gpd
 import folium
 import numpy as np
-
-
+import pandas as pd
+from streamlit_folium import st_folium
 
 if selected == "📍 Mapa":
 
     st.markdown("## 🗺️ Mapa de Tasa de Morbilidad por Municipio")
     st.markdown("Este mapa muestra la tasa de morbilidad por cada municipio de la Orinoquía, de acuerdo con la tabla consolidada.")
 
-    # 1. Cargar la tabla con tasas y el geopandas:
-    # Leer shapefile
-    #gdf_municipios = gpd.read_file("ciudades_shp/MGN_ADM_MPIO_GRAFICO.shp")
+    # 1. Cargar shapefile y Excel
     gdf_municipios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
 
     df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
     
-    # 2. Unir con geometrías por municipio
-    # Asegúrate de que ambos sean strings 
-    gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str) 
+    # 2. Unificar llaves de merge como texto
+    gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str)
     df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
-    gdf_merged = gdf_municipios.merge(df_tasas, on=["mpio_cdpmp"], how="left")
-    gdf_merged = gdf_merged.dropna(subset=['geometry'])
-    geojson_data = gdf_merged.to_json()
-    
+
+    # 3. Merge y asegurarse que siga siendo GeoDataFrame
+    gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left")
+    gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs)
+
+    # 4. Limpiar filas sin geometría
+    gdf_merged = gdf_merged.dropna(subset=["geometry"])
+
+    # 5. Crear mapa
     m = folium.Map(location=[4.15, -73.63], zoom_start=6)
-    
-    folium.Choropleth( 
-        geo_data=geojson_data,
-        data=gdf_merged, 
-        columns=["mpio_cdpmp", "tasa_morbilidad"], 
-        key_on="feature.properties.mpio_cdpmp",  
-        fill_color="YlOrRd", 
+
+    folium.Choropleth(
+        geo_data=gdf_merged.to_json(),  # convierte a geojson
+        data=gdf_merged,
+        columns=["mpio_cdpmp", "tasa_morbilidad"],
+        key_on="feature.properties.mpio_cdpmp",
+        fill_color="YlOrRd",
         fill_opacity=0.7,
-        line_opacity=0.2, 
-        legend_name="Tasa de Morbilidad").add_to(m)
-    
-    
-    
-    from streamlit_folium import st_folium 
+        line_opacity=0.2,
+        legend_name="Tasa de Morbilidad"
+    ).add_to(m)
+
+    # 6. Mostrar mapa en Streamlit
     st_folium(m, width=800, height=600)
-    
+
 
     # 7. Mostrar el mapa en Streamlit
     #from streamlit_folium import st_folium
