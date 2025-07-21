@@ -123,12 +123,26 @@ df_sm0 = df0[df0['componente']=='Salud Mental']
 # Base de Referencia:
 #-------------------
 
+#------------------------------------------------------------------------------
+# CONFIGURACIÓN DE PÁGINA:
+
 st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
 
 # Estilo personalizado
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Dataset sin filtros
 df_filtrado = df_sm0.copy()
+
+
+
+
+
+
+
+
+
 
 
 
