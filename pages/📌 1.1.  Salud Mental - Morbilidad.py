@@ -75,7 +75,7 @@ def load_data1():
     df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
     
     # Filtro para la region de la orinoquia
-    # df0=df0[df0['region']=='Orinoquía']
+    df0=df0[df0['region']=='Orinoquía']
     
     # Reemplazar valores en la columna 'sexo'
     df0['sexo'] = df0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
