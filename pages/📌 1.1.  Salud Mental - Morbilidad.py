@@ -1157,6 +1157,9 @@ if selected == "📍 Mapa":
     df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
     
     # 2. Unir con geometrías por municipio
+    # Asegúrate de que ambos sean strings 
+    gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str) 
+    df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
     gdf_merged = gdf_municipios.merge(df_tasas, on=["mpio_cdpmp"], how="left")
 
     # 3. Rellenar valores faltantes con 0 o NaN si se quiere ignorar
