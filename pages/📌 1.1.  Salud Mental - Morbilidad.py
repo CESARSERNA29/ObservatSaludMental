@@ -1138,58 +1138,72 @@ st.markdown("##")
 # ---------------------------
 #pip install streamlit-folium
 import geopandas as gpd
-import folium
-import numpy as np
 import pandas as pd
+import folium
 from streamlit_folium import st_folium
+from folium.features import GeoJsonTooltip
 
 if selected == "📍 Mapa":
 
     st.markdown("## 🗺️ Mapa de Tasa de Morbilidad por Municipio")
     st.markdown("Este mapa muestra la tasa de morbilidad por cada municipio de la Orinoquía, de acuerdo con la tabla consolidada.")
 
-    # 1. Cargar shapefile y Excel
-    gdf_municipios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
-
+    # 1. Cargar datos
+    gdf_municipios = gpd.read_file("MGN_Orinoquia_MPIO.geojson")
     df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
-    
-    # 2. Unificar llaves de merge como texto
+
+    # 2. Limpieza y merge
     gdf_municipios["mpio_cdpmp"] = gdf_municipios["mpio_cdpmp"].astype(str)
     df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
+    gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left")
 
-    # 3. Merge y asegurarse que siga siendo GeoDataFrame
-    gdf_merged = gdf_municipios.merge(df_tasas, on="mpio_cdpmp", how="left") 
-    # Asegurarnos de que la geometría quede bien asignada 
-    if 'geometry_x' in gdf_merged.columns: 
-        gdf_merged = gdf_merged.rename(columns={"geometry_x": "geometry"}) 
-    elif 'geometry' not in gdf_merged.columns: 
-        st.error("❌ No se encontró la columna 'geometry'. Verifica el geojson original.") 
-    
-    # Convertimos nuevamente a GeoDataFrame 
-    gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs) 
-    
-    
-    # Eliminamos filas sin geometría válida 
+    # Asegurarse de que sea GeoDataFrame
+    gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_municipios.crs)
     gdf_merged = gdf_merged.dropna(subset=["geometry"])
 
-    # 5. Crear mapa
-    m = folium.Map(location=[4.15, -73.63], zoom_start=6)
+    # 3. Crear mapa base
+    m = folium.Map(location=[4.15, -73.63], zoom_start=6, tiles='cartodbpositron')  # Fondo gris claro
 
-    folium.Choropleth(
-        geo_data=gdf_merged.to_json(),  # convierte a geojson
+    # 4. Capa coroplética con escala personalizada
+    choropleth = folium.Choropleth(
+        geo_data=gdf_merged.to_json(),
         data=gdf_merged,
         columns=["mpio_cdpmp", "Tasa_Morbi"],
         key_on="feature.properties.mpio_cdpmp",
         fill_color="YlOrRd",
-        fill_opacity=0.7,
-        line_opacity=0.2,
-        legend_name="Tasa de Morbilidad"
+        fill_opacity=0.8,
+        line_opacity=0.3,
+        line_color='white',
+        legend_name="Tasa de Morbilidad",
+        nan_fill_color="lightgray"
+    ).add_to(m)
+
+    # 5. Tooltips con nombre de municipio y tasa
+    folium.GeoJson(
+        gdf_merged,
+        name="Tasa de Morbilidad",
+        style_function=lambda feature: {
+            'fillColor': 'transparent',
+            'color': 'black',
+            'weight': 0.5,
+            'dashArray': '5, 5',
+            'fillOpacity': 0,
+        },
+        tooltip=GeoJsonTooltip(
+            fields=["mpio_cnmbr", "Tasa_Morbi"],
+            aliases=["Municipio:", "Tasa de Morbilidad:"],
+            localize=True,
+            sticky=True,
+            labels=True,
+            style="""
+                background-color: #F0EFEF;
+                border: 1px solid black;
+                border-radius: 3px;
+                box-shadow: 3px;
+            """,
+            max_width=400,
+        )
     ).add_to(m)
 
     # 6. Mostrar mapa en Streamlit
-    st_folium(m, width=800, height=600)
-
-
-    # 7. Mostrar el mapa en Streamlit
-    #from streamlit_folium import st_folium
-    #st_data = st_folium(m, width=1100, height=650)
+    st_folium(m, width=900, height=600)
