@@ -406,15 +406,20 @@ st.markdown("##")   # SALTO
 
 # 1. Crear los selectores para grupo de enfermedades y sexo
 
-grupos_sm = df1_sm['grupo'].unique().tolist()
+grupos_sm = df1_sm['grupo'].dropna().unique().tolist()
 sexos = ['Todos'] + df1_sm['sexo'].dropna().unique().tolist()
 
-st.markdown("<h5 style='font-weight:bold;'>Selecciona un grupo de enfermedades</h5>", unsafe_allow_html=True)
-grupo_sm_sel = st.selectbox("Grupo", grupos_sm)
+col1, col2 = st.columns(2)
 
-st.markdown("<h5 style='font-weight:bold;'>Selecciona el sexo</h5>", unsafe_allow_html=True)
-sexo_sel = st.selectbox("Sexo", sexos)
+with col1:
+    st.markdown("### 🧬 Grupo de Enfermedades")
+    grupo_sm_sel = st.selectbox("Grupo", grupos_sm, key="grupo")
 
+with col2:
+    st.markdown("### ⚥ Sexo")
+    sexo_sel = st.selectbox("Sexo", sexos, key="sexo")
+
+# -------------------------------------------------------------------------
 # 2. Filtrar el DataFrame según las selecciones
 
 df_sm_filtrado = df1_sm[df1_sm['grupo'] == grupo_sm_sel]
@@ -422,33 +427,32 @@ df_sm_filtrado = df1_sm[df1_sm['grupo'] == grupo_sm_sel]
 if sexo_sel != 'Todos':
     df_sm_filtrado = df_sm_filtrado[df_sm_filtrado['sexo'] == sexo_sel]
 
+# -------------------------------------------------------------------------
 # 3. Agrupar los datos ya filtrados
 
 df_sm_filtrado2 = df_sm_filtrado.groupby(
     ['anio', 'nombre_cat_edad', 'departamento']
 )['anio'].count().reset_index(name='cant')
 
-
-
-
-# ----------------------------------------------------------------------
-
+# -------------------------------------------------------------------------
 # 4. Crear la tabla cruzada sumando la columna 'cant' 
-# Tabla Cruzada: 
+
 tabla_sm2 = df_sm_filtrado2.pivot_table(
     values='cant', 
     index='nombre_cat_edad', 
     columns='departamento', 
     aggfunc='sum', 
     fill_value=0, 
-    observed=False)
+    observed=False
+)
 
+# -------------------------------------------------------------------------
+# 5. Mostrar la tabla en Streamlit
 
-# 5. Mostrar la tabla en Streamlit 
-st.write("Tabla cruzada, Total de Casos por Rango de Edad") 
-st.dataframe(tabla_sm2) 
+st.markdown("### 📊 Tabla cruzada: Total de Casos por Rango de Edad")
+st.dataframe(tabla_sm2)
 
-# ---------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 

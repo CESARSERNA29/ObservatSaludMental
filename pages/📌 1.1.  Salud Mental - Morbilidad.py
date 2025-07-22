@@ -380,7 +380,7 @@ grupos_sm = df0_sm['grupo'].unique().tolist()
 sexos = ['Todos'] + df0_sm['sexo'].dropna().unique().tolist()
 
 # Crear dos columnas para los filtros en una misma línea
-col1, col2 = st.columns([2, 1])  # Ajusta proporción si quieres que Grupo sea más ancho
+col1, col2 = st.columns(2)  # Ajusta proporción si quieres que Grupo sea más ancho
 
 with col1:
     st.markdown("<h5 style='font-weight:bold;'>Grupo de Enfermedades</h5>", unsafe_allow_html=True)
