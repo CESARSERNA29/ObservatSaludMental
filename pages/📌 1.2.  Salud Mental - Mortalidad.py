@@ -1,5 +1,7 @@
 
 
+
+
 # Cargando las Librerías: 
 # ======================
 
@@ -62,134 +64,8 @@ import plotly.express as px
 # Cargar y preparación de las fuentes de datos
 #-------------------------------------------------------------------------------
 # -------------------------------
-# Tabla de Datos para Morbilidad:
+# Tabla de Datos para Mortalidad:
 # -------------------------------
-
-@st.cache_data  # Esta linea permite acceder al df desde la memoria cache
-def load_data1():
-    df0 = pd.read_excel('data/Tasas_Morbilidad_25MB.xlsx')
-    # Convertir año a categórica
-    df0['anio'] = pd.to_numeric(df0['anio'], errors='coerce')
-    df0['Tot_Eventos'] = pd.to_numeric(df0['Tot_Eventos'], errors='coerce')
-    
-    # Filtro para la region de la orinoquia
-    # df0=df0[df0['region']=='Orinoquía']
-    
-    # Reemplazar valores en la columna 'sexo'
-    df0['sexo'] = df0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
-    
-    # Orden ctegorias de edad
-    #orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 
-    #                  'Adultez Temprana', 'Adultez Media', 'Adultez Mayor']
-    # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden
-    #df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], 
-    #                           categories=orden_cat_edad, ordered=True)
-    df0['grupo'] = df0['grupo'].str.strip()  
-    df0['departamento']=df0['departamento'].str.strip()
-    df0['departamento']=pd.Categorical(df0['departamento'])
-    
-    df0['anio'] = df0['anio'].astype(str)
-    
-    cols = ['Tot_Eventos', 'tasa_morb']
-    df0[cols] = df0[cols].apply(pd.to_numeric, errors='coerce')
-    
-    #df_agregada = df.groupby(['componente','departamento','municipio',
-    #                       'grupo','Enfermedad_Evento', 'sexo',
-    #                       'nombre_cat_edad','anio'])['cant'].sum().reset_index()
-    return df0  
-df0 = load_data1()
-
-# Filtro para Salud Mental 
-df_sm0 = df0[df0['componente']=='Salud Mental'] 
-
-# -------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-#------------------------------------------------------------------------------
-# CONFIGURACIÓN DE PÁGINA:
-
-# Base de Referencia:
-#-------------------
-
-
-
-st.set_page_config(page_title="📊 Dashboard de Morbilidad", layout="wide")
-
-
-
-# Estilo Tablero Personalizado:
-
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-
-# Menú de navegación elegante
-with st.sidebar:
-    selected = option_menu(
-        menu_title="Navegación",
-        options=["📊 KPI", "📉 Tendencias", "📍 Mapa", "📥 Datos"],
-        icons=["speedometer", "bar-chart-line", "geo-alt", "table"],
-        default_index=0,
-        orientation="vertical",
-        styles={
-            "container": {"padding": "5px", "background-color": "#f8f9fa"},
-            "icon": {"color": "#0d6efd", "font-size": "18px"},
-            "nav-link": {"font-size": "16px", "text-align": "left", "margin": "5px"},
-            "nav-link-selected": {"background-color": "#0d6efd", "color": "white"},
-        }
-    )
-
-# Filtros elegantes
-st.sidebar.markdown("### Filtros")
-anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df_sm0['anio'].dropna().unique().tolist()))  
-departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df_sm0['departamento'].dropna().unique().tolist()))
-municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df_sm0['municipio'].dropna().unique().tolist()))
-
-
-# BASE DE DATOS:
-# ----------------
-# Aplicar filtros:
-# ----------------
-df_filtrado = df_sm0
-if departamento != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
-if municipio != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
-if anio:
-    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
-# -----------------------------
-
-
-
-
-
-
-# SECCIÓN 1.2. : 
-# INTRODUCCIONA A MORTALIDAD:
-# --------------------------
-st.markdown("##")
-st.markdown("##")
-st.markdown("##")
-
-
-
-st.header("MORTALIDAD")
-st.write(" La mortalidad se refiere a la cantidad de muertes ocurridas en una población durante un período específico. Desde una perspectiva estadística, el análisis de la mortalidad permite comprender el impacto de distintas causas de defunción sobre la salud pública, así como identificar grupos poblacionales en mayor riesgo o vulnerabilidad.  Mediante indicadores como el número absoluto de muertes, la tasa bruta de mortalidad (por cada 10.000 habitantes), la tasa de mortalidad específica por edad, sexo o causa, es posible evaluar la carga de mortalidad y su distribución geográfica y temporal. Este análisis facilita la detección de patrones, tendencias y desigualdades en las causas de muerte, contribuyendo a priorizar acciones de prevención, fortalecer los sistemas de salud y diseñar políticas públicas basadas en evidencia. En conjunto, el estudio estadístico de la mortalidad es esencial para monitorear el estado de salud de una población, evaluar intervenciones sanitarias y reducir el impacto de enfermedades prevenibles.") 
-
-
-
-st.markdown("##")
-
 
 
 
@@ -197,7 +73,7 @@ st.markdown("##")
 # --------------------------------
 # Tabla de Datos para Mortalidad:
 # --------------------------------
-    
+@st.cache_data  # Esta linea permite acceder al df desde la memoria cache
 def load_data2():
     df1 = pd.read_excel('data/Mortalidad2.xlsx')
     # Convertir año a categórica
@@ -210,11 +86,11 @@ def load_data2():
     df1['sexo'] = df1['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
     
     # Orden ctegorias de edad
-    orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 
-                      'Adultez Temprana', 'Adultez Media', 'Adultez Mayor']
+    #orden_cat_edad = ['Primera infancia', 'Infancia', 'Adolescensia', 
+    #                  'Adultez Temprana', 'Adultez Media', 'Adultez Mayor']
     # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden
-    df1['nombre_cat_edad'] = pd.Categorical(df1['nombre_cat_edad'], 
-                               categories=orden_cat_edad, ordered=True)
+    #df1['nombre_cat_edad'] = pd.Categorical(df1['nombre_cat_edad'], 
+    #                           categories=orden_cat_edad, ordered=True)
     df1['grupo'] = df1['grupo'].str.strip()  
     df1['departamento']=df1['departamento'].str.strip()
     df1['departamento']=pd.Categorical(df1['departamento'])
@@ -226,7 +102,7 @@ def load_data2():
 
 df1 = load_data2()
 
-df_sm1=df1[df1['componente']=='Salud Mental']
+df_sm1=df1[df1['componente']=='SM']
 
 
 
@@ -242,87 +118,191 @@ st.markdown("##")
 
 
 
+
+#------------------------------------------------------------------------------
+# CONFIGURACIÓN DE PÁGINA:
+# Base de Referencia:
+#-------------------
+
+
+#st.set_page_config(page_title="📊 Dashboard de Mortalidad", layout="wide")
+
+
+
+# Estilo Tablero Personalizado:
+
+#with open("style.css") as f:
+#    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+# Menú de navegación elegante
+#with st.sidebar:
+#    selected = option_menu(
+#        menu_title="Navegación",
+#        options=["📊 KPI", "📉 Tendencias", "📍 Mapa", "📥 Datos"],
+#        icons=["speedometer", "bar-chart-line", "geo-alt", "table"],
+#        default_index=0,
+#        orientation="vertical",
+#        styles={
+#            "container": {"padding": "5px", "background-color": "#f8f9fa"},
+#            "icon": {"color": "#0d6efd", "font-size": "18px"},
+#            "nav-link": {"font-size": "16px", "text-align": "left", "margin": "5px"},
+#            "nav-link-selected": {"background-color": "#0d6efd", "color": "white"},
+#        }
+#    )
+
+# Filtros elegantes
+#st.sidebar.markdown("### Filtros")
+#anio = st.sidebar.selectbox("Selecciona Año", options=["Todos"] + sorted(df_sm0['anio'].dropna().unique().tolist()))  
+#departamento = st.sidebar.selectbox("Departamento", options=["Todos"] + sorted(df_sm0['departamento'].dropna().unique().tolist()))
+#municipio = st.sidebar.selectbox("Municipio", options=["Todos"] + sorted(df_sm0['municipio'].dropna().unique().tolist()))
+
+
+# BASE DE DATOS:
+# ----------------
+# Aplicar filtros:
+# ----------------
+df_filtrado = df_sm1.copy()
+
+#if departamento != "Todos":
+#    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
+#if municipio != "Todos":
+#    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
+#if anio:
+#    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
+# -----------------------------
+
+
+
+
+
+
+# SECCIÓN 1.2. : 
+# INTRODUCCIONA A MORTALIDAD:
+# --------------------------
+st.markdown("##")
+
+
+
+
+st.header("MORTALIDAD")
+st.write(" La mortalidad se refiere a la cantidad de muertes ocurridas en una población durante un período específico. Desde una perspectiva estadística, el análisis de la mortalidad permite comprender el impacto de distintas causas de defunción sobre la salud pública, así como identificar grupos poblacionales en mayor riesgo o vulnerabilidad.  Mediante indicadores como el número absoluto de muertes, la tasa bruta de mortalidad (por cada 10.000 habitantes), la tasa de mortalidad específica por edad, sexo o causa, es posible evaluar la carga de mortalidad y su distribución geográfica y temporal. Este análisis facilita la detección de patrones, tendencias y desigualdades en las causas de muerte, contribuyendo a priorizar acciones de prevención, fortalecer los sistemas de salud y diseñar políticas públicas basadas en evidencia. En conjunto, el estudio estadístico de la mortalidad es esencial para monitorear el estado de salud de una población, evaluar intervenciones sanitarias y reducir el impacto de enfermedades prevenibles.") 
+
+
+
+
+
+
+
+
+
+
+
+
+st.markdown("##")
+
 # ---------------------------------------------------------------------------
 # Sección de Filtrado:
-# --------------------
+# -------------------
 
-st.subheader("Indicadores Clave de Mortalidad")
+st.subheader("Indicadores Clave de Morbilidad")
 
-with st.expander("👉 Mostrar Filtros", expanded=False):
-    Departamento = st.multiselect(
-        "Selecciona Departamento", 
-        options = df_sm1["departamento"].unique(), 
-        default = df_sm1["departamento"].unique()
-    )
-    
-    Municipio = st.multiselect( 
-        "Selecciona Municipio", 
-        options = df_sm1["municipio"].unique(), 
-        default = df_sm1["municipio"].unique()
-    ) 
-    
-    Grupo = st.multiselect(
-        "Selecciona el Grupo de Enfermedad", 
-        options = df_sm1["grupo"].unique(), 
-        default = df_sm1["grupo"].unique()
-    )    
+# ---------------------------------------------------------------------------
+# Sección de Filtros – Ocultos pero definidos por defecto
+# ---------------------------------------------------------------------------
+
+# 🧩 Valores por defecto para los filtros (sin mostrarlos)
+Departamento = df_sm1['departamento'].dropna().unique().tolist()
+Municipio = df_sm1['municipio'].dropna().unique().tolist()
+Grupo = df_sm1['grupo'].dropna().unique().tolist()
+
+# ✅ DataFrame filtrado (en este caso sin aplicar restricciones)
+df_selection = df_sm1[
+    (df_sm1['departamento'].isin(Departamento)) &
+    (df_sm1['municipio'].isin(Municipio)) &
+    (df_sm1['grupo'].isin(Grupo))
+]
+
+# ---------------------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# st.expander("👉 Mostrar Filtros", expanded=False)
+#with st.expander("👉 Mostrar Filtros", expanded=False):
+#    Departamento = st.multiselect(
+#        "Selecciona Departamento", 
+#        options=df_sm0["departamento"].unique(), 
+#        default=df_sm0["departamento"].unique()
+#    )
+#    
+#    Municipio = st.multiselect( 
+#        "Selecciona Municipio", 
+#        options=df_sm0["municipio"].unique(), 
+#        default=df_sm0["municipio"].unique()
+#    ) 
+#    
+#    Grupo = st.multiselect(
+#        "Selecciona el Grupo de Enfermedad", 
+#        options=df_sm0["grupo"].unique(), 
+#        default=df_sm0["grupo"].unique()
+#    )    
 
 
 # ✅ Filtrar el dataframe según los valores seleccionados
-df_selection2 = df_sm1.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+#df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
 
     
 
 # ✅ Mostrar resultados
-st.write("Datos filtrados:", df_selection)
+#st.write("Datos filtrados:", df_selection)
+# ---------------------------------------------------------------------------
+# Filtros visibles para el usuario, pero aún no se aplican
+#Departamento = st.multiselect("Selecciona Departamento", df_sm0['departamento'].dropna().unique())
+#Municipio = st.multiselect("Selecciona Municipio", df_sm0['municipio'].dropna().unique())
+#Grupo = st.multiselect("Selecciona Grupo", df_sm0['grupo'].dropna().unique())
+
+df_selection = df_sm1.copy()  # No se filtra todavía
+
 
 # ----------------------------------------------------------------------------
+# Asignación directa sin filtros interactivos
+df_selection = df_sm1.copy()
 
 
 
 # Secciones del dashboard
-if selected == "📊 KPI":
-    st.subheader("KPI")
-    # calcular los Indicadores Clave de Morbilidad:
-    total_investment = float(pd.Series(df_selection2['cant']).sum())
-    investment_mode1 = float(pd.Series(df_selection2['departamento']).nunique())
-    investment_mode2 = float(pd.Series(df_selection2['municipio']).nunique())
-    investment_median= float(pd.Series(df_selection2['Enfermedad_Evento']).nunique()) 
+#if selected == "📊 KPI":
+
+#st.subheader("KPI")
+# calcular los Indicadores Clave de Morbilidad:
+#total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+#investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+#investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+#investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
 
 
-    total1,total2,total3,total4,total5=st.columns(5,gap='small')
-    with total1:
-        st.info('Tot. Eventos',icon="🎯")
-        st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
-    with total2:
-        st.info('Tot. Dptos.',icon="🎯")
-        st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
+#total1,total2,total3,total4,total5=st.columns(5,gap='small')
+#with total1: 
+#    st.info('Años', icon="📆") 
+#    st.metric(label="Periodo", value="2018 - 2023")
+#with total2:
+#    st.info('Tot. Eventos',icon="🎯")
+#    st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+#with total3:
+#    st.info('Tot. Dptos.',icon="🎯")
+#    st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
 
-    with total3:
-        st.info('Tot. Municip.',icon="🎯")
-        st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
+#with total4:
+#    st.info('Tot. Municip.',icon="🎯")
+#    st.metric(label="Tot. Municip.",value=f"{investment_mode2:,.0f}")
 
-    with total4:
-        st.info('Tot. Grupo',icon="🎯")
-        st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
+#with total5:
+#    st.info('Tot. Grupo Enferm.',icon="🎯")
+#    st.metric(label="Tot. Grupo",value=f"{investment_median:,.0f}")
 
-elif selected == "📉 Tendencias":
-    st.subheader("Tendencia Anual de la Tasa de Morbilidad")
-    tendencia = df_filtrado.groupby('anio').mean(numeric_only=True).reset_index()
-    fig = px.line(tendencia, x='anio', y='tasa_morb', title='Tasa de Morbilidad Anual')
-    st.plotly_chart(fig, use_container_width=True)
 
-elif selected == "📍 Mapa":
-    st.subheader("Mapa Interactivo de Morbilidad")
-    if 'latitud' in df_filtrado.columns and 'longitud' in df_filtrado.columns:
-        st.map(df_filtrado[['latitud', 'longitud']].dropna())
-    else:
-        st.warning("No hay coordenadas disponibles para mostrar el mapa.")
 
-elif selected == "📥 Datos":
-    st.subheader("Datos Detallados")
-    st.dataframe(df_filtrado)
 #------------------------------------------------------------------------------
+
 
 
 
@@ -344,8 +324,9 @@ def Home1():
         showData = st.multiselect(
             'Filter:', 
             df_selection.columns,
-            default=["anio", "sexo", "nombre_cat_edad", "departamento", "municipio", 
-                     "componente", "grupo", "Enfermedad_Evento", "cant"], 
+            default=["anio", "sexo", "nombre_cat_edad", "region","departamento", "municipio", 
+                     "componente", "capitulo", "grupo", "Enfermedad_Evento", 
+                     "pob10", "tasa_morb", "Tot_Eventos"], 
             key='SelectorMultiple'
             ) 
         st.dataframe(df_selection[showData], use_container_width=True)
@@ -366,8 +347,8 @@ st.markdown("##")
 # Aplicar filtros:
 # ----------------
 df_filtrado = df_sm1
-if departamento != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento]
+if departamento != "Todos": 
+    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento] 
 if municipio != "Todos":
     df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
 if anio:
