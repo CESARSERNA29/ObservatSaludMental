@@ -383,11 +383,11 @@ sexos = ['Todos'] + df0_sm['sexo'].dropna().unique().tolist()
 col1, col2 = st.columns(2)  # Ajusta proporción si quieres que Grupo sea más ancho
 
 with col1:
-    st.markdown("<h5 style='font-weight:bold;'>Grupo de Enfermedades</h5>", unsafe_allow_html=True)
+    st.markdown("### 🧬 Grupo de Enfermedades")
     grupo_sm_sel = st.selectbox("Grupo", grupos_sm, label_visibility="collapsed")
 
 with col2:
-    st.markdown("<h5 style='font-weight:bold;'>Sexo</h5>", unsafe_allow_html=True)
+    st.markdown("### ⚥ Sexo")
     sexo_sel = st.selectbox("Sexo", sexos, label_visibility="collapsed")
 
 # Filtrar según selección
