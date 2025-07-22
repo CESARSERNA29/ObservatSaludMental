@@ -610,7 +610,7 @@ if 'departamento' in df_GrupoEnfer.columns:
     if departamento_seleccionado == 'Todos los Dptos':
         # Agregar datos por grupo para todos los departamentos
         df_filtrado = df_GrupoEnfer.groupby('grupo').agg({
-            'TotCasos': 'sum',
+            'Tot_Eventos': 'sum',
             'Tot_pob10': 'sum'
         }).reset_index()
         titulo_grafico = "Todos los Departamentos"
@@ -629,7 +629,7 @@ else:
 # PREPARAR DATOS PARA EL GRÁFICO:
     
 GrupoEnf = df_filtrado['grupo'].tolist()
-y_list = df_filtrado['TotCasos'].tolist()
+y_list = df_filtrado['Tot_Eventos'].tolist()
 x_list = GrupoEnf
 Total = 'Total'
 x_list = GrupoEnf + ['Total']  # Esta línea agrega el valor de la variable total al final de la lista x_list.
