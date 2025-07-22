@@ -708,7 +708,7 @@ fig = go.Figure(go.Waterfall(
 # Actualizar el layout del gráfico
 fig.update_layout(
     title = {
-        'text': f'<b>Waterfall Chart - {titulo_grafico}</b><br><span style="color:#666666">Prevalencia de Enfermedades Mentales de 2013 a 2014</span>',
+        'text': f'<b>Waterfall Chart - {titulo_grafico}</b><br><span style="color:#666666">Prevalencia de Decesos por Enfermedades Mentales de 2013 a 2014</span>',
         'x': 0.5,
         'xanchor': 'center'
     },
