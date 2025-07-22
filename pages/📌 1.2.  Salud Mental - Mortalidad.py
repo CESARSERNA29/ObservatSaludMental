@@ -272,12 +272,12 @@ df_selection = df_sm1.copy()
 # Secciones del dashboard
 #if selected == "📊 KPI":
 
-#st.subheader("KPI")
-# calcular los Indicadores Clave de Morbilidad:
-#total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
-#investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
-#investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
-#investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
+st.subheader("KPI")
+# calcular los Indicadores Clave de Mortalidad:
+total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
+investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
+investment_mode2 = float(pd.Series(df_selection['municipio']).nunique())
+investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique()) 
 
 
 #total1,total2,total3,total4,total5=st.columns(5,gap='small')
