@@ -376,7 +376,7 @@ df_sm1['departamento']=pd.Categorical(df_sm1['departamento'])
 df_sm1['anio'] = df_sm1['anio'].astype(str)   # esto va en contra de la septima línea de código hacia arriba
 
 # Filtro para Salud Mental 
-df1_sm = df_sm1[df_sm1['componente']=='Salud Mental']
+df1_sm = df_sm1[df_sm1['componente']=='SM']
 
 # Tabla Pivote: 
 df_agregada1 = df1_sm.groupby(['grupo']).count().reset_index() 
