@@ -338,25 +338,6 @@ def Home1():
 
 
 
-st.markdown("##")
-
-
-
-# BASE DE DATOS:
-# ----------------
-# Aplicar filtros:
-# ----------------
-df_filtrado = df_sm1
-if departamento != "Todos": 
-    df_filtrado = df_filtrado[df_filtrado['departamento'] == departamento] 
-if municipio != "Todos":
-    df_filtrado = df_filtrado[df_filtrado['municipio'] == municipio]
-if anio:
-    df_filtrado = df_filtrado[df_filtrado['anio'] == anio]
-# -----------------------------
-    
-# ----------------------------------------------------------------------
-
 
 
 
