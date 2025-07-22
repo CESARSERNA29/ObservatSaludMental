@@ -28,7 +28,7 @@ import plotly.graph_objs as go
 # from query import *
 
 st.set_page_config(page_title="Dashboard",page_icon="🌍",layout="wide")
-#st.header("MORBILIDAD:  Tratamiento Estadístico, KPI y Tendencias")
+#st.header("MORTALIDAD:  Tratamiento Estadístico, KPI y Tendencias")
 
 
 
@@ -205,7 +205,7 @@ st.markdown("##")
 # Sección de Filtrado:
 # -------------------
 
-st.subheader("Indicadores Clave de Morbilidad")
+st.subheader("Indicadores Clave de Mortalidad")
 
 # ---------------------------------------------------------------------------
 # Sección de Filtros – Ocultos pero definidos por defecto
@@ -272,7 +272,7 @@ df_selection = df_sm1.copy()
 # Secciones del dashboard
 #if selected == "📊 KPI":
 
-st.subheader("KPI")
+st.subheader("Dataset")
 # calcular los Indicadores Clave de Mortalidad:
 total_investment = float(pd.Series(df_selection['Tot_Eventos']).sum())
 investment_mode1 = float(pd.Series(df_selection['departamento']).nunique())
@@ -378,16 +378,17 @@ df_sm1['anio'] = df_sm1['anio'].astype(str)   # esto va en contra de la septima 
 # Filtro para Salud Mental 
 df1_sm = df_sm1[df_sm1['componente']=='SM']
 
+
 # Tabla Pivote: 
 df_agregada1 = df1_sm.groupby(['grupo']).count().reset_index() 
 df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
-df_agregada1_1.columns = ['grupo', 'cant'] 
+df_agregada1_1.columns = ['grupo', 'Tot_Eventos'] 
 
 # Calcular el total de casos 
-total_casos = df_agregada1_1['cant'].sum() 
+total_casos = df_agregada1_1['Tot_Eventos'].sum() 
 
 # Agregar columna de porcentaje 
-df_agregada1_1['(%)'] = (df_agregada1_1['cant'] / total_casos * 100).round(2) 
+df_agregada1_1['(%)'] = (df_agregada1_1['Tot_Eventos'] / total_casos * 100).round(2) 
 
 st.dataframe(df_agregada1_1) 
 # ----------------------------------------------------------------------
@@ -449,7 +450,7 @@ tabla_sm2 = df_sm_filtrado2.pivot_table(
 # -------------------------------------------------------------------------
 # 5. Mostrar la tabla en Streamlit
 
-st.markdown("### 📊 Tabla cruzada: Total de Casos por Rango de Edad")
+st.markdown("### 📊 Tabla cruzada: Total de Decesos por Rango de Edad")
 st.dataframe(tabla_sm2)
 
 # -------------------------------------------------------------------------
@@ -495,13 +496,13 @@ st.markdown("##")   # SALTO
 
 st.markdown("##")
 
-st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica de Nro. de Eventos de Morbilidad</h4>", unsafe_allow_html=True) 
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica de Nro. de Eventos de Mortalidad</h4>", unsafe_allow_html=True) 
 
 
 
 # 1. Crear un selector para que el usuario elija uno o varios grupos: 
 deptos_sm = df1_sm['departamento'].unique().tolist() 
-#depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
+#depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_mortalidad")
 #st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
 Dptos_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm)
 
@@ -518,7 +519,7 @@ df0_sm3 = df_sm_filtrado3_3.groupby(['sexo','anio'])['cant'].sum().reset_index()
 
 # Crear gráfico de líneas con Plotly Express 
 fig_sm = px.line(df0_sm3, x='anio', y='cant', color='sexo', markers=True, 
-                 title="TENDENCIA DE EVENTOS DE MORBILIDAD",
+                 title="TENDENCIA DE EVENTOS DE MORTALIDAD",
                  color_discrete_sequence=["#2A3180","#E5352B"]) 
 
 
@@ -550,5 +551,5 @@ st.markdown("##")
 
     
 # ----------------------------------------------------------------------
-# TRES GRÁFICOS DE ANÁLISIS DE LA TASA DE MORBILIDAD:
+# TRES GRÁFICOS DE ANÁLISIS DE LA TASA DE MORTALIDAD:
 # ---------------------------------------------------
