@@ -51,7 +51,7 @@ from sklearn.linear_model import LogisticRegression
 #)
 
 
-df = pd.read_excel('data\TablaParaModelosAnaliticos.xlsx', sheet_name="TabModSM")
+df = pd.read_excel('data/TablaParaModelosAnaliticos.xlsx', sheet_name="TabModSM")
 
 
 
