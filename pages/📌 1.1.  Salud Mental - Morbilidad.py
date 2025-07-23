@@ -470,7 +470,7 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica
 
 deptos_sm = st.pills("Departamento", df0_sm['departamento'].unique(), 
                      selection_mode="single",default='Meta')
-df_sm_filtrado3_3 = df0_sm[df0_sm["departamento"] == deptos_sm]
+Dptos_sm_sel = df0_sm[df0_sm["departamento"] == deptos_sm]
 
 
 
@@ -478,7 +478,7 @@ df_sm_filtrado3_3 = df0_sm[df0_sm["departamento"] == deptos_sm]
 deptos_sm = df0_sm['departamento'].unique().tolist() 
 #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
 #st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
-Dptos_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm)
+#Dptos_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm)
 
 
 df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
