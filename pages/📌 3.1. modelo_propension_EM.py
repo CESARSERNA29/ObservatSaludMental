@@ -160,7 +160,7 @@ for nombre, modelo in modelos.items():
 # -------------------------
 df_resultados = pd.DataFrame(resultados).sort_values("F1 Score", ascending=False)
 
-st.subheader("📊 Comparativa de Modelos de Clasificación")
+st.subheader("Comparativa de Modelos de Clasificación")
 
 # Lista exacta de columnas numéricas que quieres formatear (si están presentes)
 columnas_numericas = [
@@ -190,7 +190,7 @@ except Exception as e:
 # -------------------------
 # Matrices de Confusión (mejoradas)
 # -------------------------
-st.subheader("📌 Matrices de Confusión")
+st.subheader("Matrices de Confusión")
 
 # Etiquetas dinámicas
 etiquetas = le.classes_ if 'le' in locals() else sorted(set(y_test))
