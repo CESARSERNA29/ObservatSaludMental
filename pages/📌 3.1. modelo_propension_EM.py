@@ -44,11 +44,16 @@ from sklearn.linear_model import LogisticRegression
 
 
 # Cargar datos
-import pandas as pd
-df = pd.read_excel(
-    r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\TablaParaModelosAnaliticos.xlsx",
-    sheet_name="TabModSM"
-)
+#import pandas as pd
+#df = pd.read_excel(
+#    r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\TablaParaModelosAnaliticos.xlsx",
+#    sheet_name="TabModSM"
+#)
+
+
+df = pd.read_excel('data\TablaParaModelosAnaliticos.xlsx', sheet_name="TabModSM")
+
+
 
 
 
