@@ -183,33 +183,53 @@ except Exception as e:
     st.error(f"❌ Error mostrando la tabla formateada: {e}")
     st.dataframe(df_resultados)
 
+
+
+
+
 # -------------------------
-# Matrices de Confusión
+# Matrices de Confusión (mejoradas)
 # -------------------------
 st.subheader("📌 Matrices de Confusión")
 
-# Construcción dinámica de etiquetas (en caso de multiclase)
+# Etiquetas dinámicas
 etiquetas = le.classes_ if 'le' in locals() else sorted(set(y_test))
 
+# Recorremos cada modelo
 for nombre, y_pred in y_preds.items():
     cm = confusion_matrix(y_test, y_pred)
-    fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, 
-                xticklabels=etiquetas, yticklabels=etiquetas, ax=ax)
-    ax.set_title(f"Matriz de Confusión - {nombre}")
-    ax.set_xlabel("Predicción")
-    ax.set_ylabel("Real")
+
+    # Tamaño reducido del gráfico
+    fig, ax = plt.subplots(figsize=(4, 3))  # más compacto
+
+    # Dibujamos heatmap
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False,
+                xticklabels=etiquetas, yticklabels=etiquetas, ax=ax,
+                annot_kws={"size": 10})
+
+    # Estética
+    ax.set_title(f"Matriz de Confusión - {nombre}", fontsize=12)
+    ax.set_xlabel("Predicción", fontsize=10)
+    ax.set_ylabel("Real", fontsize=10)
+    ax.tick_params(labelsize=8)
+
+    # Mostrar en Streamlit
     st.pyplot(fig)
+
+    # Separador visual entre gráficas
+    st.markdown("---")
+
+
+
+
+
+
 
 # -------------------------
 # Mejor modelo
 # -------------------------
 mejor_modelo = df_resultados.iloc[0]["Modelo"]
 st.success(f"✅ Mejor modelo según F1 Score: {mejor_modelo}")
-
-
-
-
 
 
 from sklearn.tree import plot_tree
