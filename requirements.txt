@@ -16,4 +16,5 @@ deprecation
 geopandas
 fiona
 xgboost
-graphviz pydotplus
+graphviz
+pydotplus
