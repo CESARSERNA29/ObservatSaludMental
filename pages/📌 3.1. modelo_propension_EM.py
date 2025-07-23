@@ -206,3 +206,59 @@ for nombre, y_pred in y_preds.items():
 # -------------------------
 mejor_modelo = df_resultados.iloc[0]["Modelo"]
 st.success(f"✅ Mejor modelo según F1 Score: {mejor_modelo}")
+
+
+
+
+
+
+
+# 2. Código para visualizar el árbol del Random Forest
+from sklearn.tree import export_graphviz
+import pydotplus
+from io import StringIO
+from PIL import Image
+import streamlit as st
+
+# Extraer uno de los árboles del bosque
+arbol = modelos["Random Forest"].estimators_[0]
+
+# Exportar a formato DOT
+dot_data = StringIO()
+export_graphviz(
+    arbol,
+    out_file=dot_data,
+    feature_names=X.columns,
+    class_names=[str(c) for c in le.classes_] if modo == "clasificacion" else None,
+    filled=True,
+    rounded=True,
+    special_characters=True
+)
+
+# Crear imagen con pydotplus
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+img = Image.open(graph.create_png())
+
+# Mostrar en Streamlit
+st.subheader("🌳 Visualización de un árbol del modelo Random Forest (Graphviz)")
+st.image(img, caption="Árbol de decisión (árbol 0 del Random Forest)", use_column_width=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
