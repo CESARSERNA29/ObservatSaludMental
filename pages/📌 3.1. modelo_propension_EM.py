@@ -212,39 +212,27 @@ st.success(f"✅ Mejor modelo según F1 Score: {mejor_modelo}")
 
 
 
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
 
-# 2. Código para visualizar el árbol del Random Forest
-from sklearn.tree import export_graphviz
-import pydotplus
-from io import StringIO
-from PIL import Image
-import streamlit as st
-
-# Extraer uno de los árboles del bosque
+# Selecciona el primer árbol del modelo Random Forest
 arbol = modelos["Random Forest"].estimators_[0]
 
-# Exportar a formato DOT
-dot_data = StringIO()
-export_graphviz(
+# Crear el gráfico con matplotlib
+fig, ax = plt.subplots(figsize=(20, 10))
+plot_tree(
     arbol,
-    out_file=dot_data,
     feature_names=X.columns,
     class_names=[str(c) for c in le.classes_] if modo == "clasificacion" else None,
     filled=True,
     rounded=True,
-    special_characters=True
+    fontsize=8,
+    ax=ax
 )
 
-# Crear imagen con pydotplus
-graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-img = Image.open(graph.create_png())
-
-# Mostrar en Streamlit
-st.subheader("🌳 Visualización de un árbol del modelo Random Forest (Graphviz)")
-st.image(img, caption="Árbol de decisión (árbol 0 del Random Forest)", use_column_width=True)
-
-
-
+# Mostrarlo en Streamlit
+st.subheader("🌳 Árbol del modelo Random Forest (sin Graphviz)")
+st.pyplot(fig)
 
 
 
