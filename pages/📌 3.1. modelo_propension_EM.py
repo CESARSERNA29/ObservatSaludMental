@@ -147,24 +147,55 @@ for nombre, modelo in modelos.items():
         "AUC": auc
     })
 
+
+
+
+
+
+
+
+
 # -------------------------
 # Comparación de Modelos
 # -------------------------
 df_resultados = pd.DataFrame(resultados).sort_values("F1 Score", ascending=False)
 
 st.subheader("📊 Comparativa de Modelos de Clasificación")
-st.dataframe(df_resultados.style.format("{:.3f}"))
+
+# Lista exacta de columnas numéricas que quieres formatear (si están presentes)
+columnas_numericas = [
+    "Hombres", "Mujeres", "a. Primera infancia", "b. Infancia", "c. Adolescencia",
+    "d. Adultez temprana", "e. Adultez media", "f. Adulto mayor",
+    "Agresiones", "ConsSustaPsicoact", "Esquizofrenia", "LesionAutoinf", "RetrasMental",
+    "SíndromComportamiento", "TrastornAfectiv", "TrastorPersonAdult", "TrastornDesarroPsico",
+    "TrastornHabitNiñezAdoles", "TrastornMentales", "TrastornNeurotic", "TotEvent_SM",
+    "Accuracy", "Precisión", "Sensibilidad (Recall)", "Especificidad", "F1 Score", "AUC"
+]
+
+# Verifica que solo existan las columnas antes de aplicar el formato
+columnas_formateables = [col for col in columnas_numericas if col in df_resultados.columns]
+formato_columnas = {col: "{:.3f}" for col in columnas_formateables}
+
+# Mostrar con formato seguro
+try:
+    st.dataframe(df_resultados.style.format(formato_columnas))
+except Exception as e:
+    st.error(f"❌ Error mostrando la tabla formateada: {e}")
+    st.dataframe(df_resultados)
 
 # -------------------------
 # Matrices de Confusión
 # -------------------------
 st.subheader("📌 Matrices de Confusión")
 
+# Construcción dinámica de etiquetas (en caso de multiclase)
+etiquetas = le.classes_ if 'le' in locals() else sorted(set(y_test))
+
 for nombre, y_pred in y_preds.items():
     cm = confusion_matrix(y_test, y_pred)
     fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, 
-                xticklabels=["No", "Sí"], yticklabels=["No", "Sí"], ax=ax)
+                xticklabels=etiquetas, yticklabels=etiquetas, ax=ax)
     ax.set_title(f"Matriz de Confusión - {nombre}")
     ax.set_xlabel("Predicción")
     ax.set_ylabel("Real")
@@ -173,26 +204,5 @@ for nombre, y_pred in y_preds.items():
 # -------------------------
 # Mejor modelo
 # -------------------------
-# Mostrar solo columnas numéricas con formato
-formato_columnas = {col: "{:.3f}" for col in df_resultados.select_dtypes(include='number').columns}
-
-st.dataframe(df_resultados.style.format(formato_columnas))
-
 mejor_modelo = df_resultados.iloc[0]["Modelo"]
 st.success(f"✅ Mejor modelo según F1 Score: {mejor_modelo}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
