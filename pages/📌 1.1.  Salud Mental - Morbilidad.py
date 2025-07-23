@@ -470,7 +470,7 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica
 
 deptos_sm = st.pills("Departamento", df0_sm['departamento'].unique(), 
                      selection_mode="single",default='Meta')
-df_mb2_f = df0_sm[df0_sm["departamento"] == deptos_sm]
+df_sm_filtrado3_3 = df0_sm[df0_sm["departamento"] == deptos_sm]
 
 
 
