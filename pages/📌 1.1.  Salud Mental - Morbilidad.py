@@ -468,6 +468,12 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica
 
 
 
+deptos_sm = st.pills("Departamento", df0_sm['departamento'].unique(), 
+                     selection_mode="single",default='Meta')
+df_mb2_f = df0_sm[df0_sm["departamento"] == deptos_sm]
+
+
+
 # 1. Crear un selector para que el usuario elija uno o varios grupos: 
 deptos_sm = df0_sm['departamento'].unique().tolist() 
 #depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
