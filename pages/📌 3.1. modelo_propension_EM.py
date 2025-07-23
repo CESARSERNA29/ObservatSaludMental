@@ -251,7 +251,7 @@ plot_tree(
 )
 
 # Mostrarlo en Streamlit
-st.subheader("🌳 Árbol del modelo Random Forest (sin Graphviz)")
+st.subheader(" Primer Árbol del modelo Random Forest ")
 st.pyplot(fig)
 
 
