@@ -463,54 +463,37 @@ st.markdown("##")   # SALTO
 # ----------------------------------------------------------------------------
 
 st.markdown("##")
-
 st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tendencia Cronológica de Nro. de Eventos de Morbilidad</h4>", unsafe_allow_html=True) 
 
+# 1. Selector del departamento con pills
+departamentos = df0_sm['departamento'].unique().tolist()
+depto_sm_sel = st.pills("Departamento", departamentos, selection_mode="single", default="Meta")
 
+# 2. Filtrado de datos por departamento seleccionado
+df_sm_filtrado = df0_sm[df0_sm["departamento"] == depto_sm_sel]
 
-deptos_sm = st.pills("Departamento", df0_sm['departamento'].unique(), 
-                     selection_mode="single",default='Meta')
-Dptos_sm_sel = df0_sm[df0_sm["departamento"] == deptos_sm]
+# 3. Agrupación y preparación de datos
+df_grouped = df_sm_filtrado.groupby(['anio', 'sexo', 'nombre_cat_edad']).size().reset_index(name='cant')
 
+# 4. Agrupar por sexo y año
+df_tendencia = df_grouped.groupby(['sexo', 'anio'])['cant'].sum().reset_index()
 
-
-# 1. Crear un selector para que el usuario elija uno o varios grupos: 
-deptos_sm = df0_sm['departamento'].unique().tolist() 
-#depto_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm, key="sel_dpto_sm_morbilidad")
-#st.markdown("<h5 style='font-weight:bold;'>Selecciona un Departamento</h5>", unsafe_allow_html=True) 
-#Dptos_sm_sel = st.selectbox("Selecciona un Departamento", deptos_sm)
-
-
-df_sm_filtrado3 = df0_sm.groupby(['anio', 'sexo','nombre_cat_edad', 'departamento']).count().reset_index() 
-df_sm_filtrado3_2 = df_sm_filtrado3[['anio','sexo', 'nombre_cat_edad', 'departamento', 'Tot_Eventos']] 
-df_sm_filtrado3_2.columns = ['anio', 'sexo','nombre_cat_edad', 'departamento','cant'] 
-
-
-
-df_sm_filtrado3_3 = df_sm_filtrado3_2[df_sm_filtrado3_2['departamento'] == Dptos_sm_sel] 
-df0_sm3 = df_sm_filtrado3_3.groupby(['sexo','anio'])['cant'].sum().reset_index() 
-
-
-# Crear gráfico de líneas con Plotly Express 
-fig_sm = px.line(df0_sm3, x='anio', y='cant', color='sexo', markers=True, 
+# 5. Gráfico con Plotly
+fig_sm = px.line(df_tendencia, x='anio', y='cant', color='sexo', markers=True,
                  title="TENDENCIA DE EVENTOS DE MORBILIDAD",
-                 color_discrete_sequence=["#2A3180","#E5352B"]) 
+                 color_discrete_sequence=["#2A3180", "#E5352B"])
 
+fig_sm.update_traces(
+    marker=dict(size=10, color='white', line=dict(width=2))
+)
 
-# Personalizar marcadores para que tengan borde del color de la línea y fondo blanco 
-fig_sm.update_traces( 
-    marker=dict(size=10, 
-                color='white',          # fondo blanco 
-                line=dict(width=2)      # borde que tomará el color de la línea
-                ))
-
-# Ajustar eje x para mostrar todos los años y con rango fijo 
-fig_sm.update_xaxes(dtick=1, range=[a_min_sm,a_max_sm], tickmode='linear') 
-
-fig_sm.update_xaxes(title_text="") 
-fig_sm.update_yaxes(title_text="Número de casos") 
+# Asumiendo que tienes a_min_sm y a_max_sm definidos correctamente
+fig_sm.update_xaxes(dtick=1, range=[a_min_sm, a_max_sm], tickmode='linear')
+fig_sm.update_xaxes(title_text="")
+fig_sm.update_yaxes(title_text="Número de casos")
 
 st.plotly_chart(fig_sm, use_container_width=True)
+
 # ---------------------------------------------------------------------
 
 
