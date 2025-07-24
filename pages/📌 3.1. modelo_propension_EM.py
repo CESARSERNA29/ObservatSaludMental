@@ -172,6 +172,9 @@ for nombre, modelo in modelos.items():
 df_resultados = pd.DataFrame(resultados).sort_values("F1 Score", ascending=False)
 
 st.subheader("Comparativa de Modelos de Clasificación")
+st.table(df_resultados.style.format("{:.2%}", subset=["Accuracy", "Precisión", "Sensibilidad (Recall)", "F1 Score"]))
+
+
 
 # Lista exacta de columnas numéricas que quieres formatear (si están presentes)
 columnas_numericas  = df[['Hombres', 'Mujeres',
