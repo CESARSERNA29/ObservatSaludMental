@@ -65,19 +65,25 @@ df = pd.read_excel('data/TablaParaModelosAnaliticos.xlsx', sheet_name="TabModSM"
 
 
 
-#df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tasas_Morbilidad_25MB.xlsx", sheet_name="NombreDeLaHoja")
+df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\TablaParaModelosAnaliticos.xlsx", sheet_name="TabModSM")
+
+
+
+
+
+
 
 # -------------------------
 # Selección de variables
 # -------------------------
 # Variables predictoras
 X = df[['Hombres', 'Mujeres',
-        'a. Primera infancia', 'b. Infancia', 'c. Adolescencia',
-        'd. Adultez temprana', 'e. Adultez media', 'f. Adulto mayor',
-        'Agresiones', 'ConsSustaPsicoact', 'Esquizofrenia', 'LesionAutoinf',
-        'RetrasMental', 'SíndromComportamiento', 'TrastornAfectiv',
-        'TrastorPersonAdult', 'TrastornDesarroPsico', 'TrastornHabitNiñezAdoles',
-        'TrastornMentales', 'TrastornNeurotic']]
+'a. Primera infancia', 'b. Infancia', 'c. Adolescencia',
+'d. Adultez temprana', 'e. Adultez media', 'f. Adulto mayor',
+'ConsSustaPsicoact', 'Esquizofrenia', 'RetrasMental',
+'SíndromComportamiento', 'TrastornAfectiv', 'TrastorPersonAdult',
+'TrastornDesarroPsico', 'TrastornHabitNiñezAdoles', 'TrastornMentales',
+'TrastornNeurotic']]
 
 # Escoge el tipo de modelo (clasificación o regresión)
 modo = "clasificacion"  # Cambia a "regresion" si deseas usar TotEvent_SM
@@ -104,13 +110,18 @@ else:
 
 
 # División del dataset
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42
+)
 
 
 
 
 
 # ===========================================
+
 
 # -------------------------
 # Modelos Clasificación
@@ -163,27 +174,13 @@ df_resultados = pd.DataFrame(resultados).sort_values("F1 Score", ascending=False
 st.subheader("Comparativa de Modelos de Clasificación")
 
 # Lista exacta de columnas numéricas que quieres formatear (si están presentes)
-columnas_numericas = [
-    "Hombres", "Mujeres", "a. Primera infancia", "b. Infancia", "c. Adolescencia",
-    "d. Adultez temprana", "e. Adultez media", "f. Adulto mayor",
-    "Agresiones", "ConsSustaPsicoact", "Esquizofrenia", "LesionAutoinf", "RetrasMental",
-    "SíndromComportamiento", "TrastornAfectiv", "TrastorPersonAdult", "TrastornDesarroPsico",
-    "TrastornHabitNiñezAdoles", "TrastornMentales", "TrastornNeurotic", "TotEvent_SM",
-    "Accuracy", "Precisión", "Sensibilidad (Recall)", "Especificidad", "F1 Score", "AUC"
-]
-
-# Verifica que solo existan las columnas antes de aplicar el formato
-columnas_formateables = [col for col in columnas_numericas if col in df_resultados.columns]
-formato_columnas = {col: "{:.3f}" for col in columnas_formateables}
-
-# Mostrar con formato seguro
-try:
-    st.dataframe(df_resultados.style.format(formato_columnas))
-except Exception as e:
-    st.error(f"❌ Error mostrando la tabla formateada: {e}")
-    st.dataframe(df_resultados)
-
-
+columnas_numericas  = df[['Hombres', 'Mujeres',
+'a. Primera infancia', 'b. Infancia', 'c. Adolescencia',
+'d. Adultez temprana', 'e. Adultez media', 'f. Adulto mayor',
+'ConsSustaPsicoact', 'Esquizofrenia', 'RetrasMental',
+'SíndromComportamiento', 'TrastornAfectiv', 'TrastorPersonAdult',
+'TrastornDesarroPsico', 'TrastornHabitNiñezAdoles', 'TrastornMentales',
+'TrastornNeurotic']]
 
 
 
