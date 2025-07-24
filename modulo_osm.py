@@ -55,6 +55,8 @@ def bd_ponal():
 #===============================================================================
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
+import math
 
 def tabla_grupo(df, total_pob, index_col, values_col):
     
@@ -122,7 +124,7 @@ def tabla_grupo(df, total_pob, index_col, values_col):
 # GRAFICAS
 #===============================================================================
   
-def diag_lineas(df,vx,vy,grupos,titulo,ylab):
+def diag_lineas(df,vx,vy,grupos,titulo,ylab,colores):
   
   df[vx]=pd.to_numeric(df[vx], errors='coerce')
   a_min=df[vx].min()-1
@@ -132,7 +134,7 @@ def diag_lineas(df,vx,vy,grupos,titulo,ylab):
   # Crear gráfico de líneas con Plotly Express
   fig = px.line(df,x=vx,y=vy,color=grupos,markers=True,
                 title=titulo,
-                color_discrete_sequence=["#2A3180","#E5352B"])
+                color_discrete_sequence=colores)
   
   # Personalizar marcadores para que tengan borde del color de la línea y fondo blanco
   fig.update_traces(
@@ -156,15 +158,16 @@ def diag_lineas(df,vx,vy,grupos,titulo,ylab):
  
  #------------------------------------------------------------------------------
  
-def diag_barras_apil(df,vx,vy,grupos,titulo,colores):
+def diag_barras_apil(df,vx,vy,grupos,titulo,colores,bmode='stack',xlab="",ylab=""):
   
   n=df[grupos].nunique()
   colores_sel=colores[:n]
   fig = px.bar(df,x=vx,y=vy,
               color=grupos,
-              barmode='stack',
+              barmode=bmode,
               color_discrete_sequence=colores_sel,
               title=titulo)
+  fig.update_layout(xaxis_title=xlab,yaxis_title=ylab )
   #for trace in fig.data:
   #      trace.text = trace.y if hasattr(trace, 'y') else None  # texto con el valor de la barra
   #      trace.textposition = 'inside'   # texto dentro de la barra (centro)
@@ -173,8 +176,31 @@ def diag_barras_apil(df,vx,vy,grupos,titulo,colores):
   
 #-------------------------------------------------------------------------------
 
-def diag_barras(df,vx,vy,titulo):
+def diag_barras(df,vx,vy,grupo,titulo,colores):
   
-  fig = px.bar(df,x=vx,y=vy,barmode='stack',
-                title=titulo)
+  fig = px.bar(df,x=vx,y=vy,
+               color=grupo,
+               barmode='stack',
+               color_discrete_sequence=colores_sel,
+               title=titulo)
   return(fig) 
+
+
+def diag_radar(cat,r1,r2,perfil1,perfil2,colores):
+  
+  v_max=math.ceil(max(max(r1),max(r2))/10)*10
+  
+  fig = go.Figure()
+  # Serie 1
+  fig.add_trace(go.Scatterpolar(r=r1,theta=cat,fill='toself',
+    name=perfil1,line=dict(color=colores[0]),marker=dict(color=colores[0])))
+  
+  #Serie 2
+  fig.add_trace(go.Scatterpolar(r=r2,theta=cat,fill='toself',
+    name=perfil2, line=dict(color=colores[1]),marker=dict(color=colores[1])))
+
+  fig.update_layout(
+    polar=dict(radialaxis=dict(visible=True,range=[0, v_max])),
+    showlegend=True)
+  return(fig)
+  
