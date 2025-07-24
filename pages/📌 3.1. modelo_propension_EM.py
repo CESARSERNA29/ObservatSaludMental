@@ -58,14 +58,14 @@ df = pd.read_excel('data/TablaParaModelosAnaliticos.xlsx', sheet_name="TabModSM"
 
 
 # Variable objetivo simulada: presencia de esquizofrenia
-#df['Presencia_Esq'] = np.where((df['Enf1'] > 0) & (df['Municipio'] == 'Villavicencio'), 1, 0)
+df['Presencia_Esq'] = np.where((df['Enf1'] > 0) & (df['Municipio'] == 'Villavicencio'), 1, 0)
 
 # ----------------------------
 
 
 
 
-df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\TablaParaModelosAnaliticos.xlsx", sheet_name="TabModSM")
+#df = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\TablaParaModelosAnaliticos.xlsx", sheet_name="TabModSM")
 
 
 
