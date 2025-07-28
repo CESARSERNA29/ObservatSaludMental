@@ -33,8 +33,15 @@ P_Colores=st.session_state.get('P_Colores')
 # FILTROS
 #-------------------------------------------------------------------------------
 # 1. Crear un selector para el departamento
-depto_sel=st.pills("Departamento", df_pob2['departamento'].unique(), 
-                     selection_mode="single",default='Meta')
+#depto_sel=st.pills("Departamento", df_pob2['departamento'].unique(), 
+#                     selection_mode="single",default='Meta')
+depto_sel = st.radio(
+    "Departamento",
+    options=df_pob2['departamento'].unique(),
+    horizontal=True
+)
+
+
 df_mt2_f = df_mt2[df_mt2["departamento"] == depto_sel]
 
 col1, col2 = st.columns([3,7])
