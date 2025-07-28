@@ -65,7 +65,8 @@ depto_sel = st.multiselect(
 
 
 
-df_mb2_f = df_mb2[df_mb2["departamento"] == depto_sel]
+#df_mb2_f = df_mb2[df_mb2["departamento"] == depto_sel]
+df_mb2_f = df_mb2[df_mb2["departamento"].isin(depto_sel)]
 
 col1, col2 = st.columns([3,7])
 

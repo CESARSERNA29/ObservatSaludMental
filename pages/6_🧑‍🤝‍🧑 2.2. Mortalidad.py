@@ -42,7 +42,8 @@ depto_sel = st.radio(
 )
 
 
-df_mt2_f = df_mt2[df_mt2["departamento"] == depto_sel]
+#df_mt2_f = df_mt2[df_mt2["departamento"] == depto_sel]
+df_mt2_f = df_mt2[df_mt2["departamento"].isin(depto_sel)]
 
 col1, col2 = st.columns([3,7])
 
