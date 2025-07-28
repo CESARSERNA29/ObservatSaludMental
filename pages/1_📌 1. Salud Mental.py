@@ -69,7 +69,7 @@ st.markdown("""
 
 st.markdown("---")  # Otra línea si quieres enfatizarlo aún más
 st.markdown(
-    "<h3 style='text-align: center; color: #DC143C;'>Adicionar aLgo de Salud Mental (Profes...)</h3>", 
+    "<h3 style='text-align: center; color: #DC143C;'>En construcción (Profes...)</h3>", 
     unsafe_allow_html=True
 )
 st.markdown("---")
