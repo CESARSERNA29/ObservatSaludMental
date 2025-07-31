@@ -21,8 +21,8 @@ P_Colores = ["#2A3180","#E5352B","#39A8E0","#9D9D9C","#009640","#F28F1C","#66268
 st.session_state['P_Colores']=P_Colores
 #-------------------------------------------------------------------------------
 # CONFIGURACIÓN DE PÁGINA
-st.set_page_config(page_title="Convivencia Ciudadana", layout="wide")
-st.markdown("<h2 style='text-align: left;color: #39A8E0;'>CONVIVENCIA CIUDADANA - MORTALIDAD</h2>", unsafe_allow_html=True)
+st.set_page_config(page_title="Convivencia Social", layout="wide")
+st.markdown("<h2 style='text-align: left;color: #39A8E0;'>CONVIVENCIA SOCIAL - MORTALIDAD</h2>", unsafe_allow_html=True)
 #-------------------------------------------------------------------------------
 
 df_mt2 = osm.bd_mortalidad('Mortalidad2')
