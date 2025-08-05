@@ -732,23 +732,6 @@ left.plotly_chart(fig_state, use_container_width=True)
 # Reutilizar tu gráfico de barras si deseas mantenerlo
 right.plotly_chart(fig_investment, use_container_width=True)
 
-# Pie chart en la columna central
-with center:
-    fig = px.pie(
-        df_selection,
-        values='tasa_morb',
-        names='departamento',
-        title="<b>TASA MORBILIDAD POR DEPARTAMENTO</b>"
-    )
-    fig.update_layout(
-        legend_title="Dptos.",
-        legend_y=0.9
-    )
-    fig.update_traces(
-        textinfo='percent+label',
-        textposition='inside'
-    )
-    st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
 
 
@@ -760,45 +743,6 @@ with center:
 
 
 
-
-'''
-# función para mostrar las ganancias actuales frente al objetivo esperado
-def Progressbar():
-    st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #99ff99 , #FFFF00)}</style>""",unsafe_allow_html=True,)
-    target=3000000000
-    current=df_selection["Investment"].sum()
-    percent=round((current/target*100))
-    mybar=st.progress(0)
-
-    if percent>100:
-        st.subheader("Objetivo cumplido !")
-    else:
-     st.write("tienes ",percent, "% " ,"of ", (format(target, 'd')), "TZS")
-     for percent_complete in range(percent):
-        time.sleep(0.1)
-        mybar.progress(percent_complete+1,text=" Objetivo Porcentual")
-
-#menu bar
-def sideBar():
- with st.sidebar:
-    selected=option_menu(
-        menu_title="Menú Principal",
-        options=["Home","Progress"],
-        icons=["house","eye"],
-        menu_icon="cast",
-        default_index=0
-    )
- if selected=="Home":
-    #st.subheader(f"Page: {selected}")
-    graphs()
- if selected=="Progress":
-    #st.subheader(f"Page: {selected}")
-    Progressbar()
-    graphs()
-
-
-sideBar()
-'''
 
 # ---------------------------------------------------------------------
 
