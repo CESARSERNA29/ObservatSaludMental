@@ -575,66 +575,66 @@ def safe_numerize(value):
 # LOS TRES GRÁFICOS DE MORBILIDAD:
 # ===============================
 
-'''    
-def graphs():
-    investment_by_business_type=(
-        df_selection.groupby(by=["anio"]).count()[["tasa_morb"]].sort_values(by="tasa_morb")
-    )
-    
-    # Convertir el índice en una columna
-    investment_by_business_type = investment_by_business_type.reset_index()
+#'''    
+#def graphs():
+#    investment_by_business_type=(
+#        df_selection.groupby(by=["anio"]).count()[["tasa_morb"]].sort_values(by="tasa_morb")
+#    )
+#    
+#    # Convertir el índice en una columna
+#    investment_by_business_type = investment_by_business_type.reset_index()
     
     # CORRECCIÓN: Usar 'tasa_morb' como y, no 'index'
-    fig_investment = px.bar(
-        investment_by_business_type,
-        x="anio", 
-        y="tasa_morb",  # ← Esta es la columna correcta
-        title="Análisis de Morbilidad por Año", 
-        color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
-        template="plotly_white"
-    )
-    
-    fig_investment.update_layout(
-     plot_bgcolor="rgba(0,0,0,0)",
-     font=dict(color="black"),
-     yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje y y establecer su color  
-     paper_bgcolor='rgba(0, 0, 0, 0)',  # Establecer el color del fondo  en transparente
-     xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje x y establecer su color
-     )
-    
+#    fig_investment = px.bar(
+#        investment_by_business_type,
+#        x="anio", 
+#        y="tasa_morb",  # ← Esta es la columna correcta
+#        title="Análisis de Morbilidad por Año", 
+#        color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
+#        template="plotly_white"
+#    )
+#    
+#    fig_investment.update_layout(
+#     plot_bgcolor="rgba(0,0,0,0)",
+#     font=dict(color="black"),
+##     yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje y y establecer su color  
+#     paper_bgcolor='rgba(0, 0, 0, 0)',  # Establecer el color del fondo  en transparente
+#     xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje x y establecer su color
+#     )
+#    
     # gráfico de regresión lineal simple de inversión por nombre_cat_edad
-    investment_state = df_selection.groupby(by=["nombre_cat_edad"]).count()[["tasa_morb"]]
-    
-    investment_state_reset = investment_state.reset_index()    
-    
-    fig_state = px.line(investment_state_reset, 
-                   x="nombre_cat_edad",  # Categorías de edad en el eje X
-                   y="tasa_morb",        # Conteo/tasa en el eje Y
-                   orientation="v", 
-                   title="<b> TASA DE MORBILIDAD POR CATEGORÍA DE EDADES </b>",
-                   color_discrete_sequence=["#0083b8"]*len(investment_state_reset), 
-                   template="plotly_white",
-                   
-    )
-    
-    fig_state.update_layout(
-        xaxis=dict(tickmode="linear"), 
-        plot_bgcolor="rgba(0,0,0,0)",
-        yaxis=(dict(showgrid=False))
-        )
-    
-    left,right,center=st.columns(3)
-    left.plotly_chart(fig_state,use_container_width=True)
-    right.plotly_chart(fig_investment,use_container_width=True)
-    
-    with center:
-      #pie chart
-      fig = px.pie(df_selection, values='tasa_morb', names='departamento', title="<b> TASA  MORBILIDAD POR DEPARTAMENTO </b>")
-      fig.update_layout(legend_title="Dptos.", legend_y=0.9)
-      fig.update_traces(textinfo='percent+label', textposition='inside')
-      st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
-
-'''
+#    investment_state = df_selection.groupby(by=["nombre_cat_edad"]).count()[["tasa_morb"]]
+#    
+#    investment_state_reset = investment_state.reset_index()    
+#    
+#    fig_state = px.line(investment_state_reset, 
+#                   x="nombre_cat_edad",  # Categorías de edad en el eje X
+#                   y="tasa_morb",        # Conteo/tasa en el eje Y
+#                   orientation="v", 
+#                   title="<b> TASA DE MORBILIDAD POR CATEGORÍA DE EDADES </b>",
+#                   color_discrete_sequence=["#0083b8"]*len(investment_state_reset), 
+#                   template="plotly_white",
+#                   
+#    )
+#    
+#    fig_state.update_layout(
+#        xaxis=dict(tickmode="linear"), 
+#        plot_bgcolor="rgba(0,0,0,0)",
+#        yaxis=(dict(showgrid=False))
+#        )
+#    
+#    left,right,center=st.columns(3)
+#    left.plotly_chart(fig_state,use_container_width=True)
+#    right.plotly_chart(fig_investment,use_container_width=True)
+#    
+#    with center:
+#      #pie chart
+#      fig = px.pie(df_selection, values='tasa_morb', names='departamento', title="<b> TASA  MORBILIDAD POR DEPARTAMENTO </b>")
+#      fig.update_layout(legend_title="Dptos.", legend_y=0.9)
+#      fig.update_traces(textinfo='percent+label', textposition='inside')
+#      st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
+#
+#'''
 
 
 #investment_by_business_type=(
@@ -725,7 +725,7 @@ fig_state.update_layout(
 )
 
 # Mostrar en Streamlit (dentro del layout de columnas)
-left, right, center = st.columns(2)
+left, right, center = st.columns(3)
 
 left.plotly_chart(fig_state, use_container_width=True)
 
