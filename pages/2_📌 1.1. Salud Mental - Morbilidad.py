@@ -24,6 +24,8 @@ import plotly.graph_objs as go
 
 
 
+
+
 # Descomenta esta línea si usas MySQL:
 # from query import *
 
@@ -570,7 +572,10 @@ def safe_numerize(value):
 
 
 
-#graphs
+# LOS TRES GRÁFICOS DE MORBILIDAD:
+# ===============================
+
+'''    
 def graphs():
     investment_by_business_type=(
         df_selection.groupby(by=["anio"]).count()[["tasa_morb"]].sort_values(by="tasa_morb")
@@ -629,7 +634,134 @@ def graphs():
       fig.update_traces(textinfo='percent+label', textposition='inside')
       st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
 
+'''
 
+
+#investment_by_business_type=(
+#    df_selection.groupby(by=["anio"]).count()[["tasa_morb"]].sort_values(by="tasa_morb")
+#)
+
+
+# Grafico de Barras
+investment_by_business_type = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="2_Anio_TasaMorbi")
+#investment_by_business_type = pd.read_excel(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/TablaTASAS_3Graficos.xlsx', sheet_name="2_Anio_TasaMorbi")
+
+# Convertir el índice en una columna
+investment_by_business_type = investment_by_business_type.reset_index()
+
+# CORRECCIÓN: Usar 'tasa_morb' como y, no 'index'
+fig_investment = px.bar(
+    investment_by_business_type,
+    x="anio", 
+    y="TasaMorb",  # ← Esta es la columna correcta
+    title="Análisis de Morbilidad por Año",
+    labels={"anio": "Año", "TasaMorb": "Tasa de Morbilidad"},
+    color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
+    template="plotly_white"
+)
+
+fig_investment.update_layout(
+ plot_bgcolor="rgba(0,0,0,0)",
+ font=dict(color="black"),
+ yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje y y establecer su color  
+ paper_bgcolor='rgba(0, 0, 0, 0)',  # Establecer el color del fondo  en transparente
+ xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje x y establecer su color
+ )
+
+# ------
+
+# gráfico de regresión lineal simple de inversión por nombre_cat_edad:
+investment_state = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi")
+# investment_state = pd.read_excel(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi")
+#investment_state = df_selection.groupby(by=["nombre_cat_edad"]).count()[["tasa_morb"]]
+
+investment_state_reset = investment_state.reset_index()    
+
+fig_state = px.line(investment_state_reset, 
+               x="nombre_cat_edad",  # Categorías de edad en el eje X
+               y="TasaMorb",        # Conteo/tasa en el eje Y
+               orientation="v", 
+               title="<b> TASA DE MORBILIDAD POR CATEGORÍA DE EDADES </b>",
+               labels={"nombre_cat_edad": "Categoria de Edades", "TasaMorb": "Tasa de Morbilidad"},
+               color_discrete_sequence=["#0083b8"]*len(investment_state_reset), 
+               template="plotly_white",
+               
+)
+
+fig_state.update_layout(
+    xaxis=dict(tickmode="linear"), 
+    plot_bgcolor="rgba(0,0,0,0)",
+    yaxis=(dict(showgrid=False))
+    )
+
+# ------
+
+# Grafico de sectores:
+
+# Cargar datos
+investment_state = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="3_Dptos_TasaMorbi")
+
+# Gráfico de líneas: Tasa de Morbilidad por Departamento a lo largo del tiempo
+fig_state = px.line(
+    investment_state,
+    x="departamento",
+    y="TasaMorb",
+    color="departamento",
+    markers=True,
+    title="📈 Evolución de la Tasa de Morbilidad por Departamento",
+    labels={"anio": "Año", "TasaMorb": "Tasa de Morbilidad", "departamento": "Departamento"},
+    template="plotly_white"
+)
+
+# Mejorar estilo visual
+fig_state.update_layout(
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="black", size=14),
+    xaxis=dict(showgrid=True, gridcolor='#cecdcd', title_font=dict(size=16)),
+    yaxis=dict(showgrid=True, gridcolor='#cecdcd', title_font=dict(size=16)),
+    legend_title=dict(font=dict(size=14)),
+    hovermode="x unified"
+)
+
+# Mostrar en Streamlit (dentro del layout de columnas)
+left, right, center = st.columns(2)
+
+left.plotly_chart(fig_state, use_container_width=True)
+
+# Reutilizar tu gráfico de barras si deseas mantenerlo
+right.plotly_chart(fig_investment, use_container_width=True)
+
+# Pie chart en la columna central
+with center:
+    fig = px.pie(
+        df_selection,
+        values='tasa_morb',
+        names='departamento',
+        title="<b>TASA MORBILIDAD POR DEPARTAMENTO</b>"
+    )
+    fig.update_layout(
+        legend_title="Dptos.",
+        legend_y=0.9
+    )
+    fig.update_traces(
+        textinfo='percent+label',
+        textposition='inside'
+    )
+    st.plotly_chart(fig, use_container_width=True, theme=theme_plotly)
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 # función para mostrar las ganancias actuales frente al objetivo esperado
 def Progressbar():
     st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #99ff99 , #FFFF00)}</style>""",unsafe_allow_html=True,)
@@ -666,6 +798,7 @@ def sideBar():
 
 
 sideBar()
+'''
 
 # ---------------------------------------------------------------------
 
