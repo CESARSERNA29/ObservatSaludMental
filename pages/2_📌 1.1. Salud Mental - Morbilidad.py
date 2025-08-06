@@ -678,17 +678,17 @@ import plotly.express as px
 df_depto = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="3_Dptos_TasaMorbi")
 
 # Asegúrate de que 'Anio' sea tipo numérico o categórico ordenado
-df_depto['Anio'] = df_depto['Anio'].astype(str)
+df_depto['anio'] = df_depto['anio'].astype(str)
 
 # Gráfico de línea
 fig_depto = px.line(
     df_depto,
-    x="Anio",
+    x="anio",
     y="TasaMorb",
     color="departamento",
     markers=True,
     title="Evolución de la Tasa de Morbilidad por Departamento",
-    labels={"TasaMorb": "Tasa de Morbilidad", "Anio": "Año", "departamento": "Departamento"},
+    labels={"TasaMorb": "Tasa de Morbilidad", "anio": "Año", "departamento": "Departamento"},
     template="plotly_white"
 )
 
