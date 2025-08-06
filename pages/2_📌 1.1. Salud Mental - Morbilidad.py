@@ -671,28 +671,54 @@ fig_investment.update_layout(
 # ------------------------------
 # GRÁFICO 2: Línea por departamento
 # ------------------------------
+import pandas as pd
+import plotly.express as px
+
+# Cargar el archivo
 df_depto = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="3_Dptos_TasaMorbi")
 
+# Asegúrate de que 'Anio' sea tipo numérico o categórico ordenado
+df_depto['Anio'] = df_depto['Anio'].astype(str)
+
+# Gráfico de línea
 fig_depto = px.line(
     df_depto,
-    x="departamento",
+    x="Anio",
     y="TasaMorb",
     color="departamento",
     markers=True,
-    title="📈 Evolución de la Tasa de Morbilidad por Departamento",
-    labels={"TasaMorb": "Tasa de Morbilidad", "departamento": "Departamento"},
+    title="Evolución de la Tasa de Morbilidad por Departamento",
+    labels={"TasaMorb": "Tasa de Morbilidad", "Anio": "Año", "departamento": "Departamento"},
     template="plotly_white"
 )
 
+# Estilo visual elegante
 fig_depto.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
     paper_bgcolor="rgba(0,0,0,0)",
     font=dict(color="black", size=14),
-    xaxis=dict(showgrid=True, gridcolor='#cecdcd'),
-    yaxis=dict(showgrid=True, gridcolor='#cecdcd'),
+    xaxis=dict(
+        title="Año",
+        showgrid=True,
+        gridcolor="#cecdcd",
+        tickangle=-45
+    ),
+    yaxis=dict(
+        title="Tasa de Morbilidad",
+        showgrid=True,
+        gridcolor="#cecdcd"
+    ),
     legend_title=dict(font=dict(size=14)),
+    legend=dict(orientation="h", y=-0.2),
     hovermode="x unified"
 )
+
+# Mostrar en Streamlit (si estás en ese entorno)
+# st.plotly_chart(fig_depto, use_container_width=True)
+
+# Si es en Jupyter o ejecución local
+fig_depto.show()
+
 
 # ------------------------------
 # GRÁFICO 3: Línea por categoría de edad
