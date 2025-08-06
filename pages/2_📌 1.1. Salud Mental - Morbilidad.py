@@ -641,97 +641,100 @@ def safe_numerize(value):
 #    df_selection.groupby(by=["anio"]).count()[["tasa_morb"]].sort_values(by="tasa_morb")
 #)
 
+#import streamlit as st
+#import pandas as pd
+#import plotly.express as px
 
-# Grafico de Barras
-investment_by_business_type = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="2_Anio_TasaMorbi")
-#investment_by_business_type = pd.read_excel(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/TablaTASAS_3Graficos.xlsx', sheet_name="2_Anio_TasaMorbi")
+# -------------------------------
+# GRÁFICO 1: Barras por año
+# ------------------------------
+df_bar = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="2_Anio_TasaMorbi").reset_index()
 
-# Convertir el índice en una columna
-investment_by_business_type = investment_by_business_type.reset_index()
-
-# CORRECCIÓN: Usar 'tasa_morb' como y, no 'index'
 fig_investment = px.bar(
-    investment_by_business_type,
-    x="anio", 
-    y="TasaMorb",  # ← Esta es la columna correcta
+    df_bar,
+    x="anio",
+    y="TasaMorb",
     title="Análisis de Morbilidad por Año",
     labels={"anio": "Año", "TasaMorb": "Tasa de Morbilidad"},
-    color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
+    color_discrete_sequence=["#0083B8"] * len(df_bar),
     template="plotly_white"
 )
 
 fig_investment.update_layout(
- plot_bgcolor="rgba(0,0,0,0)",
- font=dict(color="black"),
- yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje y y establecer su color  
- paper_bgcolor='rgba(0, 0, 0, 0)',  # Establecer el color del fondo  en transparente
- xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Mostrar la cuadrícula del eje x y establecer su color
- )
-
-# ------
-
-# gráfico de regresión lineal simple de inversión por nombre_cat_edad:
-investment_state = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi")
-# investment_state = pd.read_excel(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi")
-#investment_state = df_selection.groupby(by=["nombre_cat_edad"]).count()[["tasa_morb"]]
-
-investment_state_reset = investment_state.reset_index()    
-
-fig_state = px.line(investment_state_reset, 
-               x="nombre_cat_edad",  # Categorías de edad en el eje X
-               y="TasaMorb",        # Conteo/tasa en el eje Y
-               orientation="v", 
-               title="<b> TASA DE MORBILIDAD POR CATEGORÍA DE EDADES </b>",
-               labels={"nombre_cat_edad": "Categoria de Edades", "TasaMorb": "Tasa de Morbilidad"},
-               color_discrete_sequence=["#0083b8"]*len(investment_state_reset), 
-               template="plotly_white",
-               
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0, 0, 0, 0)",
+    font=dict(color="black"),
+    xaxis=dict(showgrid=True, gridcolor="#cecdcd"),
+    yaxis=dict(showgrid=True, gridcolor="#cecdcd")
 )
 
-fig_state.update_layout(
-    xaxis=dict(tickmode="linear"), 
-    plot_bgcolor="rgba(0,0,0,0)",
-    yaxis=(dict(showgrid=False))
-    )
+# ------------------------------
+# GRÁFICO 2: Línea por departamento
+# ------------------------------
+df_depto = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="3_Dptos_TasaMorbi")
 
-# ------
-
-# Grafico de sectores:
-
-# Cargar datos
-investment_state = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="3_Dptos_TasaMorbi")
-
-# Gráfico de líneas: Tasa de Morbilidad por Departamento a lo largo del tiempo
-fig_state = px.line(
-    investment_state,
+fig_depto = px.line(
+    df_depto,
     x="departamento",
     y="TasaMorb",
     color="departamento",
     markers=True,
     title="📈 Evolución de la Tasa de Morbilidad por Departamento",
-    labels={"anio": "Año", "TasaMorb": "Tasa de Morbilidad", "departamento": "Departamento"},
+    labels={"TasaMorb": "Tasa de Morbilidad", "departamento": "Departamento"},
     template="plotly_white"
 )
 
-# Mejorar estilo visual
-fig_state.update_layout(
+fig_depto.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
     paper_bgcolor="rgba(0,0,0,0)",
     font=dict(color="black", size=14),
-    xaxis=dict(showgrid=True, gridcolor='#cecdcd', title_font=dict(size=16)),
-    yaxis=dict(showgrid=True, gridcolor='#cecdcd', title_font=dict(size=16)),
+    xaxis=dict(showgrid=True, gridcolor='#cecdcd'),
+    yaxis=dict(showgrid=True, gridcolor='#cecdcd'),
     legend_title=dict(font=dict(size=14)),
     hovermode="x unified"
 )
 
-# Mostrar en Streamlit (dentro del layout de columnas)
-left, right, center = st.columns(3)
+# ------------------------------
+# GRÁFICO 3: Línea por categoría de edad
+# ------------------------------
+df_edad = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi").reset_index()
 
-left.plotly_chart(fig_state, use_container_width=True)
+fig_edad = px.line(
+    df_edad,
+    x="nombre_cat_edad",
+    y="TasaMorb",
+    orientation="v",
+    title="<b>Tasa de Morbilidad por Categoría de Edad</b>",
+    labels={"nombre_cat_edad": "Categoría de Edad", "TasaMorb": "Tasa de Morbilidad"},
+    color_discrete_sequence=["#0083b8"] * len(df_edad),
+    template="plotly_white"
+)
 
-# Reutilizar tu gráfico de barras si deseas mantenerlo
-right.plotly_chart(fig_investment, use_container_width=True)
+fig_edad.update_layout(
+    xaxis=dict(tickmode="linear"),
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+    yaxis=dict(showgrid=False)
+)
 
+# ------------------------------
+# VISUALIZACIÓN EN 2 FILAS
+# ------------------------------
+
+# PRIMERA FILA: dos gráficos lado a lado
+col1, col2 = st.columns(2)
+
+with col1:
+    st.plotly_chart(fig_investment, use_container_width=True)
+
+with col2:
+    st.plotly_chart(fig_depto, use_container_width=True)
+
+# SEGUNDA FILA: gráfico centrado
+spacer1, center, spacer2 = st.columns([1, 2, 1])
+
+with center:
+    st.plotly_chart(fig_edad, use_container_width=True)
 
 
 
