@@ -75,12 +75,12 @@ depto_filter = col_f4.pills(
     default=df["Departamento"].unique().tolist()
 )
 
-mun_filter = col_f5.pills(
-    "Municipio",
-    df["Municipio"].unique().tolist(),
-    selection_mode="multi",
-    default=df["Municipio"].unique().tolist()
-)
+#mun_filter = col_f5.pills(
+#    "Municipio",
+#    df["Municipio"].unique().tolist(),
+#    selection_mode="multi",
+#    default=df["Municipio"].unique().tolist()
+#)
 
 # ============================
 # 5. Filtrar datos
@@ -89,8 +89,8 @@ df_filtered = df[
     (df["Año"].isin(anio_filter)) &
     (df["a. Primera infancia"].isin(edad_filter)) &
     (df["Tot_Hombres"].isin(sexo_filter)) &
-    (df["Departamento"].isin(depto_filter)) &
-    (df["Municipio"].isin(mun_filter))
+    (df["Departamento"].isin(depto_filter)) #&
+#    (df["Municipio"].isin(mun_filter))
 ]
 
 # ============================
