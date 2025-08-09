@@ -20,10 +20,12 @@ st.title("📊 Dashboard Interactivo - Score por Filtros")
 # ============================
 # 2. Cargar Datos
 # ============================
-df = pd.read_excel(
-    r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tabla_SALIDA_Para_ModeloCiudad.xlsx",
-    sheet_name="ScoreTablero"
-)
+#df = pd.read_excel(
+#    r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tabla_SALIDA_Para_ModeloCiudad.xlsx",
+#    sheet_name="ScoreTablero"
+#)
+
+df = pd.read_excel("Tabla_SALIDA_Para_ModeloCiudad.xlsx", sheet_name="ScoreTablero")
 
 # ============================
 # 3. Sidebar - Filtros
