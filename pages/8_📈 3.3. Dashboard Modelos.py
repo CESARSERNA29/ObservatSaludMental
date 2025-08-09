@@ -5,7 +5,7 @@
 
 
 # =======================================
-# 📊 DASHBOARD STREAMLIT con FILTROS TIPO BOTÓN
+# 📊 DASHBOARD INTERACTIVO STREAMLIT con KPIs VISUALES y FILTROS PILLS
 # =======================================
 import pandas as pd
 import streamlit as st
@@ -13,47 +13,77 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # ============================
-# Configuración de página
+# 1. Configuración de página
 # ============================
 st.set_page_config(page_title="Dashboard Score", layout="wide")
-st.title("📊 Dashboard Interactivo - Filtros tipo Botón")
+st.title("📊 Dashboard Interactivo - Score por Filtros (Pills Style)")
 
 # ============================
-# Cargar datos
+# 2. Estilos CSS opcionales
+# ============================
+st.markdown("""
+<style>
+.kpi-card {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ============================
+# 3. Cargar Datos
 # ============================
 df = pd.read_excel("Tabla_SALIDA_Para_ModeloCiudad.xlsx", sheet_name="ScoreTablero")
+
+# Normalizar nombres de columnas
 if "Anio" in df.columns:
     df.rename(columns={"Anio": "Año"}, inplace=True)
 
 # ============================
-# Filtros como botones toggle
+# 4. Filtros con estilo PILLS
 # ============================
-st.subheader("🎛 Filtros (activar/desactivar)")
+col_f1, col_f2, col_f3, col_f4, col_f5 = st.columns(5)
 
-def toggle_filter(label, options):
-    selected = []
-    cols = st.columns(len(options))
-    for i, opt in enumerate(options):
-        if cols[i].checkbox(str(opt), value=True, key=f"{label}_{opt}"):
-            selected.append(opt)
-    return selected
+anio_filter = col_f1.pills(
+    "Año",
+    df["Año"].unique().tolist(),
+    selection_mode="multi",
+    default=df["Año"].unique().tolist()
+)
 
-col_f1, col_f2 = st.columns(2)
-with col_f1:
-    anio_filter = toggle_filter("Año", sorted(df["Año"].unique()))
-with col_f2:
-    edad_filter = toggle_filter("Edad", sorted(df["a. Primera infancia"].unique()))
+edad_filter = col_f2.pills(
+    "Edad",
+    df["a. Primera infancia"].unique().tolist(),
+    selection_mode="multi",
+    default=df["a. Primera infancia"].unique().tolist()
+)
 
-col_f3, col_f4 = st.columns(2)
-with col_f3:
-    sexo_filter = toggle_filter("Sexo", sorted(df["Tot_Hombres"].unique()))
-with col_f4:
-    depto_filter = toggle_filter("Departamento", sorted(df["Departamento"].unique()))
+sexo_filter = col_f3.pills(
+    "Sexo",
+    df["Tot_Hombres"].unique().tolist(),
+    selection_mode="multi",
+    default=df["Tot_Hombres"].unique().tolist()
+)
 
-mun_filter = toggle_filter("Municipio", sorted(df["Municipio"].unique()))
+depto_filter = col_f4.pills(
+    "Departamento",
+    df["Departamento"].unique().tolist(),
+    selection_mode="multi",
+    default=df["Departamento"].unique().tolist()
+)
+
+mun_filter = col_f5.pills(
+    "Municipio",
+    df["Municipio"].unique().tolist(),
+    selection_mode="multi",
+    default=df["Municipio"].unique().tolist()
+)
 
 # ============================
-# Filtrar datos
+# 5. Filtrar datos
 # ============================
 df_filtered = df[
     (df["Año"].isin(anio_filter)) &
@@ -64,38 +94,116 @@ df_filtered = df[
 ]
 
 # ============================
-# KPIs
+# 6. Comparación con año anterior
 # ============================
-col_kpi1, col_kpi2, col_kpi3 = st.columns(3)
-col_kpi1.metric("📊 Score Promedio", f"{df_filtered['Score_Unico_Ordinal'].mean():,.2f}")
-col_kpi2.metric("🏆 Score Máximo", f"{df_filtered['Score_Unico_Ordinal'].max():,.2f}")
+variacion_pct = None
+flecha_variacion = "➡️"
+color_variacion = "gray"
 
 if len(anio_filter) >= 2:
     anio_actual = max(anio_filter)
     anio_anterior = sorted(anio_filter)[-2]
-    score_actual = df_filtered[df_filtered["Año"] == anio_actual]["Score_Unico_Ordinal"].mean()
-    score_anterior = df_filtered[df_filtered["Año"] == anio_anterior]["Score_Unico_Ordinal"].mean()
-    if score_anterior != 0:
+
+    df_actual = df_filtered[df_filtered["Año"] == anio_actual]
+    df_anterior = df_filtered[df_filtered["Año"] == anio_anterior]
+
+    score_actual = df_actual["Score_Unico_Ordinal"].mean()
+    score_anterior = df_anterior["Score_Unico_Ordinal"].mean()
+
+    if pd.notna(score_anterior) and score_anterior != 0:
         variacion_pct = ((score_actual - score_anterior) / score_anterior) * 100
-        flecha = "⬆️" if variacion_pct > 0 else "⬇️" if variacion_pct < 0 else "➡️"
-        col_kpi3.metric("📈 Variación %", f"{variacion_pct:.2f}%", flecha)
+        if variacion_pct > 0:
+            flecha_variacion = "⬆️"
+            color_variacion = "red"
+        elif variacion_pct < 0:
+            flecha_variacion = "⬇️"
+            color_variacion = "lightblue"
+
+    df_actual_depto = df_actual.groupby("Departamento")["Score_Unico_Ordinal"].mean().reset_index()
+    df_anterior_depto = df_anterior.groupby("Departamento")["Score_Unico_Ordinal"].mean().reset_index()
+    df_comp = pd.merge(df_actual_depto, df_anterior_depto, on="Departamento", how="left",
+                       suffixes=("_actual", "_anterior"))
+    df_comp.rename(columns={"Score_Unico_Ordinal_actual": "Score_actual",
+                            "Score_Unico_Ordinal_anterior": "Score_anterior"}, inplace=True)
+    df_comp["variacion"] = df_comp["Score_actual"] - df_comp["Score_anterior"]
+
+    def flecha_color(row):
+        if pd.isna(row["Score_anterior"]):
+            return pd.Series({"flecha": "➡️", "color": "gray"})
+        if row["variacion"] > 0:
+            return pd.Series({"flecha": "⬆️", "color": "red"})
+        if row["variacion"] < 0:
+            return pd.Series({"flecha": "⬇️", "color": "lightblue"})
+        return pd.Series({"flecha": "➡️", "color": "gray"})
+
+    df_comp[["flecha", "color"]] = df_comp.apply(flecha_color, axis=1)
+
 else:
-    col_kpi3.metric("📈 Variación %", "N/A")
+    st.warning("Selecciona al menos 2 años para la comparación.")
+    df_comp = df_filtered.groupby("Departamento")["Score_Unico_Ordinal"].mean().reset_index()
+    df_comp.rename(columns={"Score_Unico_Ordinal": "Score_actual"}, inplace=True)
+    df_comp["flecha"] = "➡️"
+    df_comp["color"] = "gray"
 
 # ============================
-# Gráficos
+# 7. KPIs
+# ============================
+col_kpi1, col_kpi2, col_kpi3 = st.columns(3)
+
+col_kpi1.markdown(f"""
+<div class="kpi-card">
+    <h3>📊 Score Promedio</h3>
+    <h1 style="color:#1f77b4;">{df_filtered['Score_Unico_Ordinal'].mean():,.2f}</h1>
+</div>
+""", unsafe_allow_html=True)
+
+col_kpi2.markdown(f"""
+<div class="kpi-card">
+    <h3>🏆 Score Máximo</h3>
+    <h1 style="color:#ff7f0e;">{df_filtered['Score_Unico_Ordinal'].max():,.2f}</h1>
+</div>
+""", unsafe_allow_html=True)
+
+if variacion_pct is not None:
+    col_kpi3.markdown(f"""
+    <div class="kpi-card">
+        <h3>📈 Variación vs Año Anterior</h3>
+        <h1 style="color:{color_variacion};">{flecha_variacion} {variacion_pct:.2f}%</h1>
+    </div>
+    """, unsafe_allow_html=True)
+else:
+    col_kpi3.markdown(f"""
+    <div class="kpi-card">
+        <h3>📈 Variación vs Año Anterior</h3>
+        <h1 style="color:gray;">N/A</h1>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ============================
+# 8. Gráficos
 # ============================
 col1, col2 = st.columns(2)
-fig_bar = px.bar(df_filtered.groupby("Departamento")["Score_Unico_Ordinal"].mean().reset_index(),
-                 x="Departamento", y="Score_Unico_Ordinal", title="📊 Score Promedio por Departamento",
-                 color="Departamento", template="plotly_white")
-col1.plotly_chart(fig_bar, use_container_width=True)
+
+fig_comp = go.Figure()
+fig_comp.add_trace(go.Bar(
+    x=df_comp["Departamento"],
+    y=df_comp["Score_actual"],
+    marker_color=df_comp["color"],
+    text=df_comp["flecha"],
+    textposition="outside",
+    textfont=dict(size=18)
+))
+fig_comp.update_layout(title="📈 Score Promedio por Departamento",
+                       yaxis_title="Score", plot_bgcolor="rgba(0,0,0,0)")
+col1.plotly_chart(fig_comp, use_container_width=True)
 
 fig_box = px.box(df_filtered, x="Departamento", y="Score_Unico_Ordinal", color="Departamento",
-                 title="📦 Distribución del Score", template="plotly_white")
+                 title="📦 Distribución del Score por Departamento", template="plotly_white")
 col2.plotly_chart(fig_box, use_container_width=True)
 
 fig_line = px.line(df_filtered.groupby(["Año", "Departamento"])["Score_Unico_Ordinal"].mean().reset_index(),
                    x="Año", y="Score_Unico_Ordinal", color="Departamento", markers=True,
-                   title="📆 Evolución del Score", template="plotly_white")
+                   title="📆 Evolución del Score por Año y Departamento",
+                   labels={"Score_Unico_Ordinal": "Score promedio", "Año": "Año"},
+                   template="plotly_white")
 st.plotly_chart(fig_line, use_container_width=True)
