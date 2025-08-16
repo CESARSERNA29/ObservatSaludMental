@@ -397,7 +397,7 @@ def Home1(mostrar_base=True):
 # ----------------------------------------------------------------------
 # Llamar la función con o sin mostrar la base
 
-Home1(mostrar_base=True)   # 👈 aquí decides: True = con dataset, False = sin dataset
+Home1(mostrar_base=False)   # 👈 aquí decides: True = con dataset, False = sin dataset
 # ----------------------------------------------------------------------
 
 
