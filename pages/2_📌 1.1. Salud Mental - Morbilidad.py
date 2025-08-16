@@ -284,8 +284,9 @@ with total5:
 # SE DECIDIÓ REEMPLAZARLO POR UN LINK DE DESCARGA DE LA MISMA. 
 # ******
 
+
 # ✅ Filtrar el dataframe según los valores seleccionados
-df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+#df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
 
     
 #--------------------------------------------------------------------------- 
@@ -304,14 +305,14 @@ df_selection = df_sm0.query("departamento in @Departamento and municipio in @Mun
 #            key='SelectorMultiple'
 #            ) 
 #        st.dataframe(df_selection[showData], use_container_width=True)
-
+#
 # Hasta aqui se muestra el excel con la base original
 # ---------------------------------------------------------------------
 
 
 
 
-st.markdown("##")
+#st.markdown("##")
 
 
 
@@ -320,21 +321,21 @@ st.markdown("##")
 # ----------------------------------------------------------------------
 
 # Llamar la función antes del resumen tabular
-Home1()
+#Home1()
 
-st.markdown("##")
+#st.markdown("##")
 
-st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades</h4>", unsafe_allow_html=True) 
+#st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades</h4>", unsafe_allow_html=True) 
 
 # Convertir año a categórica 
-df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
+#df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
 
 # Filtro para la region de la orinoquia 
-df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
+#df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
 
 
 # Reemplazar valores en la columna 'sexo' 
-df_sm0['sexo'] = df_sm0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
+#df_sm0['sexo'] = df_sm0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
 
 
 # Orden ctegorias de edad 
@@ -342,12 +343,80 @@ df_sm0['sexo'] = df_sm0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Muj
 
 # Convertir la columna 'nombre_cat_edad' a tipo categórico con orden 
 #df0['nombre_cat_edad'] = pd.Categorical(df0['nombre_cat_edad'], categories=orden_cat_edad, ordered=True)
+#df_sm0['nombre_cat_edad'] = pd.Categorical(df_sm0['nombre_cat_edad'])
+#df_sm0['grupo'] = df_sm0['grupo'].str.strip() 
+#df_sm0['departamento']= df_sm0['departamento'].str.strip() 
+#df_sm0['departamento']=pd.Categorical(df_sm0['departamento']) 
+
+#df_sm0['anio'] = df_sm0['anio'].astype(str)   # esto va en contra de la septima línea de código hacia arriba
+
+# Filtro para Salud Mental 
+#df0_sm = df_sm0[df_sm0['componente']=='SM']
+
+# Tabla Pivote: 
+#df_agregada1 = df0_sm.groupby(['grupo']).count().reset_index() 
+#df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
+#df_agregada1_1.columns = ['grupo', 'cant'] 
+
+# Calcular el total de casos 
+#total_casos = df_agregada1_1['cant'].sum() 
+
+# Agregar columna de porcentaje 
+#df_agregada1_1['(%)'] = (df_agregada1_1['cant'] / total_casos * 100).round(2) 
+
+#st.dataframe(df_agregada1_1) 
+
+
+# VERSION MODIFICADA:
+# ✅ Filtrar el dataframe según los valores seleccionados
+df_selection = df_sm0.query("departamento in @Departamento and municipio in @Municipio and grupo in @Grupo")
+
+    
+#--------------------------------------------------------------------------- 
+# Tabla de frecuencia de grupos de enfermedades de Salud Mental 
+#---------------------------------------------------------------------------
+
+def Home1(mostrar_base=True): 
+    if mostrar_base:
+        with st.expander("Ver el Conjunto de Datos en Excel"): 
+            showData = st.multiselect(
+                'Filter:', 
+                df_selection.columns,
+                default=["anio", "sexo", "nombre_cat_edad", "region","departamento", "municipio", 
+                        "componente", "capitulo", "grupo", "Enfermedad_Evento", 
+                        "pob10", "tasa_morb", "Tot_Eventos"], 
+                key='SelectorMultiple'
+            ) 
+            st.dataframe(df_selection[showData], use_container_width=True)
+
+    # Aquí va el título del resumen tabular
+    st.markdown("##")
+    st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Resumen Tabular del grupo de Enfermedades</h4>", unsafe_allow_html=True) 
+
+
+# ----------------------------------------------------------------------
+# Llamar la función con o sin mostrar la base
+
+Home1(mostrar_base=False)   # 👈 aquí decides: True = con dataset, False = sin dataset
+# ----------------------------------------------------------------------
+
+
+# Convertir año a categórica 
+df_sm0['anio'] = pd.to_numeric(df_sm0['anio'], errors='coerce') 
+
+# Filtro para la region de la orinoquia 
+df_sm0=df_sm0[df_sm0['region']=='Orinoquía'] 
+
+# Reemplazar valores en la columna 'sexo' 
+df_sm0['sexo'] = df_sm0['sexo'].replace({'Masculino': 'Hombres','Femenino': 'Mujeres'})
+
+# Convertir la columna 'nombre_cat_edad' a tipo categórico
 df_sm0['nombre_cat_edad'] = pd.Categorical(df_sm0['nombre_cat_edad'])
 df_sm0['grupo'] = df_sm0['grupo'].str.strip() 
 df_sm0['departamento']= df_sm0['departamento'].str.strip() 
 df_sm0['departamento']=pd.Categorical(df_sm0['departamento']) 
 
-df_sm0['anio'] = df_sm0['anio'].astype(str)   # esto va en contra de la septima línea de código hacia arriba
+df_sm0['anio'] = df_sm0['anio'].astype(str)   # ojo con coherencia respecto al análisis
 
 # Filtro para Salud Mental 
 df0_sm = df_sm0[df_sm0['componente']=='SM']
@@ -364,6 +433,10 @@ total_casos = df_agregada1_1['cant'].sum()
 df_agregada1_1['(%)'] = (df_agregada1_1['cant'] / total_casos * 100).round(2) 
 
 st.dataframe(df_agregada1_1) 
+# ----------------------------------------------------------------------
+
+
+
 # ----------------------------------------------------------------------
 
 
