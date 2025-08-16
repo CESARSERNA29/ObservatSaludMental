@@ -1161,7 +1161,7 @@ except Exception as e:
 
 
 st.markdown("##")
-st.markdown("##")
+#st.markdown("##")
 
 
 
@@ -1267,7 +1267,7 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import streamlit as st
-import fion
+import fiona
 
 
 # Título y descripción
@@ -1278,8 +1278,8 @@ st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región
 
 
 
-gdf_mpios = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_MPIO.geojson', engine="fiona")
-
+#gdf_mpios = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_MPIO.geojson', engine="fiona")
+gdf_mpios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
     
 
 try:
