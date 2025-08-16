@@ -280,7 +280,8 @@ with total5:
 
 
 
-
+# ESTE BLOQUE ES PARA HACER VISIBLE EL CONJUNTO DE DATOS DE TRAABAJO, SE OCULTA PORQUE HACE MUY PESADO EL SCRIPT, 
+# SE DECIDIÓ REEMPLAZARLO POR UN LINK DE DESCARGA DE LA MISMA. 
 # ******
 
 # ✅ Filtrar el dataframe según los valores seleccionados
@@ -292,17 +293,17 @@ df_selection = df_sm0.query("departamento in @Departamento and municipio in @Mun
 #---------------------------------------------------------------------------
 # Mostrar tabla expandible con el conjunto de datos
 
-def Home1(): 
-    with st.expander("Ver el Conjunto de Datos en Excel"): 
-        showData = st.multiselect(
-            'Filter:', 
-            df_selection.columns,
-            default=["anio", "sexo", "nombre_cat_edad", "region","departamento", "municipio", 
-                     "componente", "capitulo", "grupo", "Enfermedad_Evento", 
-                     "pob10", "tasa_morb", "Tot_Eventos"], 
-            key='SelectorMultiple'
-            ) 
-        st.dataframe(df_selection[showData], use_container_width=True)
+#def Home1(): 
+#    with st.expander("Ver el Conjunto de Datos en Excel"): 
+#        showData = st.multiselect(
+#            'Filter:', 
+#            df_selection.columns,
+#            default=["anio", "sexo", "nombre_cat_edad", "region","departamento", "municipio", 
+#                     "componente", "capitulo", "grupo", "Enfermedad_Evento", 
+#                     "pob10", "tasa_morb", "Tot_Eventos"], 
+#            key='SelectorMultiple'
+#            ) 
+#        st.dataframe(df_selection[showData], use_container_width=True)
 
 # Hasta aqui se muestra el excel con la base original
 # ---------------------------------------------------------------------
@@ -1193,12 +1194,21 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import streamlit as st
+import fion
+
 
 # Título y descripción
 st.markdown("## Tasa de Morbilidad por Municipio")
 st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
 
-# 1. Cargar archivos
+# 1. Cargar archivos:
+
+
+
+gdf_mpios = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_MPIO.geojson', engine="fiona")
+
+    
+
 try:
     gdf_mpios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
     df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
