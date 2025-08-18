@@ -1359,104 +1359,55 @@ import fiona
 
 # Segunda opción de gráfico:
 import streamlit as st
-import pandas as pd
 import geopandas as gpd
+import pandas as pd
 import plotly.express as px
-import json
 
-# ------------------------
-# CARGA DE ARCHIVOS
-# ------------------------
-df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
-gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+# -------------------------
+# CARGA DE DATOS
+# -------------------------
+# Cargar shapefile de municipios/departamentos
+shapefile_path = "datos/municipios.shp"  # cambia la ruta
+gdf = gpd.read_file(shapefile_path)
 
-# Normalizar llaves
-df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
-gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
+# Cargar datos de morbilidad/mortalidad
+df = pd.read_excel("datos/salud_orinoquia.xlsx")
 
-# Merge
-gdf_merged = gdf_orinoquia.merge(df_tasas, on="mpio_cdpmp", how="left")
+# Merge por código de municipio o depto
+gdf_merged = gdf.merge(df, left_on="CODIGO_MPIO", right_on="Codigo_Mpio", how="left")
 
-# Rellenar nulos
-gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
-gdf_merged["Tasa_Morta"] = gdf_merged["Tasa_Morta"].fillna(0)
+# -------------------------
+# INTERFAZ STREAMLIT
+# -------------------------
+st.title("🗺️ Mapa de Salud Mental en la Orinoquía")
 
-# ------------------------
-# OPCIONES DE VARIABLES
-# ------------------------
 opciones = {
     "Tasa de Morbilidad": "Tasa_Morbi",
     "Tasa de Mortalidad": "Tasa_Morta"
 }
+variable = st.selectbox("Selecciona la variable a visualizar:", opciones.keys())
+variable_seleccionada = opciones[variable]
 
-variable_seleccionada = st.selectbox(
-    "📊 Selecciona la variable a visualizar en el mapa:",
-    list(opciones.keys())
-)
-columna_variable = opciones[variable_seleccionada]
+# Convertir a GeoJSON para Plotly
+gdf_json = gdf_merged.__geo_interface__
 
-# ------------------------
-# CARGA GEOJSON
-# ------------------------
-with open("ciudades_shp/MGN_Orinoquia_Filtrado2.geojson", "r", encoding="utf-8") as f:
-    geojson_data = json.load(f)
-
-# ------------------------
-# MAPA CON PLOTLY EXPRESS
-# ------------------------
-fig = px.choropleth(
+# -------------------------
+# MAPA
+# -------------------------
+fig = px.choropleth_mapbox(
     gdf_merged,
-    geojson=geojson_data,
-    locations="mpio_cdpmp",                  # clave en el dataframe
-    featureidkey="properties.mpio_cdpmp",    # clave en el geojson
-    color=columna_variable,
+    geojson=gdf_json,
+    locations=gdf_merged.index,  # usamos el índice como identificador
+    color=variable_seleccionada,
+    hover_name="NOMBRE_MPIO",  # cambia según tu campo
+    mapbox_style="carto-positron",
+    center={"lat": 4.5, "lon": -72},  # centro de la Orinoquía
+    zoom=5,
+    opacity=0.7,
     color_continuous_scale="YlOrRd",
-    hover_name="NOMBRE",                     # nombre del municipio: Municipio
-    hover_data={columna_variable: True},
-    title=f"Mapa de {variable_seleccionada}"
+    title=f"Mapa de {variable}"
 )
 
-# Ajustar vista
 fig.update_geos(fitbounds="locations", visible=False)
-fig.update_layout(
-    margin={"r":0,"t":30,"l":0,"b":0},
-    coloraxis_colorbar=dict(title=variable_seleccionada)
-)
 
-# ------------------------
-# MOSTRAR EN STREAMLIT
-# ------------------------
 st.plotly_chart(fig, use_container_width=True)
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
