@@ -1301,7 +1301,7 @@ gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_orinoquia
 # ---------------------------
 # Crear Mapa con Folium
 # ---------------------------
-m = folium.Map(location=[4.5, -72.5], zoom_start=6, tiles="CartoDB positron")
+m = folium.Map(location=[4.5, -72.5], zoom_start=6, tiles="CartoDB positron", control_scale=True)
 
 # Choropleth
 choropleth = folium.Choropleth(
