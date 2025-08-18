@@ -1356,22 +1356,30 @@ import fiona
 # ==================================
 
 
+
 # Segunda opción de gráfico:
 import streamlit as st
 import pandas as pd
+import geopandas as gpd
 import plotly.express as px
 import json
 
 # ------------------------
-# EJEMPLO DE DATOS
+# CARGA DE ARCHIVOS
 # ------------------------
-
-# 1. Cargar archivos
-
-# df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
 df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
 
+# Normalizar llaves
+df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
+gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
 
+# Merge
+gdf_merged = gdf_orinoquia.merge(df_tasas, on="mpio_cdpmp", how="left")
+
+# Rellenar nulos
+gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
+gdf_merged["Tasa_Morta"] = gdf_merged["Tasa_Morta"].fillna(0)
 
 # ------------------------
 # OPCIONES DE VARIABLES
@@ -1381,16 +1389,14 @@ opciones = {
     "Tasa de Mortalidad": "Tasa_Morta"
 }
 
-# Selector en Streamlit
 variable_seleccionada = st.selectbox(
     "📊 Selecciona la variable a visualizar en el mapa:",
     list(opciones.keys())
 )
-
 columna_variable = opciones[variable_seleccionada]
 
 # ------------------------
-# CARGA GEOJSON DE ORINOQUÍA
+# CARGA GEOJSON
 # ------------------------
 with open("ciudades_shp/MGN_Orinoquia_Filtrado2.geojson", "r", encoding="utf-8") as f:
     geojson_data = json.load(f)
@@ -1399,14 +1405,14 @@ with open("ciudades_shp/MGN_Orinoquia_Filtrado2.geojson", "r", encoding="utf-8")
 # MAPA CON PLOTLY EXPRESS
 # ------------------------
 fig = px.choropleth(
-    df,
+    gdf_merged,
     geojson=geojson_data,
-    locations="Municipio",                  
-    featureidkey="properties.NOMBRE",       
-    color=columna_variable,                 
-    color_continuous_scale="YlOrRd",        
-    hover_name="Municipio",                 
-    hover_data={columna_variable: True},    
+    locations="mpio_cdpmp",                  # clave en el dataframe
+    featureidkey="properties.mpio_cdpmp",    # clave en el geojson
+    color=columna_variable,
+    color_continuous_scale="YlOrRd",
+    hover_name="NOMBRE",                     # nombre del municipio: Municipio
+    hover_data={columna_variable: True},
     title=f"Mapa de {variable_seleccionada}"
 )
 
@@ -1421,6 +1427,35 @@ fig.update_layout(
 # MOSTRAR EN STREAMLIT
 # ------------------------
 st.plotly_chart(fig, use_container_width=True)
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
