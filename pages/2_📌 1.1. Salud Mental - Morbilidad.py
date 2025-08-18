@@ -1279,15 +1279,11 @@ st.markdown("## 🗺️ Tasa de Morbilidad por Municipio")
 st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
 
 # 1. Cargar archivos
-gdf_orinoquia = gpd.read_file(
-    r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson',
-    engine="fiona"
-)
+# gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
 
-df_tasas = pd.read_excel(
-    r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx",
-    sheet_name="Tasas_Mapas"
-)
+# df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx",sheet_name="Tasas_Mapas")
+df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx',sheet_name="Tasas_Mapas")
 
 # 2. Unificar llaves
 gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
