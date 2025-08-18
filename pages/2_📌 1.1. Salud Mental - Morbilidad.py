@@ -1276,76 +1276,152 @@ import fiona
 # ===========================
 # Título y descripción
 # ===========================
-st.markdown("## 🗺️ Tasa de Morbilidad por Municipio")
-st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
+# Mapa con LeafLet es muy pesado... lo voy a ocultar:
+# ---------------------------------------------------
+#st.markdown("## 🗺️ Tasa de Morbilidad por Municipio")
+#st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
 
 # 1. Cargar archivos
 # gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
-gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+#gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
 
 # df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
-df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+#df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
 
 # 2. Unificar llaves
-gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
-df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
+#gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
+#df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
 # 3. Merge
-gdf_merged = gdf_orinoquia.merge(df_tasas, on="mpio_cdpmp", how="left")
+#gdf_merged = gdf_orinoquia.merge(df_tasas, on="mpio_cdpmp", how="left")
 
 # 4. Rellenar nulos
-gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
+#gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 
 # 5. Convertir a GeoDataFrame
-gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_orinoquia.crs)
+#gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_orinoquia.crs)
 
 # ---------------------------
 # Crear Mapa con Folium
 # ---------------------------
-m = folium.Map(
-    location=[4.5, -72.5],
-    zoom_start=6,
-    tiles="CartoDB positron",
-    control_scale=True  # ✅ Activa la barra de escala
-)
+#m = folium.Map(
+#    location=[4.5, -72.5],
+#    zoom_start=6,
+#    tiles="CartoDB positron",
+#    control_scale=True  # ✅ Activa la barra de escala
+#)
 
 # Choropleth
-choropleth = folium.Choropleth(
-    geo_data=gdf_merged.to_json(),
-    data=gdf_merged,
-    columns=["mpio_cdpmp", "Tasa_Morbi"],
-    key_on="feature.properties.mpio_cdpmp",
-    fill_color="YlOrRd",
-    fill_opacity=0.7,
-    line_opacity=0.3,
-    nan_fill_color="lightgray",
-    legend_name="Tasa de Morbilidad",
-).add_to(m)
+#choropleth = folium.Choropleth(
+#    geo_data=gdf_merged.to_json(),
+#    data=gdf_merged,
+#    columns=["mpio_cdpmp", "Tasa_Morbi"],
+#    key_on="feature.properties.mpio_cdpmp",
+#    fill_color="YlOrRd",
+#    fill_opacity=0.7,
+#    line_opacity=0.3,
+#    nan_fill_color="lightgray",
+#    legend_name="Tasa de Morbilidad",
+#).add_to(m)
 
 # Tooltips con formato
-folium.GeoJson(
-    gdf_merged,
-    name="Tasa Morbilidad",
-    tooltip=folium.features.GeoJsonTooltip(
-        fields=["Departamento", "Municipio", "Tasa_Morbi"],
-        aliases=["🟦 Departamento:", "🏙 Municipio:", "📊 Tasa de Morbilidad:"],
-        localize=True,
-        labels=True,
-        sticky=True,
-        style=(
-            "background-color: white; color: black; "
-            "font-family: arial; font-size: 12px; padding: 5px;"
-        ),
-    ),
-    style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
-    highlight_function=lambda x: {"weight": 2, "color": "blue"},
-).add_to(m)
+#folium.GeoJson(
+#    gdf_merged,
+#    name="Tasa Morbilidad",
+#    tooltip=folium.features.GeoJsonTooltip(
+#        fields=["Departamento", "Municipio", "Tasa_Morbi"],
+#        aliases=["🟦 Departamento:", "🏙 Municipio:", "📊 Tasa de Morbilidad:"],
+#        localize=True,
+#        labels=True,
+#        sticky=True,
+#        style=(
+#            "background-color: white; color: black; "
+#            "font-family: arial; font-size: 12px; padding: 5px;"
+#        ),
+#    ),
+#    style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
+#    highlight_function=lambda x: {"weight": 2, "color": "blue"},
+#).add_to(m)
 
 # Fit bounds al área de la Orinoquía
-m.fit_bounds(m.get_bounds())
+#m.fit_bounds(m.get_bounds())
 
 # Control de capas
-folium.LayerControl().add_to(m)
+#folium.LayerControl().add_to(m)
 
 # Mostrar mapa en Streamlit
-st_folium(m, width=1000, height=600)
+#st_folium(m, width=1000, height=600)
+
+# Aqui termina el mapa LeafLeft
+# ==================================
+
+
+# Segunda opción de gráfico:
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import json
+
+# ------------------------
+# EJEMPLO DE DATOS
+# ------------------------
+
+# 1. Cargar archivos
+
+# df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
+df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+
+
+
+# ------------------------
+# OPCIONES DE VARIABLES
+# ------------------------
+opciones = {
+    "Tasa de Morbilidad": "Tasa_Morbi",
+    "Tasa de Mortalidad": "Tasa_Morta"
+}
+
+# Selector en Streamlit
+variable_seleccionada = st.selectbox(
+    "📊 Selecciona la variable a visualizar en el mapa:",
+    list(opciones.keys())
+)
+
+columna_variable = opciones[variable_seleccionada]
+
+# ------------------------
+# CARGA GEOJSON DE ORINOQUÍA
+# ------------------------
+with open("ciudades_shp/MGN_Orinoquia_Filtrado2.geojson", "r", encoding="utf-8") as f:
+    geojson_data = json.load(f)
+
+# ------------------------
+# MAPA CON PLOTLY EXPRESS
+# ------------------------
+fig = px.choropleth(
+    df,
+    geojson=geojson_data,
+    locations="Municipio",                  
+    featureidkey="properties.NOMBRE",       
+    color=columna_variable,                 
+    color_continuous_scale="YlOrRd",        
+    hover_name="Municipio",                 
+    hover_data={columna_variable: True},    
+    title=f"Mapa de {variable_seleccionada}"
+)
+
+# Ajustar vista
+fig.update_geos(fitbounds="locations", visible=False)
+fig.update_layout(
+    margin={"r":0,"t":30,"l":0,"b":0},
+    coloraxis_colorbar=dict(title=variable_seleccionada)
+)
+
+# ------------------------
+# MOSTRAR EN STREAMLIT
+# ------------------------
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
