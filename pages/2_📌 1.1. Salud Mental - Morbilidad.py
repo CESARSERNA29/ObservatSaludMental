@@ -1274,55 +1274,47 @@ import fiona
 st.markdown("## Tasa de Morbilidad por Municipio")
 st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
 
+
 # 1. Cargar archivos:
+# 1.1.  El geojson  gdf_orinoquia
+#gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+                              
+                              
+# 1.2. La tabla de datos de las Tasas:
+#df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
+df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
 
-
-
-#gdf_mpios = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_MPIO.geojson', engine="fiona")
-gdf_mpios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
-    
-
-try:
-    gdf_mpios = gpd.read_file("MGN_Orinoquia_MPIO.geojson", engine="fiona")
-    df_tasas = pd.read_excel("Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx")
-except Exception as e:
-    st.error(f"❌ Error cargando archivos: {e}")
-    st.stop()
-
-# 2. Filtrar departamentos de interés
-departamentos_orinoquia = ["META", "CASANARE", "ARAUCA", "VICHADA"]
-gdf_mpios = gdf_mpios[gdf_mpios["dpto_cnmbr"].isin(departamentos_orinoquia)].copy()
-
-# 3. Unificar llaves para hacer merge
-gdf_mpios["mpio_cdpmp"] = gdf_mpios["mpio_cdpmp"].astype(str)
+# 2. Unificar llaves para hacer merge
+gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
 df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
-# 4. Hacer merge
-gdf_merged = gdf_mpios.merge(df_tasas, on="mpio_cdpmp", how="left")
 
-# 5. Limpiar columnas innecesarias y asegurar consistencia
-if "geometry_y" in gdf_merged.columns:
-    gdf_merged = gdf_merged.drop(columns=["geometry_y"])
+# 3. Hacer merge
+gdf_merged = gdf_orinoquia.merge(df_tasas, on="mpio_cdpmp", how="left")
 
-# Asegurar columna 'geometry' válida
-if "geometry_x" in gdf_merged.columns:
-    gdf_merged = gdf_merged.rename(columns={"geometry_x": "geometry"})
 
-if "geometry" not in gdf_merged.columns:
-    st.error("❌ No se encontró la columna 'geometry' luego del merge.")
-    st.stop()
 
-# 6. Eliminar registros nulos o duplicados
-gdf_merged = gdf_merged.dropna(subset=["geometry", "mpio_cdpmp"])
-gdf_merged = gdf_merged.drop_duplicates(subset="mpio_cdpmp")
 
-# 7. Convertir a GeoDataFrame
-gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_mpios.crs)
 
-# 8. Rellenar nulos en la tasa
+
+
+# ==============================
+
+# ====================================
+
+
+
+
+
+# 4. Rellenar nulos en la tasa
 gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 
-# ===========================
+# 5. Convertir a GeoDataFrame
+gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_orinoquia.crs)
+
+
+# ---------------------------
 # Crear Mapa con Folium
 # ---------------------------
 
