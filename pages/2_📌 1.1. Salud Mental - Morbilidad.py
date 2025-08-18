@@ -1261,6 +1261,9 @@ st.markdown("##")
 # ===========================
 # Mapa Leaflet de Morbilidad
 # ---------------------------
+# ===========================
+# Mapa Leaflet de Morbilidad
+# ---------------------------
 
 import geopandas as gpd
 import pandas as pd
@@ -1269,95 +1272,79 @@ from streamlit_folium import st_folium
 import streamlit as st
 import fiona
 
-
+# ===========================
 # Título y descripción
-st.markdown("## Tasa de Morbilidad por Municipio")
+# ===========================
+st.markdown("## 🗺️ Tasa de Morbilidad por Municipio")
 st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región de la Orinoquía, según los datos consolidados.")
 
+# 1. Cargar archivos
+gdf_orinoquia = gpd.read_file(
+    r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson',
+    engine="fiona"
+)
 
-# 1. Cargar archivos:
-# 1.1.  El geojson  gdf_orinoquia
-gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
-#gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
-print(gdf_orinoquia.head())
-print(gdf_orinoquia.dtypes)
-                              
-                              
-# 1.2. La tabla de datos de las Tasas:
-df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
-#df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+df_tasas = pd.read_excel(
+    r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx",
+    sheet_name="Tasas_Mapas"
+)
 
-# 2. Unificar llaves para hacer merge
+# 2. Unificar llaves
 gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
 df_tasas["mpio_cdpmp"] = df_tasas["mpio_cdpmp"].astype(str)
 
-
-# 3. Hacer merge
+# 3. Merge
 gdf_merged = gdf_orinoquia.merge(df_tasas, on="mpio_cdpmp", how="left")
 
-
-
-
-
-
-
-# ==============================
-
-# ====================================
-
-
-
-
-
-# 4. Rellenar nulos en la tasa
+# 4. Rellenar nulos
 gdf_merged["Tasa_Morbi"] = gdf_merged["Tasa_Morbi"].fillna(0)
 
 # 5. Convertir a GeoDataFrame
 gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_orinoquia.crs)
 
-
 # ---------------------------
 # Crear Mapa con Folium
 # ---------------------------
-
 m = folium.Map(location=[4.5, -72.5], zoom_start=6, tiles="CartoDB positron")
 
-# Capa de coropletas
-folium.Choropleth(
+# Choropleth
+choropleth = folium.Choropleth(
     geo_data=gdf_merged.to_json(),
     data=gdf_merged,
     columns=["mpio_cdpmp", "Tasa_Morbi"],
     key_on="feature.properties.mpio_cdpmp",
-    fill_color="YlOrRd",
+    fill_color="YlGnBu",
     fill_opacity=0.7,
-    line_opacity=0.2,
-    nan_fill_color="gray",
+    line_opacity=0.3,
+    nan_fill_color="lightgray",
     legend_name="Tasa de Morbilidad",
 ).add_to(m)
 
-# Capa de etiquetas emergentes
-# Añadir etiquetas con nombre del municipio y valor
+# Tooltips con formato
 folium.GeoJson(
     gdf_merged,
     name="Tasa Morbilidad",
     tooltip=folium.features.GeoJsonTooltip(
-        fields=["Departamento", "Municipio", "Tasa_Morbi"],  # ✅ Usamos 'municipio' que sí existe
-        aliases=["Dpto.", "Municipio:", "Tasa de Morbilidad:"],
+        fields=["Departamento", "Municipio", "Tasa_Morbi"],
+        aliases=["🟦 Departamento:", "🏙 Municipio:", "📊 Tasa de Morbilidad:"],
         localize=True,
         labels=True,
+        sticky=True,
+        style=("background-color: white; color: black; font-family: arial; font-size: 12px; padding: 5px;")
     ),
     style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
-).add_to(m) 
+    highlight_function=lambda x: {"weight": 2, "color": "blue"},
+).add_to(m)
+
+# Fit bounds al área de la Orinoquía
+m.fit_bounds(m.get_bounds())
+
+# Control de capas y escala
+folium.LayerControl().add_to(m)
+folium.plugins.ScaleBar(position="bottomleft").add_to(m)
 
 # Mostrar mapa en Streamlit
 st_folium(m, width=1000, height=600)
-
-
-
-
-
-
-
 
 
 
