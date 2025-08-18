@@ -1373,6 +1373,12 @@ gdf = gpd.read_file(shapefile_path)
 # Cargar datos de morbilidad/mortalidad
 df = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
 
+
+# Unificar llaves
+gdf["mpio_cdpmp"] = gdf["mpio_cdpmp"].astype(str)
+df["mpio_cdpmp"] = df["mpio_cdpmp"].astype(str)
+
+
 # Merge por código de municipio o depto
 gdf_merged = gdf.merge(df, left_on="mpio_cdpmp", right_on="mpio_cdpmp", how="left")
 
