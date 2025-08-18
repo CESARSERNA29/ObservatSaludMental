@@ -1277,13 +1277,15 @@ st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región
 
 # 1. Cargar archivos:
 # 1.1.  El geojson  gdf_orinoquia
-#gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
-gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+#gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
+print(gdf_orinoquia.head())
+print(gdf_orinoquia.dtypes)
                               
                               
 # 1.2. La tabla de datos de las Tasas:
-#df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
-df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
+#df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
 
 # 2. Unificar llaves para hacer merge
 gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
@@ -1339,7 +1341,7 @@ folium.GeoJson(
     gdf_merged,
     name="Tasa Morbilidad",
     tooltip=folium.features.GeoJsonTooltip(
-        fields=["departamento", "municipio", "Tasa_Morbi"],  # ✅ Usamos 'municipio' que sí existe
+        fields=["Departamento", "Municipio", "Tasa_Morbi"],  # ✅ Usamos 'municipio' que sí existe
         aliases=["Dpto.", "Municipio:", "Tasa de Morbilidad:"],
         localize=True,
         labels=True,
