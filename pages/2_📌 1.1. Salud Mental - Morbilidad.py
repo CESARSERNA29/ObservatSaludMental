@@ -1357,7 +1357,6 @@ import fiona
 
 
 
-# Segunda opción de gráfico:
 import streamlit as st
 import geopandas as gpd
 import pandas as pd
@@ -1390,19 +1389,11 @@ opciones = {
 variable = st.selectbox("Selecciona la variable a visualizar:", list(opciones.keys()))
 variable_seleccionada = opciones[variable]
 
-# Etiqueta amigable para barra de color y tooltip
+# Etiqueta amigable
 etiqueta_variable = "📊 " + variable
 
-# Convertir a GeoJSON (cada feature trae 'id' con el índice del GeoDataFrame)
+# Convertir a GeoJSON
 gdf_json = gdf_merged.__geo_interface__
-
-# Asegurar que los 'locations' coincidan con el 'id' del GeoJSON
-locs = gdf_merged.index.astype(str)
-
-# custom_data para el hovertemplate
-# Ajusta los nombres de columnas si en tu gdf_merged se llaman distinto
-custom_cols = ["Departamento", "Municipio", variable_seleccionada]
-custom_data = gdf_merged[custom_cols]
 
 # -------------------------
 # MAPA
@@ -1410,33 +1401,27 @@ custom_data = gdf_merged[custom_cols]
 fig = px.choropleth_mapbox(
     gdf_merged,
     geojson=gdf_json,
-    locations=locs,                # identificador por índice (en string)
-    featureidkey="id",             # mapea contra la clave 'id' del GeoJSON
+    locations=gdf_merged.index,  # usamos el índice como identificador
     color=variable_seleccionada,
-    custom_data=custom_data,       # <-- necesario para usar %{customdata[i]}
     mapbox_style="carto-positron",
-    center={"lat": 4.5, "lon": -72},
+    center={"lat": 4.5, "lon": -72},  # centro de la Orinoquía
     zoom=5,
-    opacity=0.75,
+    opacity=0.7,
     color_continuous_scale="YlOrRd",
     title=f"Mapa de {variable}"
 )
 
-# Hover limpio con alias
+# Hover con valores redondeados a 2 decimales
 fig.update_traces(
+    customdata=gdf_merged[["DPTO_CNMBR", "Municipio", variable_seleccionada]],
     hovertemplate="<br>".join([
         "🟦 Departamento: %{customdata[0]}",
         "🏙 Municipio: %{customdata[1]}",
-        f"{etiqueta_variable}: %{customdata[2]}",
+        f"{etiqueta_variable}: %{customdata[2]:.2f}",  # <-- redondeo a 2 decimales
         "<extra></extra>"
     ])
 )
 
-# Layout: altura mayor y colorbar con título amigable
-fig.update_layout(
-    height=720,
-    margin={"r":0, "t":50, "l":0, "b":0},
-    coloraxis_colorbar=dict(title=variable)  # usa alias humano
-)
+fig.update_geos(fitbounds="locations", visible=False)
 
 st.plotly_chart(fig, use_container_width=True)
