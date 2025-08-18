@@ -1413,14 +1413,14 @@ fig = px.choropleth_mapbox(
 
 # Hover con valores redondeados a 2 decimales
 fig.update_traces(
-    customdata=gdf_merged[["Departamento", "Municipio", variable_seleccionada]],
-    hovertemplate="<br>".join([
-        "🟦 Departamento: %{customdata[0]}",
-        "🏙 Municipio: %{customdata[1]}",
-        f"{etiqueta_variable}: %{customdata[2]:.2f}",  # <-- redondeo a 2 decimales
-        "<extra></extra>"
-    ])
+    customdata=gdf_merged[["Departamento", "Municipio", variable_seleccionada]], 
+    hovertemplate=(
+        "<b>Departamento:</b> %{customdata[0]}<br>"
+        "<b>Municipio:</b> %{customdata[1]}<br>"
+        f"<b>{etiqueta_variable}:</b> %{customdata[2]:.2f}<extra></extra>"
+    )
 )
+
 
 fig.update_geos(fitbounds="locations", visible=False)
 
