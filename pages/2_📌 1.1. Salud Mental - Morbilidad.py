@@ -1438,8 +1438,6 @@ import fiona
 
 
 
-
-
 import streamlit as st
 import geopandas as gpd
 import pandas as pd
@@ -1466,54 +1464,41 @@ gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
 # -------------------------
 # INTERFAZ STREAMLIT
 # -------------------------
-st.title("🗺️ Salud Mental en la Orinoquía")
+st.title("🗺️ Morbilidad en la Orinoquía")
 
-opciones = {
-    "Morbilidad": "Tasa_Morbi",
-    "Mortalidad": "Tasa_Morta"
-}
-variable = st.selectbox("Selecciona la variable a visualizar:", list(opciones.keys()))
-variable_seleccionada = opciones[variable]
-
-# Etiqueta amigable
-etiqueta_variable = variable
+# Layout: mapa a la izquierda y tabla a la derecha
+col1, col2 = st.columns([2, 1])
 
 # -------------------------
-# MAPA PLOTLY
+# MAPA
 # -------------------------
-fig = px.choropleth_mapbox(
-    gdf_merged,
-    geojson=gdf_merged.__geo_interface__,
-    locations=gdf_merged.index,  # identificador único
-    color=variable_seleccionada,
-    mapbox_style="carto-positron",
-    center={"lat": 4.5, "lon": -72},
-    zoom=5,
-    opacity=0.75,
-    color_continuous_scale="YlOrRd",
-    title=f"🗺️ Tasa de {variable}"
-)
-
-# Hover personalizado
-fig.update_traces(
-    customdata=gdf_merged[["Departamento", "Municipio", variable_seleccionada]],
-    hovertemplate=(
-        "<b>🏛 Departamento:</b> %{customdata[0]}<br>"
-        "<b>🏙 Municipio:</b> %{customdata[1]}<br>"
-        "<b>" + etiqueta_variable + ":</b> %{customdata[2]:.2f}<extra></extra>"
+with col1:
+    fig = px.choropleth(
+        gdf_merged,
+        geojson=gdf_merged.geometry,
+        locations=gdf_merged.index,
+        color="Tasa_Morbi",
+        hover_name="Municipio",
+        hover_data={"Departamento": True, "Tasa_Morbi": ':.2f'},
+        color_continuous_scale="YlOrRd",
+        title="Mapa de Tasa de Morbilidad"
     )
-)
 
-# Ajustes visuales
-fig.update_layout(
-    margin={"r":0,"t":40,"l":0,"b":0},
-    coloraxis_colorbar=dict(
-        title=f"Tasa de {variable}",
-        tickformat=".2f"
-    )
-)
+    fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
+    st.plotly_chart(fig, use_container_width=True)
 
-# Mostrar en Streamlit
-st.plotly_chart(fig, use_container_width=True)
+# -------------------------
+# TABLA ORDENADA
+# -------------------------
+with col2:
+    st.subheader("📋 Ranking de Morbilidad")
 
+    tabla = gdf_merged[["Departamento", "Municipio", "Tasa_Morbi"]].copy()
+    tabla = tabla.sort_values(by="Tasa_Morbi", ascending=False)
+
+    st.dataframe(tabla, use_container_width=True, height=600)
+    
+    
+    
 
