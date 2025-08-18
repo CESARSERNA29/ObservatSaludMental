@@ -1357,6 +1357,89 @@ import fiona
 
 
 
+#import streamlit as st
+#import geopandas as gpd
+#import pandas as pd
+#import plotly.express as px
+
+# -------------------------
+# CARGA DE DATOS
+# -------------------------
+#shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'
+#gdf = gpd.read_file(shapefile_path)
+
+#df = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+
+# Unificar llaves
+#gdf["mpio_cdpmp"] = gdf["mpio_cdpmp"].astype(str)
+#df["mpio_cdpmp"] = df["mpio_cdpmp"].astype(str)
+
+# Merge
+#gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
+
+# -------------------------
+# INTERFAZ STREAMLIT
+# -------------------------
+#st.title("🗺️ Mapa de Salud Mental en la Orinoquía")
+
+#opciones = {
+#    "Tasa de Morbilidad": "Tasa_Morbi",
+#    "Tasa de Mortalidad": "Tasa_Morta"
+#}
+#variable = st.selectbox("Selecciona la variable a visualizar:", list(opciones.keys()))
+#variable_seleccionada = opciones[variable]
+
+# Etiqueta amigable
+#etiqueta_variable = "📊 " + variable
+
+# Convertir a GeoJSON
+#gdf_json = gdf_merged.__geo_interface__
+
+# -------------------------
+# MAPA
+# -------------------------
+#fig = px.choropleth_mapbox(
+#    gdf_merged,
+#    geojson=gdf_json,
+#    locations=gdf_merged.index,  # usamos el índice como identificador
+#    color=variable_seleccionada,
+#    mapbox_style="carto-positron",
+#    center={"lat": 4.5, "lon": -72},  # centro de la Orinoquía
+#    zoom=5,
+#    opacity=0.7,
+#    color_continuous_scale="YlOrRd",
+#    title=f"Mapa de {variable}"
+#)
+
+# Hover con valores redondeados a 2 decimales
+#fig.update_traces(
+#    customdata=gdf_merged[["Departamento", "Municipio", variable_seleccionada]],
+#    hovertemplate=(
+#        "<b>Departamento:</b> %{customdata[0]}<br>" +
+#        "<b>Municipio:</b> %{customdata[1]}<br>" +
+#        "<b>" + etiqueta_variable + ":</b> %{customdata[2]:.2f}<extra></extra>"
+#    )
+#)
+
+
+#fig.update_geos(fitbounds="locations", visible=False)
+
+#st.plotly_chart(fig, use_container_width=True)
+
+# ==================================
+
+
+
+
+
+
+
+
+
+
+
+
+
 import streamlit as st
 import geopandas as gpd
 import pandas as pd
@@ -1368,7 +1451,10 @@ import plotly.express as px
 shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'
 gdf = gpd.read_file(shapefile_path)
 
-df = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
+df = pd.read_excel(
+    'ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', 
+    sheet_name="Tasas_Mapas"
+)
 
 # Unificar llaves
 gdf["mpio_cdpmp"] = gdf["mpio_cdpmp"].astype(str)
@@ -1380,48 +1466,55 @@ gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
 # -------------------------
 # INTERFAZ STREAMLIT
 # -------------------------
-st.title("🗺️ Mapa de Salud Mental en la Orinoquía")
+st.title("🗺️ Salud Mental en la Orinoquía")
 
 opciones = {
-    "Tasa de Morbilidad": "Tasa_Morbi",
-    "Tasa de Mortalidad": "Tasa_Morta"
+    "Morbilidad": "Tasa_Morbi",
+    "Mortalidad": "Tasa_Morta"
 }
 variable = st.selectbox("Selecciona la variable a visualizar:", list(opciones.keys()))
 variable_seleccionada = opciones[variable]
 
 # Etiqueta amigable
-etiqueta_variable = "📊 " + variable
-
-# Convertir a GeoJSON
-gdf_json = gdf_merged.__geo_interface__
+etiqueta_variable = variable
 
 # -------------------------
-# MAPA
+# MAPA PLOTLY
 # -------------------------
 fig = px.choropleth_mapbox(
     gdf_merged,
-    geojson=gdf_json,
-    locations=gdf_merged.index,  # usamos el índice como identificador
+    geojson=gdf_merged.__geo_interface__,
+    locations=gdf_merged.index,  # identificador único
     color=variable_seleccionada,
     mapbox_style="carto-positron",
-    center={"lat": 4.5, "lon": -72},  # centro de la Orinoquía
+    center={"lat": 4.5, "lon": -72},
     zoom=5,
-    opacity=0.7,
+    opacity=0.75,
     color_continuous_scale="YlOrRd",
-    title=f"Mapa de {variable}"
+    title=f"🗺️ Tasa de {variable}"
 )
 
-# Hover con valores redondeados a 2 decimales
+# Hover personalizado
 fig.update_traces(
     customdata=gdf_merged[["Departamento", "Municipio", variable_seleccionada]],
     hovertemplate=(
-        "<b>Departamento:</b> %{customdata[0]}<br>" +
-        "<b>Municipio:</b> %{customdata[1]}<br>" +
-        "<b>" + etiqueta_variable + ":</b> %{customdata[2]:.2f}<extra></extra>"
+        "<b>🏛 Departamento:</b> %{customdata[0]}<br>"
+        "<b>🏙 Municipio:</b> %{customdata[1]}<br>"
+        "<b>{etiqueta_variable}:</b> %{customdata[2]:.2f}"
+        "<extra></extra>"
     )
 )
 
+# Ajustes visuales
+fig.update_layout(
+    margin={"r":0,"t":40,"l":0,"b":0},
+    coloraxis_colorbar=dict(
+        title=f"Tasa de {variable}",
+        tickformat=".2f"
+    )
+)
 
-fig.update_geos(fitbounds="locations", visible=False)
-
+# Mostrar en Streamlit
 st.plotly_chart(fig, use_container_width=True)
+
+
