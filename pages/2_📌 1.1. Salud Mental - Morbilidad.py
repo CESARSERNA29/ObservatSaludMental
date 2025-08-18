@@ -1366,23 +1366,17 @@ import plotly.express as px
 # -------------------------
 # CARGA DE DATOS
 # -------------------------
-# Cargar shapefile de municipios/departamentos
-shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'  # cambia la ruta
+shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'
 gdf = gpd.read_file(shapefile_path)
 
-# Cargar datos de morbilidad/mortalidad
 df = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
-
 
 # Unificar llaves
 gdf["mpio_cdpmp"] = gdf["mpio_cdpmp"].astype(str)
 df["mpio_cdpmp"] = df["mpio_cdpmp"].astype(str)
 
-
-# Merge por código de municipio o depto
-gdf_merged = gdf.merge(df, left_on="mpio_cdpmp", right_on="mpio_cdpmp", how="left")
-
-
+# Merge
+gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
 
 # -------------------------
 # INTERFAZ STREAMLIT
@@ -1393,11 +1387,22 @@ opciones = {
     "Tasa de Morbilidad": "Tasa_Morbi",
     "Tasa de Mortalidad": "Tasa_Morta"
 }
-variable = st.selectbox("Selecciona la variable a visualizar:", opciones.keys())
+variable = st.selectbox("Selecciona la variable a visualizar:", list(opciones.keys()))
 variable_seleccionada = opciones[variable]
 
-# Convertir a GeoJSON para Plotly
+# Etiqueta amigable para barra de color y tooltip
+etiqueta_variable = "📊 " + variable
+
+# Convertir a GeoJSON (cada feature trae 'id' con el índice del GeoDataFrame)
 gdf_json = gdf_merged.__geo_interface__
+
+# Asegurar que los 'locations' coincidan con el 'id' del GeoJSON
+locs = gdf_merged.index.astype(str)
+
+# custom_data para el hovertemplate
+# Ajusta los nombres de columnas si en tu gdf_merged se llaman distinto
+custom_cols = ["Departamento", "Municipio", variable_seleccionada]
+custom_data = gdf_merged[custom_cols]
 
 # -------------------------
 # MAPA
@@ -1405,17 +1410,33 @@ gdf_json = gdf_merged.__geo_interface__
 fig = px.choropleth_mapbox(
     gdf_merged,
     geojson=gdf_json,
-    locations=gdf_merged.index,  # usamos el índice como identificador
+    locations=locs,                # identificador por índice (en string)
+    featureidkey="id",             # mapea contra la clave 'id' del GeoJSON
     color=variable_seleccionada,
-    hover_name="Municipio",  # cambia según tu campo
+    custom_data=custom_data,       # <-- necesario para usar %{customdata[i]}
     mapbox_style="carto-positron",
-    center={"lat": 4.5, "lon": -72},  # centro de la Orinoquía
+    center={"lat": 4.5, "lon": -72},
     zoom=5,
-    opacity=0.7,
+    opacity=0.75,
     color_continuous_scale="YlOrRd",
     title=f"Mapa de {variable}"
 )
 
-fig.update_geos(fitbounds="locations", visible=False)
+# Hover limpio con alias
+fig.update_traces(
+    hovertemplate="<br>".join([
+        "🟦 Departamento: %{customdata[0]}",
+        "🏙 Municipio: %{customdata[1]}",
+        f"{etiqueta_variable}: %{customdata[2]}",
+        "<extra></extra>"
+    ])
+)
+
+# Layout: altura mayor y colorbar con título amigable
+fig.update_layout(
+    height=720,
+    margin={"r":0, "t":50, "l":0, "b":0},
+    coloraxis_colorbar=dict(title=variable)  # usa alias humano
+)
 
 st.plotly_chart(fig, use_container_width=True)
