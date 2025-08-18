@@ -1367,14 +1367,16 @@ import plotly.express as px
 # CARGA DE DATOS
 # -------------------------
 # Cargar shapefile de municipios/departamentos
-shapefile_path = "datos/municipios.shp"  # cambia la ruta
+shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'  # cambia la ruta
 gdf = gpd.read_file(shapefile_path)
 
 # Cargar datos de morbilidad/mortalidad
-df = pd.read_excel("datos/salud_orinoquia.xlsx")
+df = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
 
 # Merge por código de municipio o depto
-gdf_merged = gdf.merge(df, left_on="CODIGO_MPIO", right_on="Codigo_Mpio", how="left")
+gdf_merged = gdf.merge(df, left_on="mpio_cdpmp", right_on="mpio_cdpmp", how="left")
+
+
 
 # -------------------------
 # INTERFAZ STREAMLIT
@@ -1399,7 +1401,7 @@ fig = px.choropleth_mapbox(
     geojson=gdf_json,
     locations=gdf_merged.index,  # usamos el índice como identificador
     color=variable_seleccionada,
-    hover_name="NOMBRE_MPIO",  # cambia según tu campo
+    hover_name="Municipio",  # cambia según tu campo
     mapbox_style="carto-positron",
     center={"lat": 4.5, "lon": -72},  # centro de la Orinoquía
     zoom=5,
