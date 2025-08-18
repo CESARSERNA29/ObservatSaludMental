@@ -1261,6 +1261,7 @@ st.markdown("##")
 # ===========================
 # Mapa Leaflet de Morbilidad
 # ---------------------------
+
 # ===========================
 # Mapa Leaflet de Morbilidad
 # ---------------------------
@@ -1282,8 +1283,8 @@ st.markdown("Este mapa muestra la tasa de morbilidad por municipio en la región
 # gdf_orinoquia = gpd.read_file(r'C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
 gdf_orinoquia = gpd.read_file('ciudades_shp/MGN_Orinoquia_Filtrado2.geojson', engine="fiona")
 
-# df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx",sheet_name="Tasas_Mapas")
-df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx',sheet_name="Tasas_Mapas")
+# df_tasas = pd.read_excel(r"C:/Users/cesar/Downloads/TABLERO_STREAMLIT_DASHBOARD/DASHBOARD_Morbilidad_DESPLIEGUE_2/ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx", sheet_name="Tasas_Mapas")
+df_tasas = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
 
 # 2. Unificar llaves
 gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
@@ -1301,7 +1302,12 @@ gdf_merged = gpd.GeoDataFrame(gdf_merged, geometry="geometry", crs=gdf_orinoquia
 # ---------------------------
 # Crear Mapa con Folium
 # ---------------------------
-m = folium.Map(location=[4.5, -72.5], zoom_start=6, tiles="CartoDB positron", control_scale=True)
+m = folium.Map(
+    location=[4.5, -72.5],
+    zoom_start=6,
+    tiles="CartoDB positron",
+    control_scale=True  # ✅ Activa la barra de escala
+)
 
 # Choropleth
 choropleth = folium.Choropleth(
@@ -1326,7 +1332,10 @@ folium.GeoJson(
         localize=True,
         labels=True,
         sticky=True,
-        style=("background-color: white; color: black; font-family: arial; font-size: 12px; padding: 5px;")
+        style=(
+            "background-color: white; color: black; "
+            "font-family: arial; font-size: 12px; padding: 5px;"
+        ),
     ),
     style_function=lambda x: {"fillOpacity": 0, "color": "black", "weight": 0.2},
     highlight_function=lambda x: {"weight": 2, "color": "blue"},
@@ -1335,20 +1344,8 @@ folium.GeoJson(
 # Fit bounds al área de la Orinoquía
 m.fit_bounds(m.get_bounds())
 
-# Control de capas y escala
+# Control de capas
 folium.LayerControl().add_to(m)
-folium.plugins.ScaleBar(position="bottomleft").add_to(m)
 
 # Mostrar mapa en Streamlit
 st_folium(m, width=1000, height=600)
-
-
-
-
-
-
-
-
-
-
-
