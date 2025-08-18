@@ -1417,7 +1417,7 @@ fig.update_traces(
     hovertemplate=(
         "<b>Departamento:</b> %{customdata[0]}<br>"
         "<b>Municipio:</b> %{customdata[1]}<br>"
-        f"<b>{etiqueta_variable}:</b> %{customdata[2]:.2f}<extra></extra>"
+        "<b>{etiqueta_variable}:</b> %{customdata[2]:.2f}<extra></extra>"
     )
 )
 
