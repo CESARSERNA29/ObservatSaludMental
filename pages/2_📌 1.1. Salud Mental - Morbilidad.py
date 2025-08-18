@@ -1478,10 +1478,18 @@ with col1:
         geojson=gdf_merged.geometry,
         locations=gdf_merged.index,
         color="Tasa_Morbi",
-        hover_name="Municipio",
-        hover_data={"Departamento": True, "Tasa_Morbi": ':.2f'},
         color_continuous_scale="YlOrRd",
         title="Mapa de Tasa de Morbilidad"
+    )
+
+    # Agregar customdata para controlar el hover
+    fig.update_traces(
+        customdata=gdf_merged[["Departamento", "Municipio", "Tasa_Morbi"]],
+        hovertemplate=(
+            "<b>Departamento:</b> %{customdata[0]}<br>" +
+            "<b>Municipio:</b> %{customdata[1]}<br>" +
+            "<b>Tasa de Morbilidad:</b> %{customdata[2]:.2f}<extra></extra>"
+        )
     )
 
     fig.update_geos(fitbounds="locations", visible=False)
@@ -1498,7 +1506,16 @@ with col2:
     tabla = tabla.sort_values(by="Tasa_Morbi", ascending=False)
 
     st.dataframe(tabla, use_container_width=True, height=600)
-    
-    
-    
 
+    # Botón para descargar en Excel
+    import io
+    buffer = io.BytesIO()
+    tabla.to_excel(buffer, index=False, sheet_name="Ranking_Morbilidad")
+    buffer.seek(0)
+
+    st.download_button(
+        label="📥 Descargar en Excel",
+        data=buffer,
+        file_name="Ranking_Morbilidad.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
