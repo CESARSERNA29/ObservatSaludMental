@@ -1,3 +1,12 @@
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import math
+from urllib.request import urlopen
+import json
+import numpy as np
+import random
+
 #===============================================================================
 #  LECTURA DE ARCHIVOS
 #===============================================================================
@@ -53,10 +62,6 @@ def bd_ponal():
 #===============================================================================
 # TABLAS
 #===============================================================================
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-import math
 
 def tabla_grupo(df, total_pob, index_col, values_col):
     
@@ -96,7 +101,7 @@ def tabla_grupo(df, total_pob, index_col, values_col):
     col_rename = {
         index_col: 'Grupo',
         values_col: 'Número de Casos',
-        'Tasa': 'Tasa x 10000 Hab.'
+        'Tasa': 'Tasa x 100000 Hab.'
     }
     tabla = tabla.rename(columns=col_rename)
     
@@ -117,9 +122,6 @@ def tabla_grupo(df, total_pob, index_col, values_col):
 
     return tabla
 #-------------------------------------------------------------------------------  
-
-
-
 #===============================================================================
 # GRAFICAS
 #===============================================================================
@@ -158,7 +160,7 @@ def diag_lineas(df,vx,vy,grupos,titulo,ylab,colores):
  
  #------------------------------------------------------------------------------
  
-def diag_barras_apil(df,vx,vy,grupos,titulo,colores,bmode='stack',xlab="",ylab=""):
+def diag_barras_apil(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab="",ylab=""):
   
   n=df[grupos].nunique()
   colores_sel=colores[:n]
@@ -166,41 +168,177 @@ def diag_barras_apil(df,vx,vy,grupos,titulo,colores,bmode='stack',xlab="",ylab="
               color=grupos,
               barmode=bmode,
               color_discrete_sequence=colores_sel,
-              title=titulo)
+              title=titulo,
+              #text=vy,
+              custom_data=[df[grupos]])
   fig.update_layout(xaxis_title=xlab,yaxis_title=ylab )
+  
+  return(fig) 
+
+def diag_barras_apil_h(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab="",ylab="", width=800, height=600):
+  
+  n=df[grupos].nunique()
+  colores_sel=colores[:n]
+  fig = px.bar(df,x=vx,y=vy,
+              color=grupos,
+              barmode=bmode,
+              color_discrete_sequence=colores_sel,
+              title=titulo,
+              orientation='h',
+              text=vx,
+              custom_data=[df[grupos]])
+  fig.update_layout(
+        xaxis_title=xlab,
+        yaxis_title=ylab,
+        width=width,
+        height=height,
+        margin={"r":0, "t":0, "l":0, "b":0}
+    )
+  
+  return(fig) 
+
+#fig.update_traces(textposition='outside')
   #for trace in fig.data:
   #      trace.text = trace.y if hasattr(trace, 'y') else None  # texto con el valor de la barra
   #      trace.textposition = 'inside'   # texto dentro de la barra (centro)
   #      trace.textfont = dict(color='white')  # texto blanco
-  return(fig) 
-  
 #-------------------------------------------------------------------------------
+# Funcion para la creacion del mapa coropletico por municipios
 
-def diag_barras(df,vx,vy,grupo,titulo,colores):
+def mapa_crp(df,vy,ruta_geoj,Medida):
   
-  fig = px.bar(df,x=vx,y=vy,
-               color=grupo,
-               barmode='stack',
-               color_discrete_sequence=colores_sel,
-               title=titulo)
-  return(fig) 
+  # se lee el archivo simple con el listado de municipios de la region
+  mpio_orinoquia=pd.read_csv("D:/Consultoria/UNILLANOS/ObservatSaludMental/data/municipios.csv",sep=',')
+  mpio_orinoquia['id_mpio']=mpio_orinoquia['id_mpio'].astype('Int64')
+  
+  # Lectura del archivo en formato GeoJson
+  with open(ruta_geoj, 'r', encoding='utf-8') as f:
+    mapa_gj2 = json.load(f)
+  
+  # Hacer merge con df2_f para incluir todos los municipios de mun_region
+  df_completo = pd.merge(
+    mpio_orinoquia,
+    df[['id_mpio',vy]],
+    on='id_mpio',
+    how='left')
+
+  # Rellenar NaN en Total con 0
+  df_completo[vy] = df_completo[vy].fillna(0)
+  
+  escala_color = [
+    [0, '#c6cbc8'],    # muy claro (blanco rosado)
+    [0.5, '#1a6b3c'],  # color base medio
+    [1, '#003f1b']]     # más oscuro
 
 
-def diag_radar(cat,r1,r2,perfil1,perfil2,colores):
-  
-  v_max=math.ceil(max(max(r1),max(r2))/10)*10
-  
-  fig = go.Figure()
-  # Serie 1
-  fig.add_trace(go.Scatterpolar(r=r1,theta=cat,fill='toself',
-    name=perfil1,line=dict(color=colores[0]),marker=dict(color=colores[0])))
-  
-  #Serie 2
-  fig.add_trace(go.Scatterpolar(r=r2,theta=cat,fill='toself',
-    name=perfil2, line=dict(color=colores[1]),marker=dict(color=colores[1])))
-
+  fig = px.choropleth_mapbox(
+    df_completo,
+    geojson=mapa_gj2,
+    locations='id_mpio',  # la columna del DataFrame que coincide con el identificador GeoJSON
+    color=vy,       # la variable a colorear
+    featureidkey="properties.mpio_cdpmp", # ajusta según tu geojson
+    color_continuous_scale=escala_color,
+    range_color=(0, max(df_completo[vy])),
+    mapbox_style="carto-positron",
+    zoom=5.5,
+    center={"lat": 4.88, "lon": -71},
+    opacity=0.5,
+    labels={vy:Medida}
+    )
   fig.update_layout(
-    polar=dict(radialaxis=dict(visible=True,range=[0, v_max])),
-    showlegend=True)
-  return(fig)
+    width=800,  # ancho en píxeles, ajusta a tu gusto
+    height=500, # alto en píxeles
+    margin={"r":0, "t":0, "l":0, "b":0}
+)
   
+  fig.update_traces(
+    hovertemplate=(
+        "%{customdata[0]}<br>" +
+        "%{customdata[1]} (%{location})<br>" +
+        "Tasa Morbilidad: %{z}<extra></extra>"
+    ),
+    customdata=df_completo[['departamento', 'municipio']].values
+  )
+  return(fig)
+
+#===============================================================================
+
+def plot_metric(label, vy, prefix="", suffix="", show_graph=False, color_graph="",color_area="",yvisible=True):
+    fig = go.Figure()
+
+    # fig.add_trace(
+    #     go.Indicator(
+    #         value=value,
+    #         gauge={"axis": {"visible": True}},
+    #         number={
+    #             "prefix": prefix,
+    #             "suffix": suffix,
+    #             "font.size": 28,
+    #         },
+    #         title={
+    #             "text": label,
+    #             "font": {"size": 24},
+    #         },
+    #     )
+    # )
+    
+    if show_graph:
+        
+        fig.add_trace(
+            go.Scatter(x=vy.index,y=vy,
+                #random.sample(range(0, 101), 30),
+                hoverinfo="skip",
+                fill="tozeroy",
+                fillcolor=color_area,
+                line={
+                    "color": color_graph,
+                },
+            )
+        )
+
+    fig.update_xaxes(visible=True, fixedrange=True)
+    fig.update_yaxes(visible=yvisible, fixedrange=True)
+    fig.update_layout(
+        title=label,
+        margin=dict(t=30, b=0),
+        showlegend=False,
+        plot_bgcolor="white",
+        height=120,
+    )
+
+    return(fig)
+
+
+def plot_gauge(indicator_number, indicator_color, indicator_suffix, indicator_title, max_bound):
+    fig = go.Figure(
+        go.Indicator(
+            value=indicator_number,
+            mode="gauge+number",
+            domain={"x": [0, 1], "y": [0, 1]},
+            number={
+                "suffix": indicator_suffix,
+                "font.size": 46,
+            },
+            gauge={
+                "axis": {"range": [0, max_bound], "tickwidth": 1},
+                "bar": {"color": indicator_color},
+                'bgcolor': "white",
+                'borderwidth': 2,
+                'bordercolor': "black",
+                'steps': [
+                    {'range': [0, 30], 'color': '#ffde3b'},
+                    {'range': [30, 70], 'color': '#F28F1C'},
+                    {'range': [70, 100], 'color': '#f94144'}]
+            },
+            title={
+                "text": indicator_title,
+                "font": {"size": 28},
+            },
+        )
+    )
+    fig.update_layout(
+        #paper_bgcolor="lightgrey",
+        height=250,
+        margin=dict(l=10, r=10, t=50, b=10, pad=8),
+    )
+    return(fig)
