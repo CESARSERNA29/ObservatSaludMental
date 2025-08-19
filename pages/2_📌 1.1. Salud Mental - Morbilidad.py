@@ -1446,44 +1446,27 @@ import plotly.express as px
 # -------------------------
 # CARGA DE DATOS
 # -------------------------
-#shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'   
-#shapefile_path = 'ciudades_shp/MGN_ADM_MPIO_GRAFICO_2GEOJSON.geojson'   # PARA QUE APAREZCA EL RESTO DEL PAÍS
-#gdf = gpd.read_file(shapefile_path)
+shapefile_path = 'ciudades_shp/MGN_Orinoquia_Filtrado2.geojson'
+gdf = gpd.read_file(shapefile_path)
 
-
-# -------------------------
-# CARGA DE DATOS
-# -------------------------
-# GeoJSON de TODO el país (ej: departamentos o municipios de Colombia)
-gdf_colombia = gpd.read_file('ciudades_shp/colombia.geojson')   # PARA QUE APAREZCA EL RESTO DEL PAÍS
-
-# GeoJSON filtrado de la Orinoquía
-gdf_orinoquia = gpd.read_file("ciudades_shp/MGN_Orinoquia_Filtrado2.geojson")
-
-
-# DATAFRAME:
-df = pd.read_excel('ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', sheet_name="Tasas_Mapas")
-
-# Unificar llaves
-gdf_orinoquia["mpio_cdpmp"] = gdf_orinoquia["mpio_cdpmp"].astype(str)
-df["mpio_cdpmp"] = df["mpio_cdpmp"].astype(str)
-
-# Merge solo en Orinoquía
-gdf_merged = gdf_orinoquia.merge(df, on="mpio_cdpmp", how="left")
-
-# Agregar columna de Tasa al shapefile de Colombia completo
-gdf_colombia = gdf_colombia.merge(
-    gdf_merged[["mpio_cdpmp", "Tasa_Morbi", "Departamento"]],
-    on="mpio_cdpmp",
-    how="left"
+df = pd.read_excel(
+    'ciudades_shp/Tabla_Muni_Orinoquia_Mapas_Tasas.xlsx', 
+    sheet_name="Tasas_Mapas"
 )
 
+# Unificar llaves
+gdf["mpio_cdpmp"] = gdf["mpio_cdpmp"].astype(str)
+df["mpio_cdpmp"] = df["mpio_cdpmp"].astype(str)
+
+# Merge
+gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
 
 # -------------------------
 # INTERFAZ STREAMLIT
 # -------------------------
 st.title("🗺️ Morbilidad en la Orinoquía")
 
+# Layout: mapa a la izquierda y tabla a la derecha
 col1, col2 = st.columns([2, 1])
 
 # -------------------------
@@ -1491,56 +1474,40 @@ col1, col2 = st.columns([2, 1])
 # -------------------------
 with col1:
     fig = px.choropleth(
-        gdf_colombia,
-        geojson=gdf_colombia.geometry,
-        locations=gdf_colombia.index,
+        gdf_merged,
+        geojson=gdf_merged.geometry,
+        locations=gdf_merged.index,
         color="Tasa_Morbi",
         color_continuous_scale="YlOrRd",
-        title="Mapa de Tasa de Morbilidad",
+        title="Mapa de Tasa de Morbilidad"
     )
 
-    # Hover personalizado (solo cuando hay datos)
+    # Agregar customdata para controlar el hover
     fig.update_traces(
-        customdata=gdf_colombia[["Departamento", "mpio_cdpmp", "Tasa_Morbi"]],
+        customdata=gdf_merged[["Departamento", "Municipio", "Tasa_Morbi"]],
         hovertemplate=(
             "<b>Departamento:</b> %{customdata[0]}<br>" +
-            "<b>Código Municipio:</b> %{customdata[1]}<br>" +
+            "<b>Municipio:</b> %{customdata[1]}<br>" +
             "<b>Tasa de Morbilidad:</b> %{customdata[2]:.2f}<extra></extra>"
         )
     )
 
-    # Fondo gris para municipios sin dato
-    fig.update_traces(
-        marker=dict(line=dict(width=0.3, color="black")),
-        selector=dict(type="choropleth")
-    )
-
-    # Agregar nombres de los departamentos de Orinoquía
-    for _, row in gdf_merged.iterrows():
-        centroid = row.geometry.centroid
-        fig.add_scattergeo(
-            lon=[centroid.x],
-            lat=[centroid.y],
-            text=row["Departamento"],
-            mode="text",
-            textfont=dict(size=10, color="black"),
-            showlegend=False
-        )
-
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
-
     st.plotly_chart(fig, use_container_width=True)
 
 # -------------------------
-# TABLA
+# TABLA ORDENADA
 # -------------------------
 with col2:
     st.subheader("📋 Ranking de Morbilidad")
-    tabla = gdf_merged[["Departamento", "mpio_cdpmp", "Tasa_Morbi"]].copy()
+
+    tabla = gdf_merged[["Departamento", "Municipio", "Tasa_Morbi"]].copy()
     tabla = tabla.sort_values(by="Tasa_Morbi", ascending=False)
+
     st.dataframe(tabla, use_container_width=True, height=600)
 
+    # Botón para descargar en Excel
     import io
     buffer = io.BytesIO()
     tabla.to_excel(buffer, index=False, sheet_name="Ranking_Morbilidad")
