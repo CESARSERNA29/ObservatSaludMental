@@ -1455,7 +1455,7 @@ import plotly.express as px
 # CARGA DE DATOS
 # -------------------------
 # GeoJSON de TODO el país (ej: departamentos o municipios de Colombia)
-gdf_colombia = gpd.read_file('ciudades_shp/MGN_ADM_MPIO_GRAFICO_2GEOJSON.geojson')   # PARA QUE APAREZCA EL RESTO DEL PAÍS
+gdf_colombia = gpd.read_file('ciudades_shp/colombia.geojson')   # PARA QUE APAREZCA EL RESTO DEL PAÍS
 
 # GeoJSON filtrado de la Orinoquía
 gdf_orinoquia = gpd.read_file("ciudades_shp/MGN_Orinoquia_Filtrado2.geojson")
