@@ -16,7 +16,7 @@ import modulo_osm as osm
 
 # ----------------------------------------------------------
 # Definicion de colores
-# 1."Azul_os", 2."Rojo", 3."Azul_cl", 4."Gris", 5."Verde", 6."Naranja", 7."Morado"
+# 0."Azul_os", 1."Rojo", 2."Azul_cl", 3."Gris", 4."Verde", 5."Naranja", 6."Morado"
 P_Colores = ["#2A3180","#E5352B","#39A8E0","#9D9D9C","#009640","#F28F1C","#662681"]
 st.session_state['P_Colores']=P_Colores
 #-------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ st.markdown("""
 
 st.markdown("""
         <div style="text-align: justify; font-size: 18px; color: #000000;">
-        La convivencia social es la capacidad de los ciudadanos para vivir juntos en armonía, respetando normas comunes y resolviendo conflictos de manera pacífica, lo cual es esencial para garantizar entornos seguros y el bienestar social. Esta sección examina indicadores clave que reflejan la realidad social y de salud en la región de Orinoquía, permitiendo entender mejor los factores que afectan la calidad de vida y el tejido social. Al analizar diferentes dimensiones —morbilidad, mortalidad y delitos reportados— se facilita la toma de decisiones informadas para promover una convivencia más segura, inclusiva y saludable.
+        La convivencia ciudadana es la capacidad de los ciudadanos para vivir juntos en armonía, respetando normas comunes y resolviendo conflictos de manera pacífica, lo cual es esencial para garantizar entornos seguros y el bienestar social. Esta sección examina indicadores clave que reflejan la realidad social y de salud en la región de Orinoquía, permitiendo entender mejor los factores que afectan la calidad de vida y el tejido social. Al analizar diferentes dimensiones —morbilidad, mortalidad y delitos reportados— se facilita la toma de decisiones informadas para promover una convivencia más segura, inclusiva y saludable.
         </div>
     """, unsafe_allow_html=True)
 
