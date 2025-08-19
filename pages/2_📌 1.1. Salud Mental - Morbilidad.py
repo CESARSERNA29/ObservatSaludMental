@@ -1519,3 +1519,96 @@ with col2:
         file_name="Ranking_Morbilidad.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
+
+
+
+
+
+
+
+
+# ================================================================
+# Speedometro:
+
+
+
+import streamlit as st
+import lightningchart as lc
+
+# ---- Configuración Streamlit ----
+st.set_page_config(page_title="Dashboard Gauges", layout="wide")
+st.title("🚘 Dashboard de Carro (Velocímetro, Tacómetro y Combustible)")
+
+# ---- Sliders principales ----
+col1, col2 = st.columns(2)
+with col1:
+    velocidad = st.slider("Velocidad (km/h)", min_value=0, max_value=220, value=90, step=10)
+with col2:
+    rpm = st.slider("Revoluciones (RPM x1000)", min_value=0, max_value=8, value=3, step=1)
+
+# ---- Slider de combustible ----
+fuel = st.slider("Combustible (%)", min_value=0, max_value=100, value=65, step=5)
+
+# ---- Gauges principales (Velocímetro y Tacómetro) ----
+col1, col2 = st.columns(2)
+
+with col1:
+    # Velocímetro
+    velocimetro = lc.GaugeChart(theme=lc.Themes.Dark, title="Velocímetro")
+    velocimetro.set_angle_interval(-90, 90)
+    velocimetro.set_interval(0, 220)
+    velocimetro.set_value(velocidad)
+    velocimetro.set_unit_label("km/h")
+    velocimetro.set_bar_color("#1E90FF")
+    velocimetro.set_needle_color("white")
+    velocimetro.set_value_indicators(
+        [
+            {"start": 0, "end": 60, "color": "red"},
+            {"start": 60, "end": 120, "color": "orange"},
+            {"start": 120, "end": 180, "color": "yellow"},
+            {"start": 180, "end": 220, "color": "green"},
+        ]
+    )
+    st.write(velocimetro)
+
+with col2:
+    # Tacómetro
+    tacometro = lc.GaugeChart(theme=lc.Themes.Dark, title="Tacómetro")
+    tacometro.set_angle_interval(-90, 90)
+    tacometro.set_interval(0, 8)   # hasta 8K RPM
+    tacometro.set_value(rpm)
+    tacometro.set_unit_label("x1000 rpm")
+    tacometro.set_bar_color("#FF4500")
+    tacometro.set_needle_color("white")
+    tacometro.set_value_indicators(
+        [
+            {"start": 0, "end": 2, "color": "green"},
+            {"start": 2, "end": 5, "color": "yellow"},
+            {"start": 5, "end": 7, "color": "orange"},
+            {"start": 7, "end": 8, "color": "red"},
+        ]
+    )
+    st.write(tacometro)
+
+# ---- Gauge de Combustible ----
+st.markdown("---")
+st.subheader("⛽ Indicador de Combustible")
+
+fuel_gauge = lc.GaugeChart(theme=lc.Themes.Dark, title="Combustible")
+fuel_gauge.set_angle_interval(-90, 90)
+fuel_gauge.set_interval(0, 100)
+fuel_gauge.set_value(fuel)
+fuel_gauge.set_unit_label("%")
+fuel_gauge.set_bar_color("#32CD32")
+fuel_gauge.set_needle_color("white")
+fuel_gauge.set_value_indicators(
+    [
+        {"start": 0, "end": 15, "color": "red"},
+        {"start": 15, "end": 40, "color": "orange"},
+        {"start": 40, "end": 70, "color": "yellow"},
+        {"start": 70, "end": 100, "color": "green"},
+    ]
+)
+
+st.write(fuel_gauge)
