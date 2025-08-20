@@ -108,7 +108,7 @@ def tabla_grupo(df, total_pob, index_col, values_col):
     # Aplicar estilo pandas
     tabla = tabla.style \
         .set_properties(
-            subset=['Número de Casos', '(%)', 'Tasa x 10000 Hab.'],
+            subset=['Número de Casos', '(%)', 'Tasa x 100000 Hab.'],
             **{'text-align': 'center'}
         ) \
         .set_table_styles([
@@ -116,7 +116,7 @@ def tabla_grupo(df, total_pob, index_col, values_col):
         ]) \
         .format({
             '(%)': '{:.2f}',
-            'Tasa x 10000 Hab.': '{:.2f}',
+            'Tasa x 100000 Hab.': '{:.2f}',
             'Número de Casos': '{:,.0f}'
         })
 
