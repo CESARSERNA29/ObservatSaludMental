@@ -568,13 +568,18 @@ from streamlit_extras.metric_cards import style_metric_cards
 import plotly.graph_objs as go
 import plotly.graph_objects as go
 
+# Cargando las Librerías:
+import pandas as pd
+import streamlit as st
+import plotly.graph_objects as go
+
 # =====================================
 # TITULO Y ESTILO DEL ENCABEZADO:
 st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
 st.header("Histórico del Total de Casos de Mortalidad por Grupo de Eventos")
 st.markdown("##")
 
-# Cargar La base:  Tabla_Grafico_Cascada
+# Cargar estilos si existe
 try:
     with open('style.css') as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -582,65 +587,68 @@ except FileNotFoundError:
     st.warning("Archivo style.css no encontrado. Continuando sin estilos personalizados.")
 
 # LLAMANDO EL DATAFRAME:
-# Importando la tabla agregada con los resúmenes de las variables:
 df_GrupoEnfer = pd.read_excel('Tabla_Grafico_Cascada_MORTALIDAD.xlsx', sheet_name='Hoja1')
-#df_GrupoEnfer = pd.read_excel(r"C:\Users\cesar\Downloads\TABLERO_STREAMLIT_DASHBOARD\DASHBOARD_Morbilidad_DESPLIEGUE_2\Tabla_Grafico_Cascada_MORTALIDAD.xlsx", sheet_name='Hoja1')
 
 # Cambiar round por parte entera
 df_GrupoEnfer["Tot_Eventos"] = df_GrupoEnfer["Tot_Eventos"].astype(int)
 df_GrupoEnfer["Tot_pob10"] = df_GrupoEnfer["Tot_pob10"].astype(int)
 
 # =====================================
-# FILTRO POR DEPARTAMENTO:
-# Asumiendo que existe una columna 'departamento' en el DataFrame
-# Si la columna tiene otro nombre, cambia 'departamento' por el nombre correcto
+# FILTROS: Departamento y Año
+if 'departamento' in df_GrupoEnfer.columns and 'anio' in df_GrupoEnfer.columns:
 
-# Verificar si existe la columna departamento
-if 'departamento' in df_GrupoEnfer.columns:
+    # Filtro de departamento
     departamentos_disponibles = ['Todos los Dptos'] + sorted(df_GrupoEnfer['departamento'].unique().tolist())
-    
-    # Crear el selectbox para filtrar por departamento
     departamento_seleccionado = st.selectbox(
         "Selecciona el Departamento:",
         options=departamentos_disponibles,
         index=0
     )
-    
-    # Filtrar los datos según la selección
+
+    # Filtro de año
+    anios_disponibles = sorted(df_GrupoEnfer['anio'].unique().tolist())
+    anio_seleccionado = st.selectbox(
+        "Selecciona el Año:",
+        options=anios_disponibles,
+        index=0
+    )
+
+    # Filtrar datos según selección
     if departamento_seleccionado == 'Todos los Dptos':
-        # Agregar datos por grupo para todos los departamentos
-        df_filtrado = df_GrupoEnfer.groupby('grupo').agg({
-            'Tot_Eventos': 'sum',
-            'Tot_pob10': 'sum'
-        }).reset_index()
-        titulo_grafico = "Todos los Departamentos"
+        df_filtrado = df_GrupoEnfer[df_GrupoEnfer['anio'] == anio_seleccionado] \
+            .groupby('grupo').agg({
+                'Tot_Eventos': 'sum',
+                'Tot_pob10': 'sum'
+            }).reset_index()
+        titulo_grafico = f"Todos los Departamentos - {anio_seleccionado}"
     else:
-        # Filtrar por departamento específico
-        df_filtrado = df_GrupoEnfer[df_GrupoEnfer['departamento'] == departamento_seleccionado].copy()
-        titulo_grafico = departamento_seleccionado
+        df_filtrado = df_GrupoEnfer[
+            (df_GrupoEnfer['departamento'] == departamento_seleccionado) &
+            (df_GrupoEnfer['anio'] == anio_seleccionado)
+        ].copy()
+        titulo_grafico = f"{departamento_seleccionado} - {anio_seleccionado}"
+
 else:
-    st.error("La columna 'departamento' no existe en el DataFrame. Por favor verifica el nombre correcto de la columna.")
+    st.error("Faltan columnas 'departamento' o 'anio' en el DataFrame. Verifica el archivo.")
     st.write("Columnas disponibles:", df_GrupoEnfer.columns.tolist())
-    # Usar todos los datos si no existe la columna departamento
     df_filtrado = df_GrupoEnfer.copy()
     titulo_grafico = "Datos Generales"
 
 # =====================================
 # PREPARAR DATOS PARA EL GRÁFICO:
-    
 GrupoEnf = df_filtrado['grupo'].tolist()
 y_list = df_filtrado['Tot_Eventos'].tolist()
 x_list = GrupoEnf
 Total = 'Total'
-x_list = GrupoEnf + ['Total']  # Esta línea agrega el valor de la variable total al final de la lista x_list.
-total = int(sum(y_list))  # Cambiar round por int
-y_list.append(total)  # Esta línea agrega el valor de la variable total al final de la lista y_list.
+x_list = GrupoEnf + ['Total']
+total = int(sum(y_list))
+y_list.append(total)
 
-# Función para formato con punto de miles
+# Formato miles
 def formato_miles(valor):
     return f"{valor:,.0f}".replace(",", ".")
 
-# Preparar texto con formato miles y color HTML
+# Etiquetas con formato
 text_list = []
 for index, item in enumerate(y_list):
     texto = formato_miles(item)
@@ -648,137 +656,74 @@ for index, item in enumerate(y_list):
         texto = f'+{texto}'
     text_list.append(texto)
 
-
-# Aplicar formato de color a las etiquetas
+# Colores para texto
 for index, item in enumerate(text_list):
     if item.startswith('+') and index != 0 and index != len(text_list) - 1:
-        text_list[index] = f'<span style="color:#2ca02c">{item}</span>'
+        text_list[index] = f'<span style="color:#ff7f0e">{item}</span>'  # naranja
     elif item.startswith('-') and index != 0 and index != len(text_list) - 1:
         text_list[index] = f'<span style="color:#d62728">{item}</span>'
     if index == 0 or index == len(text_list) - 1:
         text_list[index] = f'<b>{item}</b>'
 
-
-
-# Crear líneas de cuadrícula
-dict_list = []
-max_value = max(y_list) if y_list else 1200
-step = max(200, int(max_value / 6))  # Ajustar el paso según el valor máximo
-for i in range(0, int(max_value * 1.2), step):
-    dict_list.append(dict(
-            type="line",
-            line=dict(
-                 color="#666666",
-                 dash="dot"
-            ),
-            x0=-0.5,
-            y0=i,
-            x1=len(x_list),
-            y1=i,
-            line_width=1,
-            layer="below"))
-
 # =====================================
 # CREAR EL GRÁFICO WATERFALL:
-
-# Método alternativo: Crear el gráfico con absolute para el total
-# Modificar la lista de medidas para que el Total sea absolute
 y_list_modified = y_list.copy()
 measures = ["absolute"] + ["relative"] * (len(y_list) - 2) + ["absolute"]
-
-# Para el total, usar el valor real en lugar del acumulado
-y_list_modified[-1] = sum(y_list[:-1])  # El total real sin duplicar
+y_list_modified[-1] = sum(y_list[:-1])  
 
 fig = go.Figure(go.Waterfall(
-    name = "prevalencia", orientation = "v",
-    measure = measures,
-    x = x_list,
-    y = y_list_modified,
-    text = text_list,
-    textposition = "outside",
-    connector = {"line":{"color":'rgba(0,0,0,0)'}},
-    increasing = {"marker":{"color":"#2ca02c"}},
-    decreasing = {"marker":{"color":"#d62728"}},
+    name="prevalencia", orientation="v",
+    measure=measures,
+    x=x_list,
+    y=y_list_modified,
+    text=text_list,
+    textposition="outside",
+    connector={"line":{"color":'rgba(0,0,0,0)'}},  # sin líneas punteadas
+    increasing={"marker":{"color":"#ff7f0e"}},  # naranja
+    decreasing={"marker":{"color":"#d62728"}},
     totals={'marker':{"color":"#9467bd"}},
-    textfont={"family":"Open Sans, light",
-              "color":"black"
-             }
+    textfont={"family":"Open Sans", "color":"black"}
 ))
 
-# Actualizar el layout del gráfico
+# Layout del gráfico
 fig.update_layout(
-    title = {
-        'text': f'<b>Waterfall Chart - {titulo_grafico}</b><br><span style="color:#666666">Prevalencia de Decesos por Enfermedades Mentales de 2013 a 2014</span>',
+    title={
+        'text': f'<b>Waterfall Chart - {titulo_grafico}</b><br><span style="color:#666666">Prevalencia de Decesos por Enfermedades Mentales</span>',
         'x': 0.5,
         'xanchor': 'center'
     },
-    showlegend = False,
-    height=650,
-    font={
-        'family':'Open Sans, light',
-        'color':'black',
-        'size':14
-    },
+    showlegend=False,
+    height=450,   # más pequeño
+    font={'family':'Open Sans', 'color':'black', 'size':14},
     plot_bgcolor='rgba(0,0,0,0)',
     yaxis_title="Casos",
-    shapes=dict_list,
     xaxis=dict(showgrid=False),
     yaxis=dict(showgrid=False)
 )
 
+fig.update_xaxes(tickangle=-45, tickfont=dict(family='Open Sans', color='black', size=12))
+fig.update_yaxes(tickangle=0, tickfont=dict(family='Open Sans', color='black', size=12))
 
-# Fuente de las etiquetas:
-fig.update_xaxes(tickangle=-45, tickfont=dict(family='Open Sans, light', color='black', size=14))
-fig.update_yaxes(tickangle=0, tickfont=dict(family='Open Sans, light', color='black', size=14))
-
-# =====================================
-# MOSTRAR EL GRÁFICO:
+# Mostrar gráfico
 st.plotly_chart(fig, use_container_width=True)
 
 # =====================================
-# INFORMACIÓN ADICIONAL (OPCIONAL):
+# INFORMACIÓN ADICIONAL:
 if 'departamento' in df_GrupoEnfer.columns:
     st.markdown("---")
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.metric(
-            label="Total de Casos",
-            value=f"{total:,}".replace(",", ".")
-        )
+        st.metric("Total de Casos", value=f"{total:,}".replace(",", "."))
     
     with col2:
         if departamento_seleccionado != 'Todos los Dptos':
-            st.metric(
-                label="Departamento Seleccionado",
-                value=departamento_seleccionado
-            )
+            st.metric("Departamento Seleccionado", value=departamento_seleccionado)
         else:
-            st.metric(
-                label="Departamentos Incluidos",
-                value=len(df_GrupoEnfer['departamento'].unique())
-            )
+            st.metric("Departamentos Incluidos", value=len(df_GrupoEnfer['departamento'].unique()))
     
     with col3:
-        st.metric(
-            label="Grupos de Enfermedades",
-            value=len(GrupoEnf)
-        )
-
-
-
-
-   
-
-   
-    
-##3
-
-
-
-
-
-
+        st.metric("Grupos de Enfermedades", value=len(GrupoEnf))
 
 
 
