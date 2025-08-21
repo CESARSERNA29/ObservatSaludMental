@@ -21,7 +21,7 @@ def bd_morbilidad(Tabla):
     df['grupo'] = df['grupo'].str.strip()  
     df['departamento']=df['departamento'].str.strip()
     df['departamento']=pd.Categorical(df['departamento'])
-    #df=df[df['componente']=='Conv. Ciudadana']
+    df=df[df['componente']=='Conv. Social']
     #df=df.drop('componente',axis=1)
     return df
 
@@ -362,3 +362,4 @@ def diag_donut(categorias, valores, titulo="", colores=None):
         )
       )
   return fig
+
