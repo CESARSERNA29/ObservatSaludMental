@@ -667,13 +667,13 @@ fig = go.Figure(go.Waterfall(
     y=y_list,
     text=text_list,
     textposition="outside",
-    # Sin líneas punteadas (conector invisible)
-    connector={"line": {"color": "rgba(0,0,0,0)"}},
+    connector={"line": {"color": "rgba(0,0,0,0)"}},  # sin líneas punteadas
     increasing={"marker": {"color": "#ff7f0e"}},   # naranja
-    decreasing={"marker": {"color": "#d62728"}},   # rojo (si hubiese negativos)
+    decreasing={"marker": {"color": "#d62728"}},   # rojo
     totals={'marker': {"color": "#9467bd"}},       # total
     textfont={"family": "Open Sans", "color": "black"}
 ))
+
 
 titulo_dep = departamento_seleccionado if tiene_dep else "Todos los Dptos"
 fig.update_layout(
@@ -684,7 +684,8 @@ fig.update_layout(
         'xanchor': 'center'
     },
     showlegend=False,
-    height=340,  # más pequeño
+    height=600,   # más alto
+    width=800,    # menos ancho
     font={'family': 'Open Sans', 'color': 'black', 'size': 13},
     plot_bgcolor='rgba(0,0,0,0)',
     xaxis=dict(showgrid=False),
@@ -695,7 +696,10 @@ fig.update_layout(
 fig.update_xaxes(tickangle=-45, tickfont=dict(family='Open Sans', color='black', size=12))
 fig.update_yaxes(tickfont=dict(family='Open Sans', color='black', size=12))
 
-st.plotly_chart(fig, use_container_width=True)
+# Mostrar gráfico centrado
+col_left, col_center, col_right = st.columns([1,3,1])
+with col_center:
+    st.plotly_chart(fig, use_container_width=False)
 
 # ==============================
 # Métricas
