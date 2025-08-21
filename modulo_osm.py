@@ -34,7 +34,7 @@ def bd_mortalidad(Tabla):
     df['grupo'] = df['grupo'].str.strip()  
     df['departamento']=df['departamento'].str.strip()
     df['departamento']=pd.Categorical(df['departamento'])
-    #df=df[df['componente']=='Conv. Ciudadana']
+    df=df[df['componente']=='Conv. Social']
     #df=df.drop('componente',axis=1)
     return df
 
@@ -197,6 +197,27 @@ def diag_barras_apil_h(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab=""
   
   return(fig) 
 
+def diag_barras(df, vx, vy, titulo, subt, colores=None, xlab="", ylab="", width=800, height=600):
+    fig = px.bar(
+        df,
+        x=vx,
+        y=vy,
+        color_discrete_sequence=colores,
+        title=titulo,
+        orientation='h'
+        
+    )
+    fig.update_layout(
+        xaxis_title=xlab,
+        yaxis_title=ylab,
+        width=width,
+        height=height,
+        margin={"r":0, "t":0, "l":0, "b":0},
+        showlegend=False  # No mostrar leyenda porque no hay grupos
+    )
+    #fig.update_traces(textposition='auto')
+    return fig
+
 #fig.update_traces(textposition='outside')
   #for trace in fig.data:
   #      trace.text = trace.y if hasattr(trace, 'y') else None  # texto con el valor de la barra
@@ -266,22 +287,6 @@ def mapa_crp(df,vy,ruta_geoj,Medida):
 def plot_metric(label, vy, prefix="", suffix="", show_graph=False, color_graph="",color_area="",yvisible=True):
     fig = go.Figure()
 
-    # fig.add_trace(
-    #     go.Indicator(
-    #         value=value,
-    #         gauge={"axis": {"visible": True}},
-    #         number={
-    #             "prefix": prefix,
-    #             "suffix": suffix,
-    #             "font.size": 28,
-    #         },
-    #         title={
-    #             "text": label,
-    #             "font": {"size": 24},
-    #         },
-    #     )
-    # )
-    
     if show_graph:
         
         fig.add_trace(
@@ -342,3 +347,18 @@ def plot_gauge(indicator_number, indicator_color, indicator_suffix, indicator_ti
         margin=dict(l=10, r=10, t=50, b=10, pad=8),
     )
     return(fig)
+  
+  
+def diag_donut(categorias, valores, titulo="", colores=None):
+  fig = go.Figure(data=[go.Pie(labels=categorias, values=valores, hole=0.5, marker=dict(colors=colores))])
+  fig.update_layout(
+        title_text=titulo,
+        legend=dict(
+            orientation="h",   # Horizontal
+            x=0.5,            # Posición horizontal central
+            y=-0.1,           # Posición vertical debajo del gráfico
+            xanchor='center', # Anclaje horizontal centrado
+            yanchor='top'     # Anclaje vertical arriba
+        )
+      )
+  return fig
