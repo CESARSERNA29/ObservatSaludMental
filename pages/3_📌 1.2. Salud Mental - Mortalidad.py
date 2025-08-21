@@ -559,6 +559,9 @@ st.markdown("##")
 # ---------------------------------------------------
 #  GRÁFICOS DE CASCADA (Año + Departamento)
 # ---------------------------------------------------
+# ---------------------------------------------------
+#  GRÁFICOS DE CASCADA (Año + Departamento restringido a 4)
+# ---------------------------------------------------
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
@@ -588,14 +591,14 @@ for col_oblig in ['anio', 'grupo', 'Tot_Eventos']:
         st.error(f"Falta la columna obligatoria '{col_oblig}' en el archivo de entrada.")
         st.stop()
 
-# Cast
+# Cast seguro
 df_GrupoEnfer['anio'] = pd.to_numeric(df_GrupoEnfer['anio'], errors='coerce').astype('Int64')
 df_GrupoEnfer['Tot_Eventos'] = pd.to_numeric(df_GrupoEnfer['Tot_Eventos'], errors='coerce').fillna(0).astype(int)
 if 'Tot_pob10' in df_GrupoEnfer.columns:
     df_GrupoEnfer['Tot_pob10'] = pd.to_numeric(df_GrupoEnfer['Tot_pob10'], errors='coerce').fillna(0).astype(int)
 
 # ==============================
-# Filtros (Año y Departamento)
+# Filtros (Año y Departamento) — departamento SIN opción "Todos"
 # ==============================
 col1, col2 = st.columns(2)
 
@@ -608,26 +611,47 @@ with col1:
         index=len(anios_disponibles) - 1  # por defecto el más reciente
     )
 
-# Departamento
+# Departamento: limitar a 4 departamentos personalizados
+# EDITA esta lista con los 4 departamentos que quieres permitir (nombres exactos que aparecen en tu DataFrame)
+departamentos_permitidos = ["Meta", "Arauca", "Casanare", "Vichada"]
+
 tiene_dep = 'departamento' in df_GrupoEnfer.columns
-with col2:
-    if tiene_dep:
-        departamentos = ['Todos los Dptos'] + sorted(df_GrupoEnfer['departamento'].dropna().unique().tolist())
+departamento_seleccionado = None
+
+if tiene_dep:
+    # Intersección entre permitidos y los que realmente aparecen en la base
+    disponibles_en_base = sorted(df_GrupoEnfer['departamento'].dropna().unique().tolist())
+    disponibles = [d for d in departamentos_permitidos if d in disponibles_en_base]
+
+    if len(disponibles) == 0:
+        # Si ninguno de los 4 permitidos aparece, fallback: mostrar todos los disponibles y avisar
+        st.warning("Ninguno de los departamentos permitidos aparece en la base; mostrando todos los departamentos disponibles.")
+        disponibles = disponibles_en_base
+
+    with col2:
         departamento_seleccionado = st.selectbox(
-            "Selecciona el Departamento:",
-            options=departamentos,
+            "Selecciona el Departamento (solo los 4 permitidos):",
+            options=disponibles,
             index=0
         )
-    else:
-        departamento_seleccionado = 'Todos los Dptos'
+else:
+    # Si no existe la columna 'departamento' en la tabla
+    with col2:
+        st.info("La columna 'departamento' no está en la base; se graficarán todos los departamentos combinados.")
+    departamento_seleccionado = None
 
 # ==============================
 # Preparación de datos (único año)
 # ==============================
 df_base = df_GrupoEnfer[df_GrupoEnfer['anio'] == anio_seleccionado].copy()
 
-if tiene_dep and departamento_seleccionado != 'Todos los Dptos':
-    df_base = df_base[df_base['departamento'] == departamento_seleccionado]
+# Aplicar filtro por departamento (solo si existe la columna y hay selección)
+if tiene_dep and departamento_seleccionado is not None:
+    # Validación extra: si la selección no está en la columna (caso raro), no filtrar y lanzar advertencia
+    if departamento_seleccionado in df_base['departamento'].unique():
+        df_base = df_base[df_base['departamento'] == departamento_seleccionado]
+    else:
+        st.warning(f"El departamento seleccionado ({departamento_seleccionado}) no tiene datos para el año {anio_seleccionado}. Mostrando datos agregados del año.")
 
 # Agregar por grupo para ese año (y depto si aplica)
 df_filtrado = (
@@ -649,12 +673,12 @@ y_list = vals + [total]
 measures = ["absolute"] + ["relative"] * (len(y_list) - 2) + ["absolute"]
 
 # Etiquetas (miles con punto)
-def formato_miles(v): 
+def formato_miles(v):
     return f"{v:,.0f}".replace(",", ".")
 
 text_list = [formato_miles(v) for v in y_list]
-text_list[0] = f"{text_list[0]}"          # primer grupo
-text_list[-1] = f"{text_list[-1]}"        # total
+text_list[0] = f"{text_list[0]}"
+text_list[-1] = f"{text_list[-1]}"
 
 # ==============================
 # Gráfico Waterfall
@@ -669,13 +693,12 @@ fig = go.Figure(go.Waterfall(
     textposition="outside",
     connector={"line": {"color": "rgba(0,0,0,0)"}},  # sin líneas punteadas
     increasing={"marker": {"color": "#ff7f0e"}},   # naranja
-    decreasing={"marker": {"color": "#d62728"}},   # rojo
+    decreasing={"marker": {"color": "#d62728"}},   # rojo (si hubiese negativos)
     totals={'marker': {"color": "#9467bd"}},       # total
     textfont={"family": "Open Sans", "color": "black"}
 ))
 
-
-titulo_dep = departamento_seleccionado if tiene_dep else "Todos los Dptos"
+titulo_dep = departamento_seleccionado if (tiene_dep and departamento_seleccionado) else "Todos los Dptos"
 fig.update_layout(
     title={
         'text': f'<b>Waterfall Chart - {titulo_dep} - {anio_seleccionado}</b><br>'
@@ -684,8 +707,8 @@ fig.update_layout(
         'xanchor': 'center'
     },
     showlegend=False,
-    height=600,   # más alto
-    width=800,    # menos ancho
+    height=600,
+    width=900,
     font={'family': 'Open Sans', 'color': 'black', 'size': 13},
     plot_bgcolor='rgba(0,0,0,0)',
     xaxis=dict(showgrid=False),
