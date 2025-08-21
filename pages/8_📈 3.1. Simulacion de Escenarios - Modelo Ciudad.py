@@ -28,7 +28,7 @@ st.markdown("<h2 style='text-align: left;color: #39A8E0;'>Simulación de escenar
 # ------------------------------------------------------------------------------
 # Simulación de Escenarios
 # ------------------------------------------------------------------------------
-
+df = pd.read_excel('data/Tabla_ModeloCiudad.xlsx')
 df = pd.read_excel('data/Tabla_ModeloCiudad_Cat.xlsx',sheet_name='Tabla_Base')
 df2 = pd.read_excel('data/Tabla_ModeloCiudad_Cat.xlsx',sheet_name='Tabla_Graf')
 
@@ -53,11 +53,13 @@ territorios.""")
 Niveles2 = ["Bajo", "Alto"]
 Niveles3 = ["Bajo", "Medio", "Alto"]
 
+st.sidebar.markdown("**Seleccione los niveles de las variables de interés para simular la probabilidad de enfermedades mentales a nivel de municipio**")
+
 NH_Sel = st.sidebar.segmented_control("Numero de Hombres con enfermedades mentales", 
-                           sorted(df['Cat_Tot_Hombres'].unique()), 
+                           ["0 - 17","18 - 50","51 -120","121 o más"], 
                            selection_mode="single", key="NH_Sel")
 NM_Sel = st.sidebar.segmented_control("Numero de Mujeres con enfermedades mentales", 
-                           sorted(df['Cat_Tot_Mujeres'].unique()), 
+                           ["0 - 17","18 - 50","51 -120","121 o más"], 
                            selection_mode="single", key="NM_Sel")
 
 
@@ -67,18 +69,18 @@ NM_Sel = st.sidebar.segmented_control("Numero de Mujeres con enfermedades mental
 MT_Sel = st.sidebar.segmented_control("Numero de casos mortales", 
                                        sorted(df['Cat_Mortalidad'].unique()), 
                                        selection_mode="single", key="MT_Sel") 
-CS_Sel = st.sidebar.segmented_control("Consumo de Sustancias", Niveles3, selection_mode="single", key="CS_Sel")
-SQ_Sel = st.sidebar.segmented_control("Esquizofrenia", Niveles3, selection_mode="single", key="SQ_Sel")
-RM_Sel = st.sidebar.segmented_control("Retraso Mental", Niveles3, selection_mode="single", key="RM_Sel")
-SC_Sel = st.sidebar.segmented_control("Síndromes del Comportamiento", Niveles3, selection_mode="single", key="SC_Sel")
+CS_Sel = st.sidebar.segmented_control("Consumo de Sustancias", ["0 - 2","3 - 9","10 o más"], selection_mode="single", key="CS_Sel")
+SQ_Sel = st.sidebar.segmented_control("Esquizofrenia", ["0 - 5","6 - 21","22 o más"], selection_mode="single", key="SQ_Sel")
+RM_Sel = st.sidebar.segmented_control("Retraso Mental", ["0 - 3","4 - 14","15 o más"], selection_mode="single", key="RM_Sel")
+SC_Sel = st.sidebar.segmented_control("Síndromes del Comportamiento", ["0 - 2","3 - 10","11 o más"], selection_mode="single", key="SC_Sel")
 #with col2:
   
-TM_Sel = st.sidebar.segmented_control("Trastornos Mentales", Niveles3, selection_mode="single", key="TM_Sel")
-TA_Sel = st.sidebar.segmented_control("Trastornos Afectivos", Niveles3, selection_mode="single", key="TA_Sel")
-TP_Sel = st.sidebar.segmented_control("Trastornos de Personalidad", Niveles2, selection_mode="single", key="TP_Sel")
-TN_Sel = st.sidebar.segmented_control("Trastornos de la Niñez", Niveles3, selection_mode="single", key="TN_Sel")
-TD_Sel = st.sidebar.segmented_control("Trastornos del Desarrollo", Niveles3, selection_mode="single", key="TD_Sel")
-TR_Sel = st.sidebar.segmented_control("Trastornos Neuróticos", Niveles3, selection_mode="single", key="TR_Sel")
+TM_Sel = st.sidebar.segmented_control("Trastornos Mentales", ["0 - 2","3 - 14","15 o más"], selection_mode="single", key="TM_Sel")
+TA_Sel = st.sidebar.segmented_control("Trastornos Afectivos", ["0 - 12","13 - 48","49 o más"], selection_mode="single", key="TA_Sel")
+TP_Sel = st.sidebar.segmented_control("Trastornos de Personalidad", ["0 - 3","4 o más"], selection_mode="single", key="TP_Sel")
+TN_Sel = st.sidebar.segmented_control("Trastornos de la Niñez", ["0 - 3","4 - 20","21 o más"], selection_mode="single", key="TN_Sel")
+TD_Sel = st.sidebar.segmented_control("Trastornos del Desarrollo", ["0 - 5","6 - 34","35 o más"], selection_mode="single", key="TD_Sel")
+TR_Sel = st.sidebar.segmented_control("Trastornos Neuróticos", ["0 - 12","13 - 60","61 o más"], selection_mode="single", key="TR_Sel")
 
 filtros = {
   'Cat_Tot_Hombres': NH_Sel,
