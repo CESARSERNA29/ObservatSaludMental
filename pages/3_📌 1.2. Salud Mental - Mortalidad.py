@@ -709,15 +709,27 @@ fig.update_layout(
     showlegend=False,
     height=600,
     width=900,
-    font={'family': 'Open Sans', 'color': 'black', 'size': 13},
+    font=dict(
+        family="Source Sans Pro, sans-serif",
+        size=14,
+        color="black"
+    ),
     plot_bgcolor='rgba(0,0,0,0)',
-    xaxis=dict(showgrid=False),
-    yaxis=dict(showgrid=False),
-    yaxis_title="Casos"
+    xaxis=dict(
+        showgrid=False,
+        title=dict(
+            text="<b>Enfermedades Mentales</b>",  # negrita eje X
+            font=dict(size=14, family="Source Sans Pro, sans-serif", color="black")
+        )
+    ),
+    yaxis=dict(
+        showgrid=False,
+        title=dict(
+            text="<b>Casos</b>",  # negrita eje Y
+            font=dict(size=14, family="Source Sans Pro, sans-serif", color="black")
+        )
+    )
 )
-
-fig.update_xaxes(tickangle=-45, tickfont=dict(family='Open Sans', color='black', size=12))
-fig.update_yaxes(tickfont=dict(family='Open Sans', color='black', size=12))
 
 # Mostrar gráfico centrado
 col_left, col_center, col_right = st.columns([1,3,1])
