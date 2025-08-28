@@ -49,7 +49,7 @@ if selected == "Inicio":
     st.markdown(
         """
         <div style="text-align: center;">
-            <img src="MENTAL2.png" width="500">
+            <img src="MENTAL2.png" width="200">
             <h2>Observatorio de Salud Mental</h2>
         </div>
         """,
