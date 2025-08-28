@@ -240,12 +240,13 @@ with col1:
   st.plotly_chart(G_Donut, use_container_width=True)
 with col2:
   T_Accid_sel=st.pills("Tipo de accidente",df_mb2_Accid['Enfermedad_Evento'].unique(), 
-                                       selection_mode="single", key="TAcc_Sel")
+                                       selection_mode="single", key="TAcc_Sel",default='Acc. Transporte terrestre')
   df_mb2_Accid_f=df_mb2_Accid[df_mb2_Accid['Enfermedad_Evento']==T_Accid_sel]
 
   G_bar3=osm.diag_barras(df_mb2_Accid_f,'Total','Detalle',T_Accid_sel,P_Colores[4:],
                               ylab='Vehículo',xlab='No. Casos')
 
   st.plotly_chart(G_bar3, use_container_width=True)
+
 
 
