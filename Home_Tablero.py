@@ -44,47 +44,19 @@ if selected == "Inicio":
     st.markdown("##")
 
     # ===============================
-    # 🔢 KPIs o métricas resumen
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total de Casos", "12.547.687")
-    col2.metric("Departamentos Analizados", "4")
-    col3.metric("Temporalidad", "2018 - 2023")
-
-    style_metric_cards(
-        background_color="#FFFFFF",
-        border_left_color="#1f77b4",
-        border_color="#000000",
-        box_shadow="#ccc"
+    
+    
+    st.markdown(
+        """
+        <div style="text-align: center;">
+            <img src="MENTAL2.png" width="500">
+            <h2>Observatorio de Salud Mental</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
+   
 
-    st.markdown("##")
-
-    # ===============================
-    # 📊 Gráfico de bienvenida tipo Sunburst (ejemplo ficticio)
-    labels = ["Colombia", "Andina", "Caribe", "Bogotá", "Antioquia", "Atlántico"]
-    parents = ["", "Colombia", "Colombia", "Andina", "Andina", "Caribe"]
-    valores = [0, 4000000, 2500000, 1800000, 2200000, 1300000]
-
-    fig = go.Figure(go.Sunburst(
-        labels=labels,
-        parents=parents,
-        values=valores,
-        branchvalues="total",
-    ))
-
-    fig.update_layout(
-        title={
-            "text": "Distribución de Casos por Región y Departamento",
-            "y": 0.95,
-            "x": 0.5,
-            "xanchor": "center",
-            "yanchor": "top",
-            "font": dict(size=20, color="black")
-        },
-        margin=dict(t=40, l=10, r=10, b=10)
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
 
 
 
