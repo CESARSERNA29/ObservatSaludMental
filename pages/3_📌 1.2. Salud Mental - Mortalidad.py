@@ -44,13 +44,6 @@ st.markdown("##")
 
 
 
-st.markdown("##")
-
-
-
-
-
-
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -605,10 +598,9 @@ col1, col2 = st.columns(2)
 # Año (siempre un único año)
 anios_disponibles = sorted([int(a) for a in df_GrupoEnfer['anio'].dropna().unique()])
 with col1:
-    anio_seleccionado = st.selectbox(
+    anio_seleccionado = st.pills(
         "Selecciona el Año:",
-        options=anios_disponibles,
-        index=len(anios_disponibles) - 1  # por defecto el más reciente
+        anios_disponibles, selection_mode="single", default=max(anios_disponibles)
     )
 
 # Departamento: limitar a 4 departamentos personalizados
@@ -629,10 +621,9 @@ if tiene_dep:
         disponibles = disponibles_en_base
 
     with col2:
-        departamento_seleccionado = st.selectbox(
+        departamento_seleccionado = st.pills(
             "Selecciona el Departamento (solo los 4 permitidos):",
-            options=disponibles,
-            index=0
+            disponibles, selection_mode="single",default="Meta"
         )
 else:
     # Si no existe la columna 'departamento' en la tabla
