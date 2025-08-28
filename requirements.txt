@@ -17,5 +17,6 @@ geopandas
 fiona
 xgboost
 graphviz
-st_aggrid
+streamlit-aggrid
 pydotplus
+
