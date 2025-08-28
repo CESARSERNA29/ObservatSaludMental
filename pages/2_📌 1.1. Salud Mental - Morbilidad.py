@@ -1464,7 +1464,7 @@ gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
 # -------------------------
 # INTERFAZ STREAMLIT
 # -------------------------
-st.title("🗺️ Morbilidad en la Orinoquía")
+st.title("🗺️ Morbilidad en la Orinoquía - 2023")
 
 # Layout: mapa a la izquierda y tabla a la derecha
 col1, col2 = st.columns([2, 1])
@@ -1500,7 +1500,7 @@ with col1:
 # TABLA ORDENADA
 # -------------------------
 with col2:
-    st.subheader("📋 Ranking de Morbilidad")
+    st.subheader("📋 Ranking de Morbilidad para 2023")
 
     tabla = gdf_merged[["Departamento", "Municipio", "Tasa_Morbi"]].copy()
     tabla = tabla.sort_values(by="Tasa_Morbi", ascending=False)
