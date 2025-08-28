@@ -37,7 +37,7 @@ st.markdown("""
 <h1 style='text-align: center; color: #3A3A3A;'>📈 SALUD MENTAL: Tratamiento Estadístico, KPI y Tendencias</h1>
 """, unsafe_allow_html=True)
 
-st.markdown("##")
+st.write("")
 
 
 #  ------------------------------------------------------------
@@ -104,7 +104,7 @@ df_sm1=df1[df1['componente']=='SM']
 
 
 
-st.markdown("##")
+#st.markdown("##")
 
 
 
