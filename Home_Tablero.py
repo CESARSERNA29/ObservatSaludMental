@@ -46,16 +46,10 @@ if selected == "Inicio":
     # ===============================
     
     
-    st.markdown(
-        """
-        <div style="text-align: center;">
-            <img src="MENTAL2.png" width="200">
-            <h2>Observatorio de Salud Mental</h2>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-   
+    st.image("MENTAL2.png", width=200, caption="Observatorio de Salud Mental")
+    st.markdown("<h2 style='text-align: center;'>Observatorio de Salud Mental</h2>", unsafe_allow_html=True)
+    
+    
 
 
 
