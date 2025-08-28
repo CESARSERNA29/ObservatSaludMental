@@ -51,15 +51,18 @@ if selected == "Inicio":
     
     col1, col2, col3 = st.columns([1,2,1])  # crea 3 columnas (izq, centro, der) 
     with col2:     # usamos solo la columna del medio 
-        st.image("Observatorio_Imagen1.png", width=250) 
+        st.image("Observatorio_Imagen1.png", width=450) 
     st.markdown("<h2 style='text-align: center;'>Observatorio de Salud Mental</h2>", unsafe_allow_html=True)
     
     
-
-
-
-
-
+    st.markdown("##")
+    
+    
+    
+    
+    
+    
+    
     # ===============================
     # 🔹 Recuadro elegante informativo
     st.markdown("""
