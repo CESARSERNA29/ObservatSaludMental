@@ -46,7 +46,12 @@ if selected == "Inicio":
     # ===============================
     
     
-    st.image("MENTAL2.png", width=200, caption="Observatorio de Salud Mental")
+    #st.image("MENTAL2.png", width=200, caption="Observatorio de Salud Mental")
+    #st.markdown("<h2 style='text-align: center;'>Observatorio de Salud Mental</h2>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1,2,1])  # crea 3 columnas (izq, centro, der) 
+    with col2:     # usamos solo la columna del medio 
+        st.image("MENTAL2.png", width=250) 
     st.markdown("<h2 style='text-align: center;'>Observatorio de Salud Mental</h2>", unsafe_allow_html=True)
     
     
