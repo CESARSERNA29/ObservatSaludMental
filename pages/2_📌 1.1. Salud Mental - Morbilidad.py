@@ -799,7 +799,7 @@ fig_depto.show()
 # ------------------------------
 df_edad = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi").reset_index()
 
-fig_edad = px.line(
+fig_edad = px.bar(
     df_edad,
     x="nombre_cat_edad",
     y="TasaMorb",
