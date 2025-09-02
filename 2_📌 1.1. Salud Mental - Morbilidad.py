@@ -795,7 +795,7 @@ fig_depto.show()
 
 
 # ------------------------------
-# GRÁFICO 3: Línea por categoría de edad
+# GRÁFICO 3: Barras por categoría de edad
 # ------------------------------
 df_edad = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="1_EdadCategori_TasaMorbi").reset_index()
 
@@ -806,9 +806,11 @@ fig_edad = px.bar(
     orientation="v",
     title="<b>Tasa de Morbilidad por Categoría de Edad</b>",
     labels={"nombre_cat_edad": "Categoría de Edad", "TasaMorb": "Tasa de Morbilidad"},
-    color_discrete_sequence=["#FE2222"] * len(df_edad),
+    color_discrete_sequence=["#FE2222"],  # Color llamativo (rojo vibrante)
     template="plotly_white"
 )
+
+fig_edad.update_traces(marker_color="#FE2222")  # fuerza el color de las barras
 
 fig_edad.update_layout(
     xaxis=dict(tickmode="linear"),
