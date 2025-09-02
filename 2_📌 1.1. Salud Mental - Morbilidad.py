@@ -806,7 +806,7 @@ fig_edad = px.bar(
     orientation="v",
     title="<b>Tasa de Morbilidad por Categoría de Edad</b>",
     labels={"nombre_cat_edad": "Categoría de Edad", "TasaMorb": "Tasa de Morbilidad"},
-    color_discrete_sequence=["#e63946"] * len(df_edad),
+    color_discrete_sequence=["#FE2222"] * len(df_edad),
     template="plotly_white"
 )
 
