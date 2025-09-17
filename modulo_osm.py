@@ -14,7 +14,6 @@ from st_aggrid import AgGrid, GridOptionsBuilder
 #  LECTURA DE ARCHIVOS
 #===============================================================================
 
-
 # Tablas para Morbilidad
 # ------------------------------------------------------------------------------
 def bd_morbilidad(Tabla):
@@ -27,7 +26,7 @@ def bd_morbilidad(Tabla):
     df=df[df['componente']=='Conv. Social']
     #df=df.drop('componente',axis=1)
     return df
-
+#-------------------------------------------------------------------------------
 # Tablas para Mortalidad
 # ------------------------------------------------------------------------------
 def bd_mortalidad(Tabla):
@@ -40,7 +39,7 @@ def bd_mortalidad(Tabla):
     df=df[df['componente']=='Conv. Social']
     #df=df.drop('componente',axis=1)
     return df
-
+#-------------------------------------------------------------------------------
 # Tablas Población
 # ------------------------------------------------------------------------------
 def bd_poblacion(tabla,año):
@@ -65,7 +64,7 @@ def bd_tasas_delitos():
     df['anio'] = pd.to_numeric(df['anio'], errors='coerce')
     
     return df
-
+#-------------------------------------------------------------------------------
 # Tablas Delitos Policia Nacional
 # ------------------------------------------------------------------------------
 def bd_ponal():
@@ -75,11 +74,21 @@ def bd_ponal():
     df['departamento']=pd.Categorical(df['departamento'])
     df=df[df['region']=='Orinoquía']
     return df
-
+#-------------------------------------------------------------------------------
+def Datos_Modelo_Personas():
+  
+  df = pd.read_excel('data/Tabla_Modelo_Personas.xlsx',sheet_name='Tab_PROBABILIDADES_PERSONAS')
+  df2=df.copy()
+  df2=df.groupby(['sexo', 'Edad_Cat', 'departamento', 'grupo',
+  'Enfermedad_Evento', 'Detalle'])['Prob_RandomForest'].mean().reset_index()
+  df2['Prob_RandomForest']=df2['Prob_RandomForest'].round(6)
+  
+  df2.to_excel("Tabla_MPersonas.xlsx",index=False)
+  return(df2)
+  
 #===============================================================================
 # TABLAS
 #===============================================================================
-
 def tabla_tasas(anio):
   
   df_mb = bd_morbilidad('Morbilidad2')
@@ -103,7 +112,7 @@ def tabla_tasas(anio):
   tb_final.to_excel('Tabla_Tasa_Grupo.xlsx',index=False)
   
   return(tb_final)
-
+#-------------------------------------------------------------------------------
 def tabla_grupo(df, total_pob, index_col, values_col):
     
     # Validar que index_col y values_col existen en df
@@ -195,7 +204,6 @@ def tabla_grupo_mbt(df):
   grid_options = gb.build()
 
   return tabla, grid_options
- 
 #-------------------------------------------------------------------------------
 def tabla_grupo_dlt(df):
   
@@ -219,12 +227,9 @@ def tabla_grupo_dlt(df):
   grid_options = gb.build()
 
   return tabla, grid_options
-  
-
 #===============================================================================
 # GRAFICAS
 #===============================================================================
-  
 def diag_lineas(df,vx,vy,grupos,titulo,ylab,colores):
   
   df[vx]=pd.to_numeric(df[vx], errors='coerce')
@@ -256,9 +261,7 @@ def diag_lineas(df,vx,vy,grupos,titulo,ylab,colores):
   fig.update_yaxes(title_text=ylab)
   
   return(fig)
- 
- #------------------------------------------------------------------------------
- 
+#------------------------------------------------------------------------------
 def diag_barras_apil(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab="",ylab=""):
   #width=800, height=600
   n=df[grupos].nunique()
@@ -273,7 +276,7 @@ def diag_barras_apil(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab="",y
   fig.update_layout(xaxis_title=xlab,yaxis_title=ylab )
   
   return(fig) 
-
+#-------------------------------------------------------------------------------
 def diag_barras_apil_h(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab="",ylab="", width=800, height=600):
   
   n=df[grupos].nunique()
@@ -295,7 +298,7 @@ def diag_barras_apil_h(df,vx,vy,grupos,titulo,subt,colores,bmode='stack',xlab=""
     )
   
   return(fig) 
-
+#-------------------------------------------------------------------------------
 def diag_barras(df, vx, vy, titulo, subt, colores=None, xlab="", ylab="", width=800, height=600):
     fig = px.bar(
         df,
@@ -324,11 +327,10 @@ def diag_barras(df, vx, vy, titulo, subt, colores=None, xlab="", ylab="", width=
   #      trace.textfont = dict(color='white')  # texto blanco
 #-------------------------------------------------------------------------------
 # Funcion para la creacion del mapa coropletico por municipios
-
 def mapa_crp(df,vy,ruta_geoj,Medida):
   
   # se lee el archivo simple con el listado de municipios de la region
-  mpio_orinoquia=pd.read_csv("data/municipios.csv",sep=',')
+  mpio_orinoquia=pd.read_csv("D:/Consultoria/UNILLANOS/ObservatSaludMental/data/municipios.csv",sep=',')
   mpio_orinoquia['id_mpio']=mpio_orinoquia['id_mpio'].astype('Int64')
   
   # Lectura del archivo en formato GeoJson
@@ -341,7 +343,7 @@ def mapa_crp(df,vy,ruta_geoj,Medida):
     df[['id_mpio',vy]],
     on='id_mpio',
     how='left')
-
+  
   # Rellenar NaN en Total con 0
   df_completo[vy] = df_completo[vy].fillna(0)
   
@@ -349,8 +351,8 @@ def mapa_crp(df,vy,ruta_geoj,Medida):
     [0, '#c6cbc8'],    # muy claro (blanco rosado)
     [0.5, '#1a6b3c'],  # color base medio
     [1, '#003f1b']]     # más oscuro
-
-
+  
+  
   fig = px.choropleth_mapbox(
     df_completo,
     geojson=mapa_gj2,
@@ -369,7 +371,7 @@ def mapa_crp(df,vy,ruta_geoj,Medida):
     width=800,  # ancho en píxeles, ajusta a tu gusto
     height=500, # alto en píxeles
     margin={"r":0, "t":0, "l":0, "b":0}
-)
+    )
   
   fig.update_traces(
     hovertemplate=(
@@ -380,9 +382,7 @@ def mapa_crp(df,vy,ruta_geoj,Medida):
     customdata=df_completo[['departamento', 'municipio']].values
   )
   return(fig)
-
 #===============================================================================
-
 def plot_metric(label, vy, prefix="", suffix="", show_graph=False, color_graph="",color_area="",yvisible=True):
     fig = go.Figure()
 
@@ -411,8 +411,7 @@ def plot_metric(label, vy, prefix="", suffix="", show_graph=False, color_graph="
     )
 
     return(fig)
-
-
+#-------------------------------------------------------------------------------
 def plot_gauge(indicator_number, indicator_color, indicator_suffix, indicator_title, max_bound):
     fig = go.Figure(
         go.Indicator(
@@ -446,8 +445,7 @@ def plot_gauge(indicator_number, indicator_color, indicator_suffix, indicator_ti
         margin=dict(l=10, r=10, t=50, b=10, pad=8),
     )
     return(fig)
-  
-  
+#-------------------------------------------------------------------------------  
 def diag_donut(categorias, valores, titulo="", colores=None):
   fig = go.Figure(data=[go.Pie(labels=categorias, values=valores, hole=0.5, marker=dict(colors=colores))])
   fig.update_layout(
@@ -461,15 +459,14 @@ def diag_donut(categorias, valores, titulo="", colores=None):
         )
       )
   return fig
-
 #-------------------------------------------------------------------------------
-
 def Diag_Dispersion(x,y,nombres):
+  
     
-    fig = go.Figure()
-
-    # Puntos con etiquetas, texto arriba centrado, sin leyenda
-    fig.add_trace(go.Scatter(
+  fig = go.Figure()
+  
+  # Puntos con etiquetas, texto arriba centrado, sin leyenda
+  fig.add_trace(go.Scatter(
         x=x,
         y=y,
         mode='markers+text',
@@ -477,21 +474,21 @@ def Diag_Dispersion(x,y,nombres):
         textposition='top center',
         marker=dict(color='blue'),
         showlegend=False
-    ))
-
-    maximo = 1.4*max(x.max(), y.max())
-    rango = [0, maximo]
-
-    # Recta identidad desde (0,0) hasta máximo
-    fig.add_trace(go.Scatter(
+  ))
+  
+  maximo = 1.4*max(x.max(), y.max())
+  rango = [0, maximo]
+  
+  # Recta identidad desde (0,0) hasta máximo
+  fig.add_trace(go.Scatter(
         x=rango,
         y=rango,
         mode='lines',
         line=dict(color='red', dash='dash'),
         showlegend=False
-    ))
-
-    fig.update_layout(
+  ))
+  
+  fig.update_layout(
         title='Morbilidad vs Mortalidad',
         xaxis=dict(
             title='Tasa de morbilidad',
@@ -529,8 +526,8 @@ def Diag_Dispersion(x,y,nombres):
     )
 
 
-    return fig
-
+  return fig
+#-------------------------------------------------------------------------------
 def G_Disp2(x,y,nombres):
     
     max_lim = 1.2*max(x.max(), y.max())
@@ -566,8 +563,7 @@ def G_Disp2(x,y,nombres):
     
     plt.title("Morbilidad vs Mortalidad")
     plt.show()
-
-
+#-------------------------------------------------------------------------------
 def G_Disp3(x, y, nombres):
     max_lim = 1.1*max(x.max(), y.max())
     
@@ -630,4 +626,3 @@ def G_Disp3(x, y, nombres):
     )
     
     return fig
-
