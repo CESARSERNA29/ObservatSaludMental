@@ -1103,7 +1103,7 @@ except FileNotFoundError:
 # LLAMANDO EL DATAFRAME:
 try:
     # Importando la tabla agregada con los resúmenes de las variables:
-    df_subsectores = pd.read_excel('TablaMorbilidad_Subsectores.xlsx', sheet_name='Hoja1')
+    df_subsectores = pd.read_excel('data/TablaMorbilidad_Subsectores.xlsx', sheet_name='Hoja1')
     df_subsectores["conteos"] = round(df_subsectores["conteos"], 0)
     df_subsectores["tasas"] = round(df_subsectores["tasas"], 1) 
 
@@ -1612,3 +1612,4 @@ with col2:
 #)
 
 #st.write(fuel_gauge)
+
