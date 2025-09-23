@@ -715,9 +715,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 
-
-
-
 # ------------------------------------------------------------------------
 # GRÁFICO CIRCULAR DE SUBSECTORES:
 # ---------------------------------
