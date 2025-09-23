@@ -781,7 +781,7 @@ try:
     # Agregando el Titulo (Elegante)
     fig.update_layout(
         title={
-            "text": "Mortalidad más Frecuentes por Departamento - 2023",
+            "text": "Mortalidad más Frecuentes por Departamento - 2022",
             "y": 0.95, 
             "x": 0.5, 
             "xanchor": "center", 
