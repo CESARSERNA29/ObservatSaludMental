@@ -37,10 +37,17 @@ st.markdown("""
 <h1 style='text-align: center; color: #3A3A3A;'>📈 SALUD MENTAL: Tratamiento Estadístico, KPI y Tendencias</h1>
 """, unsafe_allow_html=True)
 
-st.write("")
+st.markdown("##")
 
 
 #  ------------------------------------------------------------
+
+
+
+st.markdown("##")
+
+
+
 
 
 
@@ -104,7 +111,7 @@ df_sm1=df1[df1['componente']=='SM']
 
 
 
-#st.markdown("##")
+st.markdown("##")
 
 
 
@@ -549,12 +556,6 @@ st.markdown("##")
 # ==============================
 # Librerías
 # ==============================
-# ---------------------------------------------------
-#  GRÁFICOS DE CASCADA (Año + Departamento)
-# ---------------------------------------------------
-# ---------------------------------------------------
-#  GRÁFICOS DE CASCADA (Año + Departamento restringido a 4)
-# ---------------------------------------------------
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
@@ -571,170 +572,249 @@ try:
     with open('style.css', 'r', encoding='utf-8') as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 except FileNotFoundError:
-    pass
+    pass  # sin estilos personalizados
 
 # ==============================
 # Carga de datos
 # ==============================
 df_GrupoEnfer = pd.read_excel('Tabla_Grafico_Cascada_MORTALIDAD.xlsx', sheet_name='Hoja1')
 
-# Validaciones mínimas
-for col_oblig in ['anio', 'grupo', 'Tot_Eventos']:
-    if col_oblig not in df_GrupoEnfer.columns:
-        st.error(f"Falta la columna obligatoria '{col_oblig}' en el archivo de entrada.")
-        st.stop()
-
-# Cast seguro
-df_GrupoEnfer['anio'] = pd.to_numeric(df_GrupoEnfer['anio'], errors='coerce').astype('Int64')
-df_GrupoEnfer['Tot_Eventos'] = pd.to_numeric(df_GrupoEnfer['Tot_Eventos'], errors='coerce').fillna(0).astype(int)
-if 'Tot_pob10' in df_GrupoEnfer.columns:
-    df_GrupoEnfer['Tot_pob10'] = pd.to_numeric(df_GrupoEnfer['Tot_pob10'], errors='coerce').fillna(0).astype(int)
+# Cast a enteros si existen
+for col in ["Tot_Eventos", "Tot_pob10"]:
+    if col in df_GrupoEnfer.columns:
+        df_GrupoEnfer[col] = df_GrupoEnfer[col].fillna(0).astype(int)
 
 # ==============================
-# Filtros (Año y Departamento) — departamento SIN opción "Todos"
+# Filtros (robustos)
 # ==============================
-col1, col2 = st.columns(2)
+departamento_seleccionado = 'Todos los Dptos'
+anio_seleccionado = 'Todos los Años'
 
-# Año (siempre un único año)
-anios_disponibles = sorted([int(a) for a in df_GrupoEnfer['anio'].dropna().unique()])
-with col1:
-    anio_seleccionado = st.pills(
-        "Selecciona el Año:",
-        anios_disponibles, selection_mode="single", default=max(anios_disponibles)
-    )
+col_filtros = st.columns(2)
 
-# Departamento: limitar a 4 departamentos personalizados
-# EDITA esta lista con los 4 departamentos que quieres permitir (nombres exactos que aparecen en tu DataFrame)
-departamentos_permitidos = ["Meta", "Arauca", "Casanare", "Vichada"]
-
-tiene_dep = 'departamento' in df_GrupoEnfer.columns
-departamento_seleccionado = None
-
-if tiene_dep:
-    # Intersección entre permitidos y los que realmente aparecen en la base
-    disponibles_en_base = sorted(df_GrupoEnfer['departamento'].dropna().unique().tolist())
-    disponibles = [d for d in departamentos_permitidos if d in disponibles_en_base]
-
-    if len(disponibles) == 0:
-        # Si ninguno de los 4 permitidos aparece, fallback: mostrar todos los disponibles y avisar
-        st.warning("Ninguno de los departamentos permitidos aparece en la base; mostrando todos los departamentos disponibles.")
-        disponibles = disponibles_en_base
-
-    with col2:
-        departamento_seleccionado = st.pills(
-            "Selecciona el Departamento (solo los 4 permitidos):",
-            disponibles, selection_mode="single",default="Meta"
+# Filtro Departamento
+if 'departamento' in df_GrupoEnfer.columns:
+    departamentos_disponibles = ['Todos los Dptos'] + sorted(df_GrupoEnfer['departamento'].dropna().unique().tolist())
+    with col_filtros[0]:
+        departamento_seleccionado = st.selectbox(
+            "Selecciona el Departamento:",
+            options=departamentos_disponibles,
+            index=0
         )
+
+# Filtro Año
+if 'anio' in df_GrupoEnfer.columns:
+    anios_disponibles = ['Todos los Años'] + sorted(df_GrupoEnfer['anio'].dropna().unique().tolist())
+    with col_filtros[1]:
+        anio_seleccionado = st.selectbox(
+            "Selecciona el Año:",
+            options=anios_disponibles,
+            index=0
+        )
+
+# ==============================
+# Preparación de datos filtrados
+# ==============================
+df_base = df_GrupoEnfer.copy()
+
+# Filtrar Departamento
+if 'departamento' in df_base.columns and departamento_seleccionado != 'Todos los Dptos':
+    df_base = df_base[df_base['departamento'] == departamento_seleccionado]
+
+# Si selecciona un año específico
+if 'anio' in df_base.columns and anio_seleccionado != 'Todos los Años':
+    df_base = df_base[df_base['anio'] == anio_seleccionado]
+    group_cols = ['grupo']
 else:
-    # Si no existe la columna 'departamento' en la tabla
-    with col2:
-        st.info("La columna 'departamento' no está en la base; se graficarán todos los departamentos combinados.")
-    departamento_seleccionado = None
+    # Si selecciona "Todos los Años", se agrupa también por año
+    group_cols = ['anio', 'grupo']
 
-# ==============================
-# Preparación de datos (único año)
-# ==============================
-df_base = df_GrupoEnfer[df_GrupoEnfer['anio'] == anio_seleccionado].copy()
+# Agrupar
+agg_cols = {}
+if 'Tot_Eventos' in df_base.columns:
+    agg_cols['Tot_Eventos'] = 'sum'
+if 'Tot_pob10' in df_base.columns:
+    agg_cols['Tot_pob10'] = 'sum'
 
-# Aplicar filtro por departamento (solo si existe la columna y hay selección)
-if tiene_dep and departamento_seleccionado is not None:
-    # Validación extra: si la selección no está en la columna (caso raro), no filtrar y lanzar advertencia
-    if departamento_seleccionado in df_base['departamento'].unique():
-        df_base = df_base[df_base['departamento'] == departamento_seleccionado]
-    else:
-        st.warning(f"El departamento seleccionado ({departamento_seleccionado}) no tiene datos para el año {anio_seleccionado}. Mostrando datos agregados del año.")
-
-# Agregar por grupo para ese año (y depto si aplica)
-df_filtrado = (
-    df_base.groupby('grupo', as_index=False)[['Tot_Eventos']].sum()
-    .sort_values('grupo')
-)
-
-# ==============================
-# Series para Waterfall
-# ==============================
-grupos = df_filtrado['grupo'].tolist()
-vals = df_filtrado['Tot_Eventos'].tolist()
-total = int(sum(vals))
-
-x_list = grupos + ['Total']
-y_list = vals + [total]
-
-# Medidas: primero absoluto, intermedios relativos, total absoluto
-measures = ["absolute"] + ["relative"] * (len(y_list) - 2) + ["absolute"]
-
-# Etiquetas (miles con punto)
-def formato_miles(v):
-    return f"{v:,.0f}".replace(",", ".")
-
-text_list = [formato_miles(v) for v in y_list]
-text_list[0] = f"{text_list[0]}"
-text_list[-1] = f"{text_list[-1]}"
+df_filtrado = df_base.groupby(group_cols).agg(agg_cols).reset_index()
+df_filtrado = df_filtrado.sort_values(group_cols)
 
 # ==============================
 # Gráfico Waterfall
 # ==============================
-fig = go.Figure(go.Waterfall(
-    name="mortalidad",
-    orientation="v",
-    measure=measures,
-    x=x_list,
-    y=y_list,
-    text=text_list,
-    textposition="outside",
-    connector={"line": {"color": "rgba(0,0,0,0)"}},  # sin líneas punteadas
-    increasing={"marker": {"color": "#ff7f0e"}},   # naranja
-    decreasing={"marker": {"color": "#d62728"}},   # rojo (si hubiese negativos)
-    totals={'marker': {"color": "#9467bd"}},       # total
-    textfont={"family": "Open Sans", "color": "black"}
-))
+if anio_seleccionado == "Todos los Años":
+    # Gráfico con varios años
+    fig = go.Figure()
 
-titulo_dep = departamento_seleccionado if (tiene_dep and departamento_seleccionado) else "Todos los Dptos"
-fig.update_layout(
-    title={
-        'text': f'<b>Waterfall Chart - {titulo_dep} - {anio_seleccionado}</b><br>'
-                f'<span style="color:#666666">Prevalencia de Decesos por Enfermedades Mentales</span>',
-        'x': 0.5,
-        'xanchor': 'center'
-    },
-    showlegend=False,
-    height=600,
-    width=900,
-    font=dict(
-        family="Source Sans Pro, sans-serif",
-        size=14,
-        color="black"
-    ),
-    plot_bgcolor='rgba(0,0,0,0)',
-    xaxis=dict(
-        showgrid=False,
-        title=dict(
-            text="<b>Enfermedades Mentales</b>",  # negrita eje X
-            font=dict(size=14, family="Source Sans Pro, sans-serif", color="black")
-        )
-    ),
-    yaxis=dict(
-        showgrid=False,
-        title=dict(
-            text="<b>Casos</b>",  # negrita eje Y
-            font=dict(size=14, family="Source Sans Pro, sans-serif", color="black")
-        )
+    for year, df_year in df_filtrado.groupby("anio"):
+        GrupoEnf = df_year['grupo'].tolist()
+        y_vals = df_year['Tot_Eventos'].tolist()
+        x_list = GrupoEnf + ['Total']
+        total = int(sum(y_vals))
+        y_list = y_vals + [total]
+
+        measures = ["absolute"] + ["relative"] * (len(y_list) - 2) + ["absolute"]
+
+        fig.add_trace(go.Waterfall(
+            name=str(year),
+            orientation="v",
+            measure=measures,
+            x=x_list,
+            y=y_list,
+            connector={"line": {"color": "rgba(0,0,0,0)"}},
+            increasing={"marker": {"color": "#ff7f0e"}},
+            decreasing={"marker": {"color": "#d62728"}},
+            totals={'marker': {"color": "#9467bd"}},
+        ))
+
+    fig.update_layout(
+        title=f"Waterfall Chart - {departamento_seleccionado} (Comparación por Años)",
+        showlegend=True,
+        height=350,
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis_title="Casos"
     )
-)
 
-# Mostrar gráfico centrado
-col_left, col_center, col_right = st.columns([1,3,1])
-with col_center:
-    st.plotly_chart(fig, use_container_width=False)
+else:
+    # Gráfico normal para un año específico
+    GrupoEnf = df_filtrado['grupo'].tolist()
+    y_vals = df_filtrado['Tot_Eventos'].tolist()
+    x_list = GrupoEnf + ['Total']
+    total = int(sum(y_vals))
+    y_list = y_vals + [total]
 
-# ==============================
-# Métricas
-# ==============================
-st.markdown("---")
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.metric("Total de Casos", value=formato_miles(total))
-with c2:
-    st.metric("Año", value=str(anio_seleccionado))
-with c3:
-    st.metric("Grupos de Enfermedades", value=len(grupos))
+    measures = ["absolute"] + ["relative"] * (len(y_list) - 2) + ["absolute"]
+
+    fig = go.Figure(go.Waterfall(
+        name="mortalidad",
+        orientation="v",
+        measure=measures,
+        x=x_list,
+        y=y_list,
+        connector={"line": {"color": "rgba(0,0,0,0)"}},
+        increasing={"marker": {"color": "#ff7f0e"}},
+        decreasing={"marker": {"color": "#d62728"}},
+        totals={'marker': {"color": "#9467bd"}},
+    ))
+
+    fig.update_layout(
+        title=f"Waterfall Chart - {departamento_seleccionado} - {anio_seleccionado}",
+        showlegend=False,
+        height=350,
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis_title="Casos"
+    )
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+
+
+
+
+
+
+# ------------------------------------------------------------------------
+# GRÁFICO CIRCULAR DE SUBSECTORES:
+# ---------------------------------
+
+st.markdown("##")
+
+st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Tasa de Mortalidad por Departamento </h4>", unsafe_allow_html=True) 
+st.write("Da click en uno de los departamentos (en el centro del gráfico) para desplegar estadísticas") 
+
+
+
+# Cargando las Librerías:
+#import streamlit as st
+#import pandas as pd
+#import streamlit.components.v1 as components
+#import plotly.express as px
+#from streamlit_option_menu import option_menu
+#from numerize import numerize
+#import time
+#from streamlit_extras.metric_cards import style_metric_cards
+#import plotly.graph_objs as go
+#import plotly.graph_objects as go
+
+# =====================================
+# TITULO Y ESTILO DEL ENCABEZADO:
+st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")  
+#st.header("Resumen Gráfico Exploratorio Multidimensional")
+ 
+# Cargar CSS si existe el archivo
+try:
+    with open('style.css') as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+except FileNotFoundError:
+    st.warning("Archivo style.css no encontrado. Continuando sin estilos personalizados.")
+
+# LLAMANDO EL DATAFRAME:
+try:
+    # Importando la tabla agregada con los resúmenes de las variables:
+    df_subsectores = pd.read_excel('data/TablaMortalidad_Subsectores.xlsx', sheet_name='Hoja1')
+    df_subsectores["conteos"] = round(df_subsectores["conteos"], 0)
+    df_subsectores["tasas"] = round(df_subsectores["tasas"], 1) 
+
+    
+    # Estructura jerárquica: País > Departamento > Enfermedad
+    labels = df_subsectores['labels'].tolist()
+    parents = df_subsectores['parents'].tolist()
+    conteos = df_subsectores['conteos'].tolist()
+    tasas = df_subsectores['tasas'].tolist()
+    
+    # Etiquetas personalizadas con conteo y tasa
+    custom_labels = [f"{l}<br>Casos: {v:,.0f}<br>Tasa: {t:.1f}/100k".replace(',', '.') if v != 0 else l 
+                 for l, v, t in zip(labels, conteos, tasas)]
+    
+    # Sunburst plot
+    #colors = ['#2A3180', '#39A8E0', '#F28F1C', '#E5352B', '#662681', '#009640', '#9D9D9C']
+    fig = go.Figure(go.Sunburst(
+        labels=custom_labels,
+        parents=parents,
+        values=conteos,
+        branchvalues="remainder" #,  # ahora los padres no necesitan tener suma directa
+        #marker=dict(colors=colors * (len(labels) // len(colors) + 1))  # Repetir colores si son necesarios
+    ))
+    
+    # Agregando el Titulo (Elegante)
+    fig.update_layout(
+        title={
+            "text": "Mortalidad más Frecuentes por Departamento - 2023",
+            "y": 0.95, 
+            "x": 0.5, 
+            "xanchor": "center", 
+            "yanchor": "top", 
+            "font": dict(size=24, color="black")
+        }, 
+        margin=dict(t=80, l=10, r=10, b=10)
+    )
+    
+    
+    
+    # ¡AQUÍ ESTÁ LA LÍNEA QUE FALTABA!
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+    
+except FileNotFoundError:
+    st.error("Archivo 'TablaMortalidad_Subsectores.xlsx' no encontrado. Verifica que el archivo esté en el directorio correcto.")
+except Exception as e:
+    st.error(f"Error al cargar los datos: {str(e)}")
+    
+ 
+
+# ---------------------------------------------------------------------
+
+
+
+
+
+st.markdown("##")
+#st.markdown("##")
+
+
+
