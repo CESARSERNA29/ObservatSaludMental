@@ -1115,7 +1115,7 @@ except FileNotFoundError:
 # LLAMANDO EL DATAFRAME:
 try:
     # Importando la tabla agregada con los resúmenes de las variables:
-    df_subsectores = pd.read_excel('TablaMorbilidad_Subsectores.xlsx', sheet_name='Hoja1')
+    df_subsectores = pd.read_excel('data/TablaMorbilidad_Subsectores.xlsx', sheet_name='Hoja1')
     df_subsectores["conteos"] = round(df_subsectores["conteos"], 0)
     df_subsectores["tasas"] = round(df_subsectores["tasas"], 1) 
 
@@ -1143,7 +1143,7 @@ try:
     # Agregando el Titulo (Elegante)
     fig.update_layout(
         title={
-            "text": "Enfermedades más Frecuentes por Departamento",
+            "text": "Enfermedades más Frecuentes por Departamento - 2023",
             "y": 0.95, 
             "x": 0.5, 
             "xanchor": "center", 
