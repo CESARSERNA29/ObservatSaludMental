@@ -1,7 +1,5 @@
 
 
-
-
 # Cargando las Librerías: 
 # ======================
 
@@ -19,6 +17,24 @@ import time
 from streamlit_extras.metric_cards import style_metric_cards
 # st.set_option('deprecation.showPyplotGlobalUse', False)
 import plotly.graph_objs as go
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+# Cargando las Librerías:
+import time
+import plotly.graph_objects as go
+
+import geopandas as gpd
+import folium
+from streamlit_folium import st_folium
+import fiona
+
+
+
+
+
 # ----------------------------------------------------------
 
 
@@ -52,12 +68,6 @@ st.markdown("##")
 
 
 
-
-import streamlit as st
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-import plotly.express as px
 #from streamlit-aggrid import AgGrid, GridOptionsBuilder
 
 
@@ -745,8 +755,8 @@ fig_investment.update_layout(
 # ------------------------------
 # GRÁFICO 2: Línea por departamento
 # ------------------------------
-import pandas as pd
-import plotly.express as px
+#import pandas as pd
+#import plotly.express as px
 
 # Cargar el archivo
 df_depto = pd.read_excel('TablaTASAS_3Graficos.xlsx', sheet_name="3_Dptos_TasaMorbi")
@@ -874,10 +884,10 @@ st.markdown("<h4 style='color:#547FD4; font-weight:bold;'>Casos de Morbilidad po
 
 
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-import numpy as np
+#import streamlit as st
+#import pandas as pd
+#import plotly.express as px
+#import numpy as np
 
 # Configuración de la página
 st.set_page_config(
@@ -1079,16 +1089,16 @@ st.write("Da click en uno de los departamentos (en el centro del gráfico) para 
 
 
 # Cargando las Librerías:
-import streamlit as st
-import pandas as pd
-import streamlit.components.v1 as components
-import plotly.express as px
-from streamlit_option_menu import option_menu
-from numerize import numerize
-import time
-from streamlit_extras.metric_cards import style_metric_cards
-import plotly.graph_objs as go
-import plotly.graph_objects as go
+#import streamlit as st
+#import pandas as pd
+#import streamlit.components.v1 as components
+#import plotly.express as px
+#from streamlit_option_menu import option_menu
+#from numerize import numerize
+#import time
+#from streamlit_extras.metric_cards import style_metric_cards
+#import plotly.graph_objs as go
+#import plotly.graph_objects as go
 
 # =====================================
 # TITULO Y ESTILO DEL ENCABEZADO:
@@ -1117,7 +1127,7 @@ try:
     tasas = df_subsectores['tasas'].tolist()
     
     # Etiquetas personalizadas con conteo y tasa
-    custom_labels = [f"{l}<br>Casos: {v:,.0f}<br>Tasa: {t:.1f}/10k".replace(',', '.') if v != 0 else l 
+    custom_labels = [f"{l}<br>Casos: {v:,.0f}<br>Tasa: {t:.1f}/100k".replace(',', '.') if v != 0 else l 
                  for l, v, t in zip(labels, conteos, tasas)]
     
     # Sunburst plot
@@ -1178,9 +1188,9 @@ st.markdown("##")
 
 # =========================================================
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
+#import streamlit as st
+#import pandas as pd
+#import plotly.express as px
 
 # Configurar página
 st.set_page_config(page_title="Dashboard ", page_icon="📈", layout="wide")
@@ -1268,12 +1278,12 @@ st.markdown("##")
 # Mapa Leaflet de Morbilidad
 # ---------------------------
 
-import geopandas as gpd
-import pandas as pd
-import folium
-from streamlit_folium import st_folium
-import streamlit as st
-import fiona
+#import geopandas as gpd
+#import pandas as pd
+#import folium
+#from streamlit_folium import st_folium
+#import streamlit as st
+#import fiona
 
 # ===========================
 # Título y descripción
@@ -1440,10 +1450,10 @@ import fiona
 
 
 
-import streamlit as st
-import geopandas as gpd
-import pandas as pd
-import plotly.express as px
+#import streamlit as st
+#import geopandas as gpd
+#import pandas as pd
+#import plotly.express as px
 
 # -------------------------
 # CARGA DE DATOS
