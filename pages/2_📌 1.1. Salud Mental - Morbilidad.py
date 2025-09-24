@@ -925,6 +925,7 @@ frequency = df.groupby("nombre_cat_edad")["Tot_Eventos"].sum()
 
 # 2. Calcular frecuencia relativa (%)
 percentage_frequency = frequency / frequency.sum() * 100
+relative_frequency = frequency / frequency.sum()
 
 # 3. Calcular frecuencias acumuladas
 cumulative_frequency = frequency.cumsum()
