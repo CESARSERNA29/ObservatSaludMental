@@ -330,7 +330,7 @@ def diag_barras(df, vx, vy, titulo, subt, colores=None, xlab="", ylab="", width=
 def mapa_crp(df,vy,ruta_geoj,Medida):
   
   # se lee el archivo simple con el listado de municipios de la region
-  mpio_orinoquia=pd.read_csv("D:/Consultoria/UNILLANOS/ObservatSaludMental/data/municipios.csv",sep=',')
+  mpio_orinoquia=pd.read_csv("data/municipios.csv",sep=',')
   mpio_orinoquia['id_mpio']=mpio_orinoquia['id_mpio'].astype('Int64')
   
   # Lectura del archivo en formato GeoJson
@@ -668,3 +668,4 @@ def diag_sectores_dinamico(df,Titulo):
   )
   return(fig)
 #-------------------------------------------------------------------------------
+
