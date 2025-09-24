@@ -929,7 +929,7 @@ st.markdown("<h5 style='font-weight:bold;'>📈 Tabla de Frecuencias por Categor
 # ========================
 # Suma condicionada
 # ========================
-frequency = df.groupby("nombre_cat_edad")["casos"].sum().sort_index()
+frequency = df.groupby("nombre_cat_edad")["Tot_Eventos"].sum().sort_index()
 
 # Total para calcular porcentajes
 total = frequency.sum()
