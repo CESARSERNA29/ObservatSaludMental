@@ -51,6 +51,13 @@ st.markdown("""
     
     
     \nEn regiones como la Orinoquía colombiana, caracterizada por una amplia diversidad étnica, condiciones geográficas particulares y limitaciones estructurales de acceso a servicios de salud, el análisis estadístico riguroso de la salud mental se vuelve una herramienta crítica para orientar políticas públicas, optimizar recursos y diseñar intervenciones focalizadas.
+    
+    
+    \nLa estadística, los KPI y el análisis de tendencias no son un fin en sí mismos, sino un medio para construir políticas públicas más efectivas, intervenciones focalizadas y comunidades resilientes. En contextos como la Orinoquía, donde la diversidad cultural se entrelaza con desafíos estructurales, la evidencia científica se convierte en el pilar que permite orientar recursos, priorizar acciones y diseñar estrategias que respondan a las realidades locales.
+
+\nSin embargo, más allá de los modelos, cifras e indicadores, lo que realmente está en juego son vidas humanas. Cada número representa una persona, una familia, una comunidad. Por eso, el propósito último de este trabajo no es solo describir, sino anticipar, prevenir y transformar.
+
+\nQue los datos se conviertan en brújula, que las métricas se vuelvan decisiones y que las decisiones se traduzcan en esperanza. Porque cuidar la salud mental es proteger el presente y sembrar el futuro: un futuro más justo, más humano y más digno para todos.
         
     
     """, unsafe_allow_html=True)
@@ -67,12 +74,12 @@ st.markdown("""
 # ============================================================================
 # ============================================================================
 
-st.markdown("---")  # Otra línea si quieres enfatizarlo aún más
-st.markdown(
-    "<h3 style='text-align: center; color: #DC143C;'>En construcción (...)</h3>", 
-    unsafe_allow_html=True
-)
-st.markdown("---")
+#st.markdown("---")  # Otra línea si quieres enfatizarlo aún más
+#st.markdown(
+#    "<h3 style='text-align: center; color: #DC143C;'>En construcción (...)</h3>", 
+#    unsafe_allow_html=True
+#)
+#st.markdown("---")
 
 # ============================================================================
 # ============================================================================
