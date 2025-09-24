@@ -920,7 +920,8 @@ df = load_data3()
 st.markdown("<h5 style='font-weight:bold;'>📈 Tabla de Frecuencias por Categoría de Edad</h5>", unsafe_allow_html=True)
 
 # Calcular frecuencias
-frequency = df.nombre_cat_edad.value_counts().sort_index()
+#frequency = df.nombre_cat_edad.value_counts().sort_index()
+frequency = df.groupby("nombre_cat_edad")["Tot_Eventos"].sum().reset_index()
 percentage_frequency = frequency / len(df.nombre_cat_edad) * 100
 cumulative_frequency = frequency.cumsum()
 relative_frequency = frequency / len(df.nombre_cat_edad)
