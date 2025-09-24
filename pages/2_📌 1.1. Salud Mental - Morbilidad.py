@@ -920,52 +920,16 @@ df = load_data3()
 st.markdown("<h5 style='font-weight:bold;'>📈 Tabla de Frecuencias por Categoría de Edad</h5>", unsafe_allow_html=True)
 
 # Calcular frecuencias
-#frequency = df.nombre_cat_edad.value_counts().sort_index()
-#percentage_frequency = frequency / len(df.nombre_cat_edad) * 100
-#cumulative_frequency = frequency.cumsum()
-#relative_frequency = frequency / len(df.nombre_cat_edad)
-#cumulative_relative_frequency = relative_frequency.cumsum()
-
-
-
-
-
-
-# 1. Agrupar y sumar por categoría de edad
-summary_table = df.groupby("nombre_cat_edad", as_index=False)["Tot_Eventos"].sum()
-summary_table.columns = ["Etiquetas de fila", "Suma de Tot_Eventos"]
-
-# 2. Calcular totales
-total_general = summary_table["Suma de Tot_Eventos"].sum()
-
-# 3. Calcular frecuencias relativas y acumuladas
-summary_table["Frecuencia Relativa (%)"] = (summary_table["Suma de Tot_Eventos"] / total_general * 100).round(2)
-summary_table["Frecuencia Acumulada"] = summary_table["Suma de Tot_Eventos"].cumsum()
-summary_table["Frecuencia Relat. Acum. (%)"] = summary_table["Frecuencia Relativa (%)"].cumsum().round(2)
-
-# 4. Agregar fila de "Total general"
-total_row = pd.DataFrame({
-    "Etiquetas de fila": ["Total general"],
-    "Suma de Tot_Eventos": [total_general],
-    "Frecuencia Relativa (%)": [100.00],
-    "Frecuencia Acumulada": [total_general],
-    "Frecuencia Relat. Acum. (%)": [100.00]
-})
-
-summary_table = pd.concat([summary_table, total_row], ignore_index=True)
-
-# 5. Mostrar en Streamlit
-st.dataframe(summary_table)
-
-
-
-
-
+frequency = df.nombre_cat_edad.value_counts().sort_index()
+percentage_frequency = frequency / len(df.nombre_cat_edad) * 100
+cumulative_frequency = frequency.cumsum()
+relative_frequency = frequency / len(df.nombre_cat_edad)
+cumulative_relative_frequency = relative_frequency.cumsum()
 
 # ========================
 # Suma condicionada
 # ========================
-#frequency = df.groupby("nombre_cat_edad")["Tot_Eventos"].sum().sort_index()
+#frequency = df.groupby("nombre_cat_edad")["casos"].sum().sort_index()
 
 # Total para calcular porcentajes
 #total = frequency.sum()
@@ -976,7 +940,6 @@ st.dataframe(summary_table)
 # Frecuencia acumulada (suma)
 #cumulative_frequency = frequency.cumsum()
 
-#relative_frequency = (frequency / total).round(2)
 
 # Frecuencia relativa acumulada
 #cumulative_relative_frequency = (percentage_frequency.cumsum()).round(2)
@@ -984,13 +947,13 @@ st.dataframe(summary_table)
 
 
 # Crear tabla resumen
-#summary_table = pd.DataFrame({
-#    'Freq.': frequency,
-#    '% Freq.': percentage_frequency,
-#    'Freq. Acum.': cumulative_frequency,
-#    'Freq. Relat.': relative_frequency,
-#    'Freq. Relat. Acum.': cumulative_relative_frequency
-#})
+summary_table = pd.DataFrame({
+    'Freq.': frequency,
+    '% Freq.': percentage_frequency,
+    'Freq. Acum.': cumulative_frequency,
+    'Freq. Relat.': relative_frequency,
+    'Freq. Relat. Acum.': cumulative_relative_frequency
+})
 
 # Selector de columnas para mostrar
 showData = st.multiselect(
