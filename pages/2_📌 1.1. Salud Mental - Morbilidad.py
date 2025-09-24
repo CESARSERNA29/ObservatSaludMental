@@ -432,8 +432,8 @@ df_sm0['anio'] = df_sm0['anio'].astype(str)   # ojo con coherencia respecto al a
 df0_sm = df_sm0[df_sm0['componente']=='SM']
 
 # Tabla Pivote: 
-df_agregada1 = df0_sm.groupby(['grupo']).count().reset_index() 
-df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
+df_agregada1 = df0_sm.groupby(['grupo']).sum().reset_index()   # CONTEOS O SUMAS
+df_agregada1_1 = df_agregada1[['grupo', 'anio']]   # cambio anio por Tot_Eventos
 df_agregada1_1.columns = ['grupo', 'cant'] 
 
 # Calcular el total de casos 
