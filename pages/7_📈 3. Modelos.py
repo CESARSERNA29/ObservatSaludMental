@@ -63,8 +63,25 @@ salud mental y convivencia ciudadana.
 
 ### ***Metodología***
 
-A partir de los datos previamente depurados, normalizados y estructurados se crearon
-los conjuntos de datos que permitieran caracterizar los individuos
+A partir de los datos previamente depurados, normalizados y estructurados, 
+se conformaron los datasets que caracterizan a los individuos, municipios y 
+departamentos de la región. Se establecieron las variables predictoras 
+— tasas de morbilidad/mortalidad, categorías etarias, distribución por sexo, 
+proyecciones poblacionales e indicadores de convivencia— junto con la 
+variable objetivo para cada nivel de análisis. 
+
+Posteriormente, se aplicaron procesos de selección y transformación de 
+variables para mitigar sesgos y garantizar consistencia.
+
+Con estos insumos se entrenaron diversos modelos de Machine Learning 
+(Random Forest, XGBoost, Regresión Logística y Redes Neuronales, etc.), 
+implementando validación cruzada y optimización de hiperparámetros. 
+
+El desempeño se evaluó mediante métricas como exactitud, sensibilidad, 
+especificidad y F1-Score, seleccionando los modelos más robustos. 
+Finalmente, se integraron visualizaciones dinámicas que permiten analizar 
+resultados tanto a nivel agregado como individual, asegurando interpretabilidad 
+y aplicabilidad de los modelos en contextos de salud pública regional.
 
 </div>
 """, unsafe_allow_html=True)
