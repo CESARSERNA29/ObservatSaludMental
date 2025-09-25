@@ -98,7 +98,7 @@ with col2:
     else:
         # Si ningún checkbox activo, mostramos todo (sin filtro)
         df_filtrado = df_filtrado.copy()
-    st.dataframe(df_filtrado.head())    
+    #st.dataframe(df_filtrado.head())    
 with col3:
   Prom_Score=round(100*df_filtrado['Prob_RandomForest'].mean(),1)
   
@@ -130,6 +130,7 @@ with col3:
 #     # Si no hay toggle activo, mostrar todo (o vaciar df_filtrado según preferencia)
 #     # df_filtrado = df_filtrado.copy()  # no filtra nada
 #     pass
+
 
 
 
