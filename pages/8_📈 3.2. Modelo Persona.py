@@ -67,7 +67,7 @@ for col, val in filtros.items():
   # Filtrar solo las filas que tengan el valor seleccionado en la columna categorizada
   if val is not None:
     df_filtrado = df_filtrado[df_filtrado[col] == val]
-st.dataframe(df_filtrado.head())
+#st.dataframe(df_filtrado.head())
 categorias_toggles = {
     "Consumo de Sustancias Psicoactivas":1,
     "Trastornos esquizotipicos y delirantes":2,
@@ -94,7 +94,7 @@ with col2:
 
     # Filtramos el DataFrame según los valores de grupo seleccionados
     if toggles_valores:
-        df_filtrado = df_filtrado[df_filtrado['cod_grupo'].isin(toggles_valores)]
+        df_filtrado = df_filtrado[df_filtrado['grupo'].isin(toggles_valores)]
     else:
         # Si ningún checkbox activo, mostramos todo (sin filtro)
         df_filtrado = df_filtrado.copy()
@@ -130,4 +130,5 @@ with col3:
 #     # Si no hay toggle activo, mostrar todo (o vaciar df_filtrado según preferencia)
 #     # df_filtrado = df_filtrado.copy()  # no filtra nada
 #     pass
+
 
