@@ -270,7 +270,7 @@ with total1:
     st.metric(label="Periodo", value="2015 - 2022")
 with total2:
     st.info('Tot. Eventos',icon="🎯")
-    st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
+    st.metric(label="Tot. Casos", value="310.879")
 with total3:
     st.info('Tot. Dptos.',icon="🎯")
     st.metric(label="Tot. Dptos.",value=f"{investment_mode1:,.0f}")
