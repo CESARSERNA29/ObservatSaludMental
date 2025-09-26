@@ -36,7 +36,7 @@ if selected == "Inicio":
     st.markdown("""
         <div style="text-align: justify; font-size: 18px; color: #444444;">
         Este tablero interactivo tiene como objetivo mostrar la distribución de enfermedades más relevantes reportadas
-        por los subsectores del país durante los años 2018 - 2023. Con visualizaciones dinámicas, métricas clave
+        por los subsectores del país durante los años 2018 - 2022. Con visualizaciones dinámicas, métricas clave
         y comparaciones por departamento, buscando facilitar la toma de decisiones informadas en salud pública.
         </div>
     """, unsafe_allow_html=True)
