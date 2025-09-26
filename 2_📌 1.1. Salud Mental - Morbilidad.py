@@ -267,7 +267,7 @@ investment_median= float(pd.Series(df_selection['Enfermedad_Evento']).nunique())
 total1,total2,total3,total4,total5=st.columns(5,gap='small')
 with total1: 
     st.info('Años', icon="📆") 
-    st.metric(label="Periodo", value="2018 - 2023")
+    st.metric(label="Periodo", value="2015 - 2022")
 with total2:
     st.info('Tot. Eventos',icon="🎯")
     st.metric(label="Tot. Casos", value=f"{total_investment:,.0f}".replace(",", "."))
@@ -431,9 +431,10 @@ df_sm0['anio'] = df_sm0['anio'].astype(str)   # ojo con coherencia respecto al a
 # Filtro para Salud Mental 
 df0_sm = df_sm0[df_sm0['componente']=='SM']
 
-# Tabla Pivote: 
-df_agregada1 = df0_sm.groupby(['grupo']).count().reset_index() 
-df_agregada1_1 = df_agregada1[['grupo', 'anio']] 
+# Tabla Pivote:               
+#df_agregada1 = df0_sm.groupby(['grupo']).sum().reset_index()   # CONTEOS O SUMAS
+df_agregada1 = df0_sm.groupby(['grupo']).sum(numeric_only=True).reset_index()
+df_agregada1_1 = df_agregada1[['grupo', 'Tot_Eventos']]   # cambio anio por Tot_Eventos
 df_agregada1_1.columns = ['grupo', 'cant'] 
 
 # Calcular el total de casos 
@@ -925,6 +926,26 @@ cumulative_frequency = frequency.cumsum()
 relative_frequency = frequency / len(df.nombre_cat_edad)
 cumulative_relative_frequency = relative_frequency.cumsum()
 
+# ========================
+# Suma condicionada
+# ========================
+#frequency = df.groupby("nombre_cat_edad")["casos"].sum().sort_index()
+
+# Total para calcular porcentajes
+#total = frequency.sum()
+
+# Porcentajes
+#percentage_frequency = (frequency / total * 100).round(2)
+
+# Frecuencia acumulada (suma)
+#cumulative_frequency = frequency.cumsum()
+
+
+# Frecuencia relativa acumulada
+#cumulative_relative_frequency = (percentage_frequency.cumsum()).round(2)
+
+
+
 # Crear tabla resumen
 summary_table = pd.DataFrame({
     'Freq.': frequency,
@@ -1143,7 +1164,7 @@ try:
     # Agregando el Titulo (Elegante)
     fig.update_layout(
         title={
-            "text": "Enfermedades más Frecuentes por Departamento - 2023",
+            "text": "Enfermedades más Frecuentes por Departamento - 2022",
             "y": 0.95, 
             "x": 0.5, 
             "xanchor": "center", 
@@ -1476,7 +1497,7 @@ gdf_merged = gdf.merge(df, on="mpio_cdpmp", how="left")
 # -------------------------
 # INTERFAZ STREAMLIT
 # -------------------------
-st.title("🗺️ Morbilidad en la Orinoquía - 2023")
+st.title("🗺️ Morbilidad en la Orinoquía - 2022")
 
 # Layout: mapa a la izquierda y tabla a la derecha
 col1, col2 = st.columns([2, 1])
@@ -1512,7 +1533,7 @@ with col1:
 # TABLA ORDENADA
 # -------------------------
 with col2:
-    st.subheader("📋 Ranking de Morbilidad para 2023")
+    st.subheader("📋 Ranking de Morbilidad para 2022")
 
     tabla = gdf_merged[["Departamento", "Municipio", "Tasa_Morbi"]].copy()
     tabla = tabla.sort_values(by="Tasa_Morbi", ascending=False)
